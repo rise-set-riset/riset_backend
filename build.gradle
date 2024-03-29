@@ -29,9 +29,9 @@ dependencies {
 	// jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-//	// security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
+	// security
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+//	testImplementation 'org.springframework.security:spring-security-test'
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
@@ -39,10 +39,20 @@ dependencies {
 
 	// database
 	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.3.2'
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// configuration yml
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {
