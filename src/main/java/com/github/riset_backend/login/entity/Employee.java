@@ -34,14 +34,18 @@ public class Employee extends BaseEntity {
     @Column(name = "employee_birth")
     private String birth;
 
-    @Column(name = "employee_dept")
-    private String dept;
+    @Column(name = "employee_job")
+    private String job;
 
     @Column(name = "employee_position")
     private String position;
 
-    @Column(name = "employee_job")
-    private String job;
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @ManyToOne
+    @JoinColumn(name = "department_no", referencedColumnName = "department_no")
+    private Department department;
 
     @ManyToOne
     @JoinColumn(name = "company_no", referencedColumnName = "company_no")
