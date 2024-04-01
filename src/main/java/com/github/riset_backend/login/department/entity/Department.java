@@ -1,7 +1,8 @@
-package com.github.riset_backend.login.entity;
+package com.github.riset_backend.login.department.entity;
 
 
 import com.github.riset_backend.global.BaseEntity;
+import com.github.riset_backend.login.company.entity.Company;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,23 +11,19 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "company_location")
-public class CompanyLocation extends BaseEntity {
+@Table(name = "department")
+public class Department extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "location_no")
-    private Long locationNo;
+    @Column(name = "department_no")
+    private Long deptNo;
 
-    @Column(name = "latitude")
-    private Double latitude;
-
-    @Column(name = "longitude")
-    private Double longitude;
-
-    @Column(name = "commnet")
-    private String comment;
+    @Column(name = "department_name")
+    private String deptName;
 
     @ManyToOne
     @JoinColumn(name = "company_no", referencedColumnName = "company_no")
     private Company company;
+
+
 }

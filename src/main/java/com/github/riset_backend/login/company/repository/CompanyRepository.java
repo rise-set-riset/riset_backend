@@ -1,6 +1,6 @@
-package com.github.riset_backend.login.repository;
+package com.github.riset_backend.login.company.repository;
 
-import com.github.riset_backend.login.entity.Company;
+import com.github.riset_backend.login.company.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

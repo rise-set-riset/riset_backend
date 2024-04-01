@@ -1,7 +1,7 @@
-package com.github.riset_backend.login.repository;
+package com.github.riset_backend.login.employee.repository;
 
 
-import com.github.riset_backend.login.entity.Employee;
+import com.github.riset_backend.login.employee.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

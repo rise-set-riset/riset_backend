@@ -1,6 +1,6 @@
-package com.github.riset_backend.login.repository;
+package com.github.riset_backend.login.commute.repository;
 
-import com.github.riset_backend.login.entity.Commute;
+import com.github.riset_backend.login.commute.entity.Commute;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

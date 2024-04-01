@@ -1,6 +1,7 @@
-package com.github.riset_backend.login.entity;
+package com.github.riset_backend.login.commute.entity;
 
 import com.github.riset_backend.global.BaseEntity;
+import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 

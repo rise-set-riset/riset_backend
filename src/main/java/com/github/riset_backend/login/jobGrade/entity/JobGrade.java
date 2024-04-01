@@ -1,4 +1,4 @@
-package com.github.riset_backend.login.entity;
+package com.github.riset_backend.login.jobGrade.entity;
 
 import com.github.riset_backend.global.BaseEntity;
 import jakarta.persistence.*;
