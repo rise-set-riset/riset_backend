@@ -1,4 +1,4 @@
-package com.github.riset_backend.mycompany.schedules;
+package com.github.riset_backend.mycompany.schedules.entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
