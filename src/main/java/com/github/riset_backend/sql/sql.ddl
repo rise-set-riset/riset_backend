@@ -3,7 +3,7 @@ CREATE DATABASE `riset`;
 USE riset;
 
 CREATE TABLE `employee` (
-    `employee` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `employee_no` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `company_no` INT,
     `grade_no` INT,
     `department_no` INT,
@@ -43,7 +43,7 @@ CREATE TABLE `schedule` (
     `end_dt` DATETIME
 );
 
-CREATE TABLE `leave` (
+CREATE TABLE `holiday` (
     `leave_no` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `employee_no` INT,
 	`start_dt` DATETIME,

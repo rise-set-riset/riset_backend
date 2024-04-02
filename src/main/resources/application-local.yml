@@ -4,6 +4,8 @@ spring:
   config:
     activate:
       on-profile: local
+    import:
+      - application-aws.yaml
 
   datasource:
     url: jdbc:mysql://localhost:${PORT}/${DB_NAME}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
