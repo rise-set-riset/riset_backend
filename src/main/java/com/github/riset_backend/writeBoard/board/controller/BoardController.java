@@ -49,7 +49,7 @@ public class BoardController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
                                                          @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
-                                                         HttpServletRequest request) throws IOException {
+                                                         HttpServletRequest request) {
 
         log.info("boardRequestDto = {}", boardRequestDto);
         log.info("multipartFiles = {}", multipartFiles);
