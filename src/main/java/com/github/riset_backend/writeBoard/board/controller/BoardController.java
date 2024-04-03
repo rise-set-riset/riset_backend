@@ -46,7 +46,7 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
                                                          @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
                                                          HttpServletRequest request) {
@@ -59,50 +59,6 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
-//                                                         HttpServletRequest request) {
-//
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-//        return ResponseEntity.ok(board);
-//    }
-
-//    @PostMapping()
-//    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-//        return ResponseEntity.ok(board);
-//    }
-
-//    @GetMapping()
-//    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto,
-//                                                         HttpServletRequest request) {
-//
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-//        return ResponseEntity.ok(board);
-//    }
-
-//    @PostMapping(
-//            produces = {MediaType.APPLICATION_JSON}
-//    )
-//    public ResponseEntity<BoardResponseDto> createBoard (@ModelAttribute BoardRequestDto boardRequestDto,
-//                                                         HttpServletRequest request) {
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-//        return ResponseEntity.ok(board);
-//    }
-
-//        @GetMapping(
-//            produces = {MediaType.APPLICATION_JSON}
-//    )
-//    public ResponseEntity<BoardResponseDto> createBoard (@ModelAttribute BoardRequestDto boardRequestDto,
-//                                                         HttpServletRequest request) {
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-//        return ResponseEntity.ok(board);
-//    }
 
     @PatchMapping("/{boardNo}")
     public ResponseEntity<BoardResponseDto> update (@RequestPart(required = false) BoardRequestDto boardRequestDto,

@@ -98,46 +98,7 @@ public class BoardService {
         return BoardResponseDto.ToBoardResponseDto(newBoard, newFiles, board.getEmployee().getName());
     }
 
-//    @Transactional
-//    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {
-//        Employee employee = employeeRepository.findByEmployeeNo(1L).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-//        );
-//
-//        Board board = Board.boardRequestToBoard(boardRequestDto, employee);
-//        Board newBoard = boardRepository.save(board);
-////        List<File> newFiles = fileRepository.saveAll(files);
-////        boardFileRepository.saveAll(boardFiles);
-//        return new BoardResponseDto(newBoard);
-//    }
 
-//    @Transactional
-//    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto) {
-//        Employee employee = employeeRepository.findByEmployeeNo(1L).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-//        );
-//
-//        Board board = Board.boardRequestToBoard(boardRequestDto, employee);
-//
-//        List<File> files = new ArrayList<>();
-//        List<BoardFile> boardFiles = new ArrayList<>();
-//
-//        if(boardRequestDto.getMultipartFiles() != null) {
-//            boardRequestDto.getMultipartFiles().forEach(
-//                    multipartFile -> {
-//                        Result result = getResult(multipartFile, board);
-//                        files.add(result.file());
-//                        boardFiles.add(result.boardFile());
-//                    }
-//            );
-//        }
-//
-//        Board newBoard = boardRepository.save(board);
-//        List<File> newFiles = fileRepository.saveAll(files);
-//        boardFileRepository.saveAll(boardFiles);
-//
-//        return BoardResponseDto.ToBoardResponseDto(newBoard, newFiles, board.getEmployee().getName());
-//    }
 
     private Result getResult(MultipartFile multipartFile, Board board) {
         String fileName = multipartFile.getOriginalFilename();
