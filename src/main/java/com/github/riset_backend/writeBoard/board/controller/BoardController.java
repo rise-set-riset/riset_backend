@@ -74,4 +74,14 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
+    @PostMapping("/test1")
+    public ResponseEntity<?> createBoard1 (@RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles) {
+        return ResponseEntity.ok(multipartFiles);
+    }
+
+    @PostMapping("/test2")
+    public ResponseEntity<?> createBoard2 (@RequestPart(value = "dto", required=false) BoardRequestDto boardRequestDto) {
+        return ResponseEntity.ok(boardRequestDto);
+    }
+
 }

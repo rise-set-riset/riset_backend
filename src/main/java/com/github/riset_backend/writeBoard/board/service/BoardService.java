@@ -100,6 +100,8 @@ public class BoardService {
 
 
 
+
+
     private Result getResult(MultipartFile multipartFile, Board board) {
         String fileName = multipartFile.getOriginalFilename();
         ObjectMetadata objectMetadata = new ObjectMetadata();
