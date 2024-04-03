@@ -18,6 +18,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
 
 springdoc:
   default-produces-media-type: application/json;charset=UTF-8
