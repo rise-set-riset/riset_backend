@@ -105,8 +105,6 @@ public class BoardService {
         );
 
         Board board = Board.boardRequestToBoard(boardRequestDto, employee);
-
-
         Board newBoard = boardRepository.save(board);
 //        List<File> newFiles = fileRepository.saveAll(files);
 //        boardFileRepository.saveAll(boardFiles);

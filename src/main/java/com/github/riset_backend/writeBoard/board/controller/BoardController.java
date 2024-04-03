@@ -68,9 +68,7 @@ public class BoardController {
 //    }
 
     @PostMapping()
-    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto,
-                                                         HttpServletRequest request) {
-
+    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
 //        String token = request.getHeader("AUTHORAZATION");
         BoardResponseDto board = boardService.createBoard(boardRequestDto);
         return ResponseEntity.ok(board);
