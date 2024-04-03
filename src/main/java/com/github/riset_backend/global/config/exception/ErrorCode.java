@@ -90,6 +90,9 @@ public enum ErrorCode {
     // 파일, 이미지
     NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일 혹은 이미지가 존재하지 않습니다."),
 
+    // 댓글
+    NOT_FOUND_REPLY(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
+
 
     /**
      * ********************************************* GLOBAL ***********************************************************

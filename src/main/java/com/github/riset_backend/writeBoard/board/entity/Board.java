@@ -3,6 +3,7 @@ package com.github.riset_backend.writeBoard.board.entity;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.writeBoard.board.dto.BoardRequestDto;
 import com.github.riset_backend.writeBoard.boardFile.entity.BoardFile;
+import com.github.riset_backend.writeBoard.reply.entity.Reply;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -47,6 +48,9 @@ public class Board  {
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardFile> boardFiles;
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
+    private List<Reply> replies;
 
     public static Board boardRequestToBoard (BoardRequestDto boardRequestDto, Employee employee) {
         return Board.builder()
