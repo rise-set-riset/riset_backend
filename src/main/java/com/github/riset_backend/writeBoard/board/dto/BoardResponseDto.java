@@ -4,6 +4,8 @@ import com.github.riset_backend.file.dto.FileResponseDto;
 import com.github.riset_backend.file.entity.File;
 import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.boardFile.entity.BoardFile;
+import com.github.riset_backend.writeBoard.reply.dto.ReplyResponseDto;
+import com.github.riset_backend.writeBoard.reply.entity.Reply;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class BoardResponseDto {
     private LocalDateTime date;
     private String img;
     private List<FileResponseDto> files;
+    private List<ReplyResponseDto> replies;
 
     public BoardResponseDto(Board board) {
         this.id = board.getBoardNo();
@@ -34,6 +37,7 @@ public class BoardResponseDto {
         this.date = board.getCreateAt();
         this.img = null;
         this.files = board.getBoardFiles().stream().map(BoardFile::getFile).map(FileResponseDto::new).collect(Collectors.toList());
+        this.replies = board.getReplies().stream().map(ReplyResponseDto::new).toList();
     }
 
     public static BoardResponseDto ToBoardResponseDto (Board board, List<File> files, String writer) {
