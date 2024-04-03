@@ -45,19 +45,19 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
-//                                                         @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
-//                                                         HttpServletRequest request) {
-//
-//        log.info("boardRequestDto = {}", boardRequestDto);
-//        log.info("multipartFiles = {}", multipartFiles);
-//
-////        String token = request.getHeader("AUTHORAZATION");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto, "token", multipartFiles);
-//        return ResponseEntity.ok(board);
-//    }
-//
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
+                                                         @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
+                                                         HttpServletRequest request) {
+
+        log.info("boardRequestDto = {}", boardRequestDto);
+        log.info("multipartFiles = {}", multipartFiles);
+
+//        String token = request.getHeader("AUTHORAZATION");
+        BoardResponseDto board = boardService.createBoard(boardRequestDto, "token", multipartFiles);
+        return ResponseEntity.ok(board);
+    }
+
 //    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 //    public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
 //                                                         HttpServletRequest request) {
@@ -67,12 +67,12 @@ public class BoardController {
 //        return ResponseEntity.ok(board);
 //    }
 
-    @PostMapping()
-    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
-//        String token = request.getHeader("AUTHORAZATION");
-        BoardResponseDto board = boardService.createBoard(boardRequestDto);
-        return ResponseEntity.ok(board);
-    }
+//    @PostMapping()
+//    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto, HttpServletRequest request) {
+////        String token = request.getHeader("AUTHORAZATION");
+//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
+//        return ResponseEntity.ok(board);
+//    }
 
 //    @GetMapping()
 //    public ResponseEntity<BoardResponseDto> createBoard (@RequestBody BoardRequestDto boardRequestDto,
