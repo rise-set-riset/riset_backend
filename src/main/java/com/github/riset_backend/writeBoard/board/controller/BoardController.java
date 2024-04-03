@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -48,7 +49,7 @@ public class BoardController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
                                                          @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
-                                                         HttpServletRequest request) {
+                                                         HttpServletRequest request) throws IOException {
 
         log.info("boardRequestDto = {}", boardRequestDto);
         log.info("multipartFiles = {}", multipartFiles);
