@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,14 +45,28 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard (@RequestPart BoardRequestDto boardRequestDto,
                                                          @RequestPart(value = "file", required=false) List<MultipartFile> multipartFiles,
                                                          HttpServletRequest request) {
+
+        log.info("boardRequestDto = {}", boardRequestDto);
+        log.info("multipartFiles = {}", multipartFiles);
+
 //        String token = request.getHeader("AUTHORAZATION");
         BoardResponseDto board = boardService.createBoard(boardRequestDto, "token", multipartFiles);
         return ResponseEntity.ok(board);
     }
+
+//    @PostMapping(
+//            produces = {MediaType.APPLICATION_JSON}
+//    )
+//    public ResponseEntity<BoardResponseDto> createBoard (@ModelAttribute BoardRequestDto boardRequestDto,
+//                                                         HttpServletRequest request) {
+////        String token = request.getHeader("AUTHORAZATION");
+//        BoardResponseDto board = boardService.createBoard(boardRequestDto);
+//        return ResponseEntity.ok(board);
+//    }
 
     @PatchMapping("/{boardNo}")
     public ResponseEntity<BoardResponseDto> update (@RequestPart(required = false) BoardRequestDto boardRequestDto,
