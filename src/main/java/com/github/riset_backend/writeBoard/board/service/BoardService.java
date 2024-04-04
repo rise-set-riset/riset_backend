@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class BoardService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
+
     private final AmazonS3 amazonS3;
 
     private final BoardRepository boardRepository;
