@@ -5,10 +5,12 @@ import com.github.riset_backend.login.auth.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,17 +30,20 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String[] ALL_PATHS = {
-            "/api/**"
-    };
+    @Bean
+    public WebSecurityCustomizer configure() {
+        return (web) -> web.ignoring()
+                .requestMatchers("/static/**");
+    }
+
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -69,18 +74,16 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests((auth) ->
-                        auth
-                                .requestMatchers(
+                        auth.requestMatchers(
                                         "/swagger-ui.html",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
                                         "/auth/**",
                                         "/css/**",
                                         "/js/**",
-                                        "/images/**")// 이런식으로 정적 리소스가 있는 경로들을 추가
-
-                                .permitAll()
-                                .requestMatchers(ALL_PATHS).permitAll() //swagger 경로
+                                        "/images/**",
+                                        "/health",
+                                        "/board").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
