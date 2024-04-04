@@ -1,7 +1,7 @@
 cloud:
   aws:
     s3:
-      bucket: riset-dev-s3
+      bucket: riset-bucket
     stack:
       auto: false
     credentials:
