@@ -8,7 +8,7 @@ spring:
       - application-aws.yaml
 
   datasource:
-    url: jdbc:mariadb://database-1.cxkkamogkg22.ap-northeast-2.rds.amazonaws.com:3306/riset?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mariadb://database-5.cxkkamogkg22.ap-northeast-2.rds.amazonaws.com:3306/riset?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
     username: ${USERNAME}
     password: ${PASSWORD_DEV}
     driver-class-name: org.mariadb.jdbc.Driver
@@ -17,7 +17,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database-platform: org.hibernate.dialect.MariaDB106Dialect
 
 springdoc:
