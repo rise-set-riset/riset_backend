@@ -2,12 +2,10 @@ package com.github.riset_backend.writeBoard.board.controller;
 
 import com.github.riset_backend.writeBoard.board.dto.BoardRequestDto;
 import com.github.riset_backend.writeBoard.board.dto.BoardResponseDto;
-import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.board.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +15,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/board")
-@Slf4j
+@RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
@@ -51,10 +48,6 @@ public class BoardController {
                                                          @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
                                                          HttpServletRequest request) {
 
-        log.info("boardRequestDto = {}", boardRequestDto);
-        log.info("multipartFiles = {}", multipartFiles);
-
-//        String token = request.getHeader("AUTHORAZATION");
         BoardResponseDto board = boardService.createBoard(boardRequestDto, "token", multipartFiles);
         return ResponseEntity.ok(board);
     }
