@@ -43,7 +43,7 @@ public class BoardController {
         return ResponseEntity.ok(board);
     }
 
-    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard (@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
                                                          @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
                                                          HttpServletRequest request) {
