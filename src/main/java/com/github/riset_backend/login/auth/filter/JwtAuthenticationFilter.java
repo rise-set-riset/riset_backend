@@ -20,7 +20,6 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Slf4j
-@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_TYPE = "Bearer";

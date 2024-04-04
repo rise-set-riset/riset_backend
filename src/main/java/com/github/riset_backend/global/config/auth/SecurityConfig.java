@@ -5,7 +5,6 @@ import com.github.riset_backend.login.auth.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,13 +27,18 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+
+    private static final String[] ALL_PATHS = {
+            "/api/**"
+    };
+
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -66,11 +70,21 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((auth) ->
                         auth
-                                .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**", "/auth/**").permitAll()
+                                .requestMatchers(
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/auth/**",
+                                        "/css/**",
+                                        "/js/**",
+                                        "/images/**")// 이런식으로 정적 리소스가 있는 경로들을 추가
+
+                                .permitAll()
+                                .requestMatchers(ALL_PATHS).permitAll() //swagger 경로
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-                return http.build();
+        return http.build();
     }
 }
