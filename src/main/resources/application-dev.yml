@@ -38,7 +38,16 @@ springdoc:
     disabled: true
   packages-to-scan: com.github.riset_backend.web.controller
   api-docs:
-    path: /api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /**
 
 logging:
   config: classpath:logback-spring-prod.xml
