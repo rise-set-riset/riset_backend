@@ -1,4 +1,4 @@
-package com.github.riset_backend.global.aws;
+package com.github.riset_backend.global.config.aws;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.github.riset_backend.mycompany.vacations;
+package com.github.riset_backend.mycompany.vacations.entity;
 
 
 
@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "leave")
-public class Leave {
+public class holiday {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

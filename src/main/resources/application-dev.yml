@@ -4,8 +4,30 @@ spring:
   config:
     activate:
       on-profile: dev
+    import:
+      - application-aws.yaml
 
+  datasource:
+    url: jdbc:mariadb://database-1.cxkkamogkg22.ap-northeast-2.rds.amazonaws.com:3306/riset?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${USERNAME}
+    password: ${PASSWORD_DEV}
+    driver-class-name: org.mariadb.jdbc.Driver
 
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
+  cache:
+    disabled: true
+  packages-to-scan: com.github.riset_backend.web.controller
+  api-docs:
+    path: /api-docs
 
 logging:
   config: classpath:logback-spring-prod.xml

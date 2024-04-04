@@ -79,6 +79,20 @@ public enum ErrorCode {
     NOT_EQUAL_MERCHANT_ID(HttpStatus.BAD_REQUEST, "주문번호 ID가 일치하지 않습니다."),
     ALREADY_DELIVERY_STATUS(HttpStatus.BAD_REQUEST, "이미 배송 중입니다."),
 
+    // 회원
+    NOT_FOUND_EMPLOYEE(HttpStatus.NOT_FOUND, "직원이 존재하지 않습니다."),
+
+    // 게시물
+    NOT_FOUND_BOARD(HttpStatus.NOT_FOUND, "게시물이 존재하지 않습니다."),
+    COT_NOT_CREATE_BOARD(HttpStatus.BAD_REQUEST, "게시물을 생성할 수 없습니다."),
+    FAIL_FILE_UPLOAD(HttpStatus.BAD_REQUEST, "파일 업로드에 실패했습니다."),
+
+    // 파일, 이미지
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일 혹은 이미지가 존재하지 않습니다."),
+
+    // 댓글
+    NOT_FOUND_REPLY(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
+
 
     /**
      * ********************************************* GLOBAL ***********************************************************

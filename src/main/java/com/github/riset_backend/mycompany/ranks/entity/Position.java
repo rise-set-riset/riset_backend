@@ -1,4 +1,4 @@
-package com.github.riset_backend.mycompany.ranks;
+package com.github.riset_backend.mycompany.ranks.entity;
 
 import jakarta.persistence.*;
 
