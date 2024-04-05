@@ -10,12 +10,13 @@ import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import static com.github.riset_backend.global.config.exception.ErrorCode.*;
@@ -24,6 +25,7 @@ import static com.github.riset_backend.global.config.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class MailService {
 
+    private static final Logger log = LoggerFactory.getLogger(MailService.class);
     private final JavaMailSender mailSender;
     private final EmailRepository emailRepository;
     private final CompanyRepository companyRepository;
@@ -31,22 +33,23 @@ public class MailService {
     private final EmployeeRepository employeeRepository;
 
 
-    //todo: 테스트로 일단 직접 값을 지정! 나중에 환경변수 등록하자..
     @Value("${spring.mail.username}")
     private String sendEmail;
 
-    public void answerMail(String email, String token) throws Exception {
+    // 이메일 발송
+    public void answerMail(String email) {
         //토큰에서 회사 id 뽑아서
-        Long companyId = companyGetId(token);
+//        Long companyId = companyGetId(token);
 
 
-        //todo : 이메일 요청하는 사람이 유효한지 확인 / admin 이여야함
+        //todo : 이메일 요청하는 사람이 유효한지 확인 / admin 이여야합니다
 
-        //todo : 받은 이메일이 실제 회원인지 확인해야함
+
+        //todo : 받은 이메일이 실제 회원인지 확인해야합니다
 
         //메일 보내기
         try {
-            String code = RandomCodeGenerator.generateCode() + companyId; //랜덤코드 뒤에 회사 아이디 넣음 ㅎㅎ
+            String code = RandomCodeGenerator.generateCode() + 1;
             // 이메일 전송
             sendVerificationEmail(email, code);
 
@@ -58,6 +61,34 @@ public class MailService {
         }
     }
 
+
+    // code 확인 회원등록, 직원이 코드를 입력하는것이기에 toke 은 직원유저
+    public Long checkCompanyCode(String code) {
+        //todo : 에러코드 변경해야함
+
+        String numbersOnly = code.replaceAll("[^0-9]", ""); // 그리고 숫자만 추출 = 회사아이디임
+        log.info("Check company code {}", numbersOnly);
+        //회사 찾음
+        Company company = companyRepository.findById(Long.valueOf(numbersOnly)).orElseThrow(() -> new BusinessException(NOT_USER));
+        //직원 찾음
+        Employee employee = employeeRepository.findByEmployeeNo(7L).orElseThrow(() -> new BusinessException(NOT_USER));
+        //코드비교
+        Email email = emailRepository.findByCode(code).orElseThrow(() -> new BusinessException(NOT_USER, "코드가 옳지 않아요~"));
+
+        //todo: 회사에 직원정보를 저장해야합니다.
+
+
+        //todo: 직원조회시 회사를 알아야하고, 회사조회시 직원도 알아야합니다.
+
+        employeeRepository.save(employee); // 직원 정보 저장
+
+
+        return Long.parseLong(numbersOnly); //회사아이디 return
+    }
+
+
+
+    //메일 발송 로직 분리
     private void sendVerificationEmail(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sendEmail); //보내는사람
@@ -67,30 +98,7 @@ public class MailService {
         mailSender.send(message);
     }
 
-
-    // code 확인 회원등록, 직원이 코드를 입력하는것이기에 toke 은 직원유저
-    public Long checkCompanyCode(String code, String token) {
-        //todo : 에러코드 변경해야함
-
-        String numbersOnly = code.replaceAll("[^0-9]", ""); // 그리고 숫자만 추출 = 회사아이디임
-        //회사 찾음
-        Company company = companyRepository.findById(Long.valueOf(numbersOnly)).orElseThrow(() -> new BusinessException(NOT_USER));
-        //직원 찾음
-        Employee employee = employeeRepository.findByEmployeeId(getEmail(token)).orElseThrow(() -> new BusinessException(NOT_USER));
-        //코드비교
-        Email email = emailRepository.findByCode(code).orElseThrow(() -> new BusinessException(NOT_USER, "코드가 옳지 않아요~"));
-
-        //회사 정보 넣어버림
-//        employee.norMalUserUpdate(company);
-        employeeRepository.save(employee); // 직원 정보 저장
-
-
-        return Long.parseLong(numbersOnly); //회사아이디 return
-
-
-    }
-
-
+    //회사 id 가져오기
     public Long companyGetId(String token) {
         //todo : JWT, 시크릿키, 값을 몰라서 임시로 해놓음 수정,
         String key = "qwe";
@@ -112,6 +120,8 @@ public class MailService {
         return company.getCompanyNo();
     }
 
+
+    //email 가져오기
     public String getEmail(String token) {
         //todo : JWT, 시크릿키, 값을 몰라서 임시로 해놓음 수정,
         String key = "qwe";
@@ -132,5 +142,4 @@ public class MailService {
 
         return employeeId;
     }
-
 }

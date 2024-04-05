@@ -58,4 +58,14 @@ public class Schedule {
         this.writer = writer;
         this.content = content;
     }
+
+    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer) {
+        this.title = title;
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.writer = writer;
+
+
+    }
 }

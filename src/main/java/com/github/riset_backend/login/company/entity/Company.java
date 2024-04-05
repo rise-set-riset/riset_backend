@@ -36,9 +36,8 @@ public class Company extends BaseEntity {
     @Column(name = "zip_code")
     private Integer zipCode;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> companySchedules = new ArrayList<>();
-
 
 
 }
