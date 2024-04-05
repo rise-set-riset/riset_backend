@@ -12,31 +12,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Log4j2
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String Id) throws UsernameNotFoundException {
-        Employee employee = employeeRepository.findByEmployeeId(Id)
-                .orElseThrow(() -> {
-                    log.error(new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-                    return new BusinessException(ErrorCode.NOT_FOUND_MEMBER);
-                });
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        int start = id.indexOf("[Principal=") + "[Principal=".length();
+        int end = id.indexOf(",", start);
+        String result = id.substring(start, end);
+        log.info("result: {}", result);
+
+        Employee employee = employeeRepository.findByEmployeeId(result).orElseThrow(()->new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        return new org
-                .springframework
-                .security
-                .core
-                .userdetails
-                .User(employee.getEmployeeId(), employee.getPassword(), grantedAuthorities);
+        return new CustomUserDetails(employee);
     }
 }
 

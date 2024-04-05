@@ -9,6 +9,7 @@ import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.auth.dto.TokenDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +77,8 @@ public class AuthService {
             if(!passwordEncoder.matches(requestLoginDto.password(), employee.getPassword()))
                 throw new BusinessException(ErrorCode.NOT_EQUAL_PASSWORD);
             TokenDto tokenDto = jwtTokenProvider.generateToken(authenticationToken);
+
+//            httpServletResponse.addCookie(new Cookie("refresh_token", tokenDto.getRefreshtoken()));  쿠키 저장
 
             redisTemplate.opsForValue().set(requestLoginDto.id(), tokenDto.getAccesstoken(), Duration.ofHours(1L));
             redisTemplate.opsForValue().set("RF: " + requestLoginDto.id(), tokenDto.getRefreshtoken(), Duration.ofHours(3L));

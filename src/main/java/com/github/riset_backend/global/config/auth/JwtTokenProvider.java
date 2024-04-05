@@ -2,26 +2,18 @@ package com.github.riset_backend.global.config.auth;
 
 
 
+import com.github.riset_backend.login.auth.custom.UserDetailsServiceImpl;
 import com.github.riset_backend.login.auth.dto.TokenDto;
-import com.github.riset_backend.login.auth.service.CustomUserDetailService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -29,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtTokenProvider {
     private final RedisTemplate<String, String> redisTemplate;
-    private final CustomUserDetailService customUserDetailService;
+    private final UserDetailsServiceImpl customUserDetailService;
 
     @Value("${spring.jwt.secret}")
     private String secretKey;
@@ -75,10 +67,8 @@ public class JwtTokenProvider {
      * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
      */
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = customUserDetailService.loadUserByUsername(parseClaims(token));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
-        log.info("Authentication authorities: " + authentication.getAuthorities());
-        return authentication;
+        UserDetails userDetails = customUserDetailService.loadUserByUsername(this.parseClaims(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
 
