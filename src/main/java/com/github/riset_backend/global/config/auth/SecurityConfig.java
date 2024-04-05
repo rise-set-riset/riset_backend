@@ -83,7 +83,7 @@ public class SecurityConfig {
                                         "/js/**",
                                         "/images/**",
                                         "/health",
-                                        "/board").permitAll()
+                                        "/board", "/api/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

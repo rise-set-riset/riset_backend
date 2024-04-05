@@ -1,4 +1,6 @@
 package com.github.riset_backend.schedules.dto;
+
+import com.github.riset_backend.schedules.entity.Schedule;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -6,8 +8,6 @@ import java.util.List;
 
 public record CompanyScheduleRequestDto(
 
-        @Schema(description = "id", example = "1")
-        Long id,
 
         @Schema(description = "원하는 날짜", example = "2023-04-01 09:00")
         LocalDateTime startDate,
@@ -26,5 +26,5 @@ public record CompanyScheduleRequestDto(
 
 
 
-        ) {
+) {
 }

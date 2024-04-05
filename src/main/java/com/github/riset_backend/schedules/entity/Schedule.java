@@ -1,15 +1,22 @@
 package com.github.riset_backend.schedules.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.github.riset_backend.login.company.entity.Company;
+import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "schedule")
 @NoArgsConstructor
+@Getter
 public class Schedule {
 
     @Id
@@ -17,11 +24,13 @@ public class Schedule {
     @Column(name = "schedule_no")
     private Long scheduleNo;
 
-    @Column(name = "employee_no")
-    private Long employeeNo;
+    @ManyToOne
+    @JoinColumn(name = "employee_no")
+    private Employee employee;
 
-    @Column(name = "company_no")
-    private Long companyNo;
+    @ManyToOne
+    @JoinColumn(name = "company_no")
+    private Company company;
 
     @Column(name = "start_dt")
     private LocalDateTime startDate;
@@ -35,32 +44,18 @@ public class Schedule {
     @Column(name = "writer")
     private String writer;
 
-    @Lob
+
     @Column(name = "content")
     private String content;
 
-//      .companyNo(company)
-//                .title(request.title())
-//            .startDate(request.startDate())
-//            .writer(request.writer())
-//            .content(request.content())
 
     @Builder
-    public Schedule(Long companyNo, LocalDateTime startDate, LocalDateTime endDate, String title, String writer, String content) {
-        this.companyNo = companyNo;
+    public Schedule(Company company, LocalDateTime startDate, LocalDateTime endDate, String title, String writer, String content) {
+        this.company = company;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
         this.writer = writer;
         this.content = content;
     }
-
-    public void updateSchedule(LocalDateTime startDate, LocalDateTime endDate, String title, String content) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.title = title;
-        this.content = content;
-    }
-
-
 }
