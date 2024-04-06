@@ -56,7 +56,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(String id){
         return generateToken(id, refreshExpirationTime);
     }
-    
+
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = customUserDetailService.loadUserByUsername(this.parseClaims(token));
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
@@ -101,6 +101,9 @@ public class JwtTokenProvider {
         Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
         claims.put("roles", role);
         log.info("claims: {}", claims);
+        Jwts.builder()
+                .setClaims(claims)
+                .compact();
     }
 }
 
