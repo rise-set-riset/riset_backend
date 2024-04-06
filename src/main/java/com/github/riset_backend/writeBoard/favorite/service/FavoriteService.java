@@ -1,0 +1,76 @@
+package com.github.riset_backend.writeBoard.favorite.service;
+
+import com.github.riset_backend.global.config.exception.BusinessException;
+import com.github.riset_backend.global.config.exception.ErrorCode;
+import com.github.riset_backend.login.employee.entity.Employee;
+import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import com.github.riset_backend.writeBoard.board.entity.Board;
+import com.github.riset_backend.writeBoard.board.repository.BoardRepository;
+import com.github.riset_backend.writeBoard.favorite.dto.FavoriteResponseDto;
+import com.github.riset_backend.writeBoard.favorite.entity.Favorite;
+import com.github.riset_backend.writeBoard.favorite.repository.FavoriteRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class FavoriteService {
+
+    private final FavoriteRepository favoriteRepository;
+    private final EmployeeRepository employeeRepository;
+    private final BoardRepository boardRepository;
+
+    @Transactional
+    public FavoriteResponseDto createFavoriteBoard(Long boardNo, Long employee_no) {
+        Integer index_number;
+
+        Employee employee = employeeRepository.findByEmployeeNo(employee_no).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+        );
+
+        Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
+        );
+
+        boolean hasFavorite = favoriteRepository.existsByBoardAndEmployee(board, employee);
+
+        if(hasFavorite) {
+            throw new BusinessException(ErrorCode.EXIST_FAVORITE);
+        }
+
+        List<Favorite> favorites = favoriteRepository.findAllByEmployee(employee);
+
+        if(favorites.isEmpty()) {
+            index_number = 0;
+        } else {
+            index_number = favorites.get(favorites.size()-1).getIndexNumber() + 1;
+        }
+
+        Favorite favorite = new Favorite(board, employee, index_number);
+        Favorite newFavorite = favoriteRepository.save(favorite);
+
+        return new FavoriteResponseDto(newFavorite);
+    }
+
+    @Transactional
+    public List<FavoriteResponseDto> getAllFavoriteBoard(Long employeeNo, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+        );
+
+        log.info("employee = {}", employee.getEmployeeNo());
+
+        Slice<Favorite> favorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
+
+        return favorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
+    }
+}
