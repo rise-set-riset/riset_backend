@@ -30,4 +30,9 @@ public class Favorite {
     @Column(name = "index_number")
     private Integer indexNumber;
 
+    public Favorite(Board board, Employee employee, Integer indexNumber) {
+        this.board = board;
+        this.employee = employee;
+        this.indexNumber = indexNumber;
+    }
 }
