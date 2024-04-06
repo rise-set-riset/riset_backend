@@ -2,8 +2,7 @@ package com.github.riset_backend.global.config.auth;
 
 
 
-import com.github.riset_backend.login.auth.custom.UserDetailsServiceImpl;
-import com.github.riset_backend.login.auth.dto.TokenDto;
+import com.github.riset_backend.global.config.auth.custom.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,48 +26,42 @@ public class JwtTokenProvider {
     private String secretKey;
 
     @Value("${spring.jwt.token.access-expiration-time}")
-    private long accessExpirationTime;
+    private Long accessExpirationTime;
 
     @Value("${spring.jwt.token.refresh-expiration-time}")
-    private long refreshExpirationTime;
+    private Long refreshExpirationTime;
 
 
     /**
      * Access 토큰 생성
      */
-    public TokenDto generateToken(Authentication userId) {
-        // 권한 가져오기
+    public String generateToken(String id, Long expireTime) {
+        Claims claims = Jwts.claims().setSubject(id);
 
-        long now = (new Date()).getTime();
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + expireTime);
 
-        // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + accessExpirationTime);
-
-        String accessToken = Jwts.builder()
-                .setSubject(String.valueOf(userId))
-//                .claim("auth", authorities)
-                .setExpiration(accessTokenExpiresIn)
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-
-        // Refresh Token 생성
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + refreshExpirationTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-
-        return TokenDto.builder()
-                .accesstoken(accessToken)
-                .refreshtoken(refreshToken)
-                .build();
     }
 
-    /**
-     * 토큰으로부터 클레임을 만들고, 이를 통해 User 객체 생성해 Authentication 객체 반환
-     */
+    public String createAccessToken(String id){
+        return generateToken(id, accessExpirationTime);
+    }
+
+    public String createRefreshToken(String id){
+        return generateToken(id, refreshExpirationTime);
+    }
+
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = customUserDetailService.loadUserByUsername(this.parseClaims(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+        log.info("Authentication authorities: " + authentication.getAuthorities());
+        return authentication;
     }
 
 
@@ -91,7 +84,7 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private String parseClaims(String accessToken) {
+    public String parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(secretKey)
@@ -102,6 +95,15 @@ public class JwtTokenProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
+    }
+
+    public void setRole(String accessToken, String role){
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
+        claims.put("roles", role);
+        log.info("claims: {}", claims);
+        Jwts.builder()
+                .setClaims(claims)
+                .compact();
     }
 }
 

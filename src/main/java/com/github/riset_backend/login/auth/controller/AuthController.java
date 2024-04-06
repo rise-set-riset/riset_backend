@@ -5,6 +5,7 @@ import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.auth.dto.TokenDto;
 import com.github.riset_backend.login.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

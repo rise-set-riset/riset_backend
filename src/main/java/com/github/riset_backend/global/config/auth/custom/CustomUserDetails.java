@@ -1,4 +1,4 @@
-package com.github.riset_backend.login.auth.custom;
+package com.github.riset_backend.global.config.auth.custom;
 
 
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -26,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collections = new ArrayList<>();
-//        collections.add(() -> String.valueOf(employee.getRoles().getRolesName()));
+        collections.add(() -> String.valueOf(employee.getRoles()));
         return collections;
     }
 

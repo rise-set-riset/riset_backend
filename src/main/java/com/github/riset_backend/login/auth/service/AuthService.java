@@ -2,15 +2,14 @@ package com.github.riset_backend.login.auth.service;
 
 
 //import com.github.riset_backend.global.config.auth.JwtTokenProvider;
+
 import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
-import com.github.riset_backend.login.auth.dto.TokenDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public ResponseEntity<String> employeeSignup(RequestSignUpDto requestSignUpDto) {
@@ -67,28 +68,35 @@ public class AuthService {
 
         Map<String, String> response = new HashMap<>();
 
+        String accessToken = "";
+        String refreshToken = "";
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestLoginDto.id(), requestLoginDto.password());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             if (redisTemplate.opsForValue().get("logout: " + requestLoginDto.id()) != null) {
                 redisTemplate.delete("logout: " + requestLoginDto.id());
             }
 
-            if(!passwordEncoder.matches(requestLoginDto.password(), employee.getPassword()))
+            if(!passwordEncoder.matches(requestLoginDto.password(), employee.getPassword())){
                 throw new BusinessException(ErrorCode.NOT_EQUAL_PASSWORD);
-            TokenDto tokenDto = jwtTokenProvider.generateToken(authenticationToken);
+            }
+
+
+
+            accessToken = jwtTokenProvider.createAccessToken(authenticationToken.getName());
+            refreshToken = jwtTokenProvider.createRefreshToken(authenticationToken.getName());
 
 //            httpServletResponse.addCookie(new Cookie("refresh_token", tokenDto.getRefreshtoken()));  쿠키 저장
 
-            redisTemplate.opsForValue().set(requestLoginDto.id(), tokenDto.getAccesstoken(), Duration.ofHours(1L));
-            redisTemplate.opsForValue().set("RF: " + requestLoginDto.id(), tokenDto.getRefreshtoken(), Duration.ofHours(3L));
+            redisTemplate.opsForValue().set(requestLoginDto.id(), accessToken, Duration.ofHours(1L));
+            redisTemplate.opsForValue().set("RF: " + requestLoginDto.id(), refreshToken, Duration.ofHours(3L));
 
-            response.put("http_status", HttpStatus.OK.toString());
             response.put("message", "로그인 되었습니다");
             response.put("token_type", "Bearer");
-            response.put("access_token", tokenDto.getAccesstoken());
-            response.put("refresh_token", tokenDto.getRefreshtoken());
+            response.put("access_token", accessToken);
+            response.put("refresh_token", refreshToken);
 
             return ResponseEntity.ok(response);
 
@@ -99,4 +107,6 @@ public class AuthService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
         }
     }
+
+
 }
