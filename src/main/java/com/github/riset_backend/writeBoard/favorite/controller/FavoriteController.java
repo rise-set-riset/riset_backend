@@ -22,13 +22,14 @@ public class FavoriteController {
     public ResponseEntity<List<FavoriteResponseDto>> getAllFavoriteBoard (@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                                           @RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "10") int size) {
-        List<FavoriteResponseDto> favorites = favoriteService.getAllFavoriteBoard(customUserDetails.getEmployee().getEmployeeNo(), page, size);
+        List<FavoriteResponseDto> favorites = favoriteService.getAllFavoriteBoard(customUserDetails.getEmployee(), page, size);
         return ResponseEntity.ok(favorites);
     }
 
     @PostMapping("/{boardNo}")
-    public ResponseEntity<FavoriteResponseDto> createFavoriteBoard (@PathVariable Long boardNo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        FavoriteResponseDto favorite = favoriteService.createFavoriteBoard(boardNo, customUserDetails.getEmployee().getEmployeeNo());
+    public ResponseEntity<FavoriteResponseDto> createFavoriteBoard (@PathVariable Long boardNo,
+                                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        FavoriteResponseDto favorite = favoriteService.createFavoriteBoard(boardNo, customUserDetails.getEmployee());
         return ResponseEntity.ok(favorite);
     }
 
@@ -37,8 +38,16 @@ public class FavoriteController {
                                                                     @RequestBody FavoriteUpdateRequestDto favoriteUpdateRequestDto,
                                                                     @PathVariable Long boardNo
                                                                     ) {
-        List<FavoriteResponseDto> favorites = favoriteService.updateFavoriteBoard(boardNo, customUserDetails.getEmployee().getEmployeeNo(), favoriteUpdateRequestDto);
+        List<FavoriteResponseDto> favorites = favoriteService.updateFavoriteBoard(boardNo, customUserDetails.getEmployee(), favoriteUpdateRequestDto);
         return ResponseEntity.ok(favorites);
+    }
+
+    @DeleteMapping("/delete/{favoriteId}")
+    public ResponseEntity<FavoriteResponseDto> deleteFavoriteBoard (@PathVariable Long favoriteId,
+                                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                                       ) {
+        FavoriteResponseDto favorite = favoriteService.deleteFavoriteBoard(favoriteId, customUserDetails.getEmployee());
+        return ResponseEntity.ok(favorite);
     }
 
 }

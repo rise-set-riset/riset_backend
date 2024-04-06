@@ -31,12 +31,8 @@ public class FavoriteService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public FavoriteResponseDto createFavoriteBoard(Long boardNo, Long employee_no) {
+    public FavoriteResponseDto createFavoriteBoard(Long boardNo, Employee employee) {
         Integer index_number;
-
-        Employee employee = employeeRepository.findByEmployeeNo(employee_no).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-        );
 
         Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
@@ -63,22 +59,15 @@ public class FavoriteService {
     }
 
     @Transactional
-    public List<FavoriteResponseDto> getAllFavoriteBoard(Long employeeNo, int page, int size) {
+    public List<FavoriteResponseDto> getAllFavoriteBoard(Employee employee, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-        );
-
         Slice<Favorite> favorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
 
         return favorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
-    public List<FavoriteResponseDto> updateFavoriteBoard(Long boardNo, Long employeeNo, FavoriteUpdateRequestDto favoriteUpdateRequestDto) {
-        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-        );
+    public List<FavoriteResponseDto> updateFavoriteBoard(Long boardNo, Employee employee, FavoriteUpdateRequestDto favoriteUpdateRequestDto) {
 
         Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
@@ -122,6 +111,27 @@ public class FavoriteService {
 
         List<Favorite> newFavorites = favoriteRepository.findByEmployeeOrderByIndexNumber(employee);
         return newFavorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
+
+    }
+
+    @Transactional
+    public FavoriteResponseDto deleteFavoriteBoard(Long favoriteId, Employee employee) {
+       Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(
+               () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
+       );
+
+       List<Favorite> favorites = favoriteRepository.findAllByEmployee(employee);
+       favorites.forEach(eachFavorite -> {
+          if(eachFavorite.getIndexNumber() > favorite.getIndexNumber()) {
+              Favorite updateFavorite = favoriteRepository.findByBoardAndEmployee(eachFavorite.getBoard(), employee).orElseThrow(
+                      () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
+              );
+              updateFavorite.setIndexNumber(updateFavorite.getIndexNumber() - 1);
+          }
+       });
+
+       favoriteRepository.delete(favorite);
+       return new FavoriteResponseDto(favorite);
 
     }
 }
