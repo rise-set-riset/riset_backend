@@ -1,5 +1,6 @@
 package com.github.riset_backend.writeBoard.board.controller;
 
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.writeBoard.board.dto.BoardRequestDto;
 import com.github.riset_backend.writeBoard.board.dto.BoardResponseDto;
 import com.github.riset_backend.writeBoard.board.service.BoardService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,8 +25,7 @@ public class BoardController {
 
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @RequestParam(defaultValue = "") String title) {
+                                                              @RequestParam(defaultValue = "10") int size) {
         List<BoardResponseDto> boards = boardService.getAllBoard(page, size);
         return ResponseEntity.ok(boards);
     }
@@ -46,12 +47,8 @@ public class BoardController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard(@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
                                                         @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
-                                                        HttpServletRequest request) {
-
-
-//        String token = request.getHeader("AUTHORAZATION");
-
-        BoardResponseDto board = boardService.createBoard(boardRequestDto, "token", multipartFiles);
+                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
         return ResponseEntity.ok(board);
     }
 
@@ -69,15 +66,4 @@ public class BoardController {
         BoardResponseDto board = boardService.deletedBoard(boardNo);
         return ResponseEntity.ok(board);
     }
-
-    @PostMapping("/test1")
-    public ResponseEntity<?> createBoard1(@RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles) {
-        return ResponseEntity.ok(multipartFiles);
-    }
-
-    @PostMapping("/test2")
-    public ResponseEntity<?> createBoard2(@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto) {
-        return ResponseEntity.ok(boardRequestDto);
-    }
-
 }

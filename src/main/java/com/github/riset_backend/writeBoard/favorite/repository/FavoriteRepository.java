@@ -13,11 +13,15 @@ import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
+    Optional<Favorite> findByBoardAndEmployee(Board board, Employee employee);
+
     List<Favorite> findAllByEmployee(Employee employee);
 
     boolean existsByBoardAndEmployee(Board board, Employee employee);
 
     Slice<Favorite> findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(Employee employee, String deleted, PageRequest pageRequest);
+
+    List<Favorite> findByEmployeeOrderByIndexNumber(Employee employee);
 
 
 }

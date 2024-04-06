@@ -23,11 +23,13 @@ public class FavoriteResponseDto {
 
     private Long id;
     private Employee employee;
-    private BoardResponseDto boardResponseDto;
+    private BoardResponseDto board;
+    private Integer indexNumber;
 
     public FavoriteResponseDto(Favorite favorite) {
         this.id = favorite.getFavoriteId();
         this.employee = favorite.getEmployee();
-        this.boardResponseDto = new BoardResponseDto(favorite.getBoard());
+        this.board = new BoardResponseDto(favorite.getBoard());
+        this.indexNumber = favorite.getIndexNumber();
     }
 }

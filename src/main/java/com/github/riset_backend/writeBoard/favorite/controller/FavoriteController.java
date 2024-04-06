@@ -2,6 +2,7 @@ package com.github.riset_backend.writeBoard.favorite.controller;
 
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.writeBoard.favorite.dto.FavoriteResponseDto;
+import com.github.riset_backend.writeBoard.favorite.dto.FavoriteUpdateRequestDto;
 import com.github.riset_backend.writeBoard.favorite.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,15 @@ public class FavoriteController {
     public ResponseEntity<FavoriteResponseDto> createFavoriteBoard (@PathVariable Long boardNo, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         FavoriteResponseDto favorite = favoriteService.createFavoriteBoard(boardNo, customUserDetails.getEmployee().getEmployeeNo());
         return ResponseEntity.ok(favorite);
+    }
+
+    @PatchMapping("/update/{boardNo}")
+    public ResponseEntity<List<FavoriteResponseDto>> updateFavoriteBoard (@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                    @RequestBody FavoriteUpdateRequestDto favoriteUpdateRequestDto,
+                                                                    @PathVariable Long boardNo
+                                                                    ) {
+        List<FavoriteResponseDto> favorites = favoriteService.updateFavoriteBoard(boardNo, customUserDetails.getEmployee().getEmployeeNo(), favoriteUpdateRequestDto);
+        return ResponseEntity.ok(favorites);
     }
 
 }

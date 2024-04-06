@@ -36,8 +36,8 @@ public class BoardResponseDto {
         this.content = board.getContent();
         this.date = board.getCreateAt();
         this.img = null;
-//        this.files = board.getBoardFiles().stream().map(BoardFile::getFile).map(FileResponseDto::new).collect(Collectors.toList());
-//        this.replies = board.getReplies().stream().map(ReplyResponseDto::new).toList();
+        this.files = board.getBoardFiles().stream().map(BoardFile::getFile).map(FileResponseDto::new).collect(Collectors.toList());
+        this.replies = board.getReplies().stream().map(ReplyResponseDto::new).toList();
     }
 
     public static BoardResponseDto ToBoardResponseDto (Board board, List<File> files, String writer) {

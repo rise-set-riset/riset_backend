@@ -7,6 +7,7 @@ import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.board.repository.BoardRepository;
 import com.github.riset_backend.writeBoard.favorite.dto.FavoriteResponseDto;
+import com.github.riset_backend.writeBoard.favorite.dto.FavoriteUpdateRequestDto;
 import com.github.riset_backend.writeBoard.favorite.entity.Favorite;
 import com.github.riset_backend.writeBoard.favorite.repository.FavoriteRepository;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +51,7 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByEmployee(employee);
 
         if(favorites.isEmpty()) {
-            index_number = 0;
+            index_number = 1;
         } else {
             index_number = favorites.get(favorites.size()-1).getIndexNumber() + 1;
         }
@@ -67,10 +69,59 @@ public class FavoriteService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
 
-        log.info("employee = {}", employee.getEmployeeNo());
-
         Slice<Favorite> favorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
 
         return favorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<FavoriteResponseDto> updateFavoriteBoard(Long boardNo, Long employeeNo, FavoriteUpdateRequestDto favoriteUpdateRequestDto) {
+        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+        );
+
+        Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
+        );
+
+        Favorite favorite = favoriteRepository.findByBoardAndEmployee(board, employee).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
+        );
+
+        Integer prevIndex = favorite.getIndexNumber();
+        Integer changeIndex = favoriteUpdateRequestDto.getIndex();
+
+
+        List<Favorite> favorites = favoriteRepository.findByEmployeeOrderByIndexNumber(employee);
+
+        if(changeIndex < prevIndex) {
+            favorite.setIndexNumber(favoriteUpdateRequestDto.getIndex());
+
+            favorites.forEach(eachFavorite -> {
+                if(eachFavorite.getIndexNumber() >= changeIndex && eachFavorite.getIndexNumber() < prevIndex && !Objects.equals(favorite.getFavoriteId(), eachFavorite.getFavoriteId())) {
+                    Favorite updateFavorite = favoriteRepository.findByBoardAndEmployee(eachFavorite.getBoard(), employee).orElseThrow(
+                            () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
+                    );
+                    updateFavorite.setIndexNumber(updateFavorite.getIndexNumber() + 1);
+                }
+            });
+        } else {
+            favorite.setIndexNumber(favoriteUpdateRequestDto.getIndex());
+
+            favorites.forEach(eachFavorite -> {
+                if( eachFavorite.getIndexNumber() <= changeIndex && eachFavorite.getIndexNumber() > prevIndex  && !Objects.equals(favorite.getFavoriteId(), eachFavorite.getFavoriteId())) {
+                    Favorite updateFavorite = favoriteRepository.findByBoardAndEmployee(eachFavorite.getBoard(), employee).orElseThrow(
+                            () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
+                    );
+                    updateFavorite.setIndexNumber(updateFavorite.getIndexNumber() - 1);
+                }
+            });
+        }
+
+
+
+        List<Favorite> newFavorites = favoriteRepository.findByEmployeeOrderByIndexNumber(employee);
+        return newFavorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
+
     }
 }
