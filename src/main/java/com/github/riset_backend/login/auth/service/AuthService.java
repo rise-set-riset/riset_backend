@@ -72,8 +72,8 @@ public class AuthService {
         String refreshToken = "";
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestLoginDto.id(), requestLoginDto.password());
-//            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             if (redisTemplate.opsForValue().get("logout: " + requestLoginDto.id()) != null) {
                 redisTemplate.delete("logout: " + requestLoginDto.id());
