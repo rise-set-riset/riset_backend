@@ -44,19 +44,19 @@ public class MenuController {
                 .id(3L)
                 .title("게시판")
                 .icon("board")
-                .link("/postlist")
+                .link("/board/postlist")
                 .build();
 
         MenuDTO postListSubMenu = MenuDTO.builder()
                 .id(4L)
                 .title("게시글 목록")
-                .link("/postlist")
+                .link("/board/postlist")
                 .build();
 
         MenuDTO myPostSubMenu = MenuDTO.builder()
                 .id(5L)
                 .title("내 게시글")
-                .link("/mypost")
+                .link("/board/mypost")
                 .build();
 
         List<MenuDTO> postListSubMenus = new ArrayList<>();
@@ -70,19 +70,19 @@ public class MenuController {
                 .id(6L)
                 .title("일정")
                 .icon("officialPlan")
-                .link("/official-plan")
+                .link("/plan/official")
                 .build();
 
         MenuDTO companyScheduleSubMenu = MenuDTO.builder()
                 .id(7L)
                 .title("회사 일정")
-                .link("/official-plan")
+                .link("/plan/official")
                 .build();
 
         MenuDTO workScheduleSubMenu = MenuDTO.builder()
                 .id(8L)
                 .title("근무 일정")
-                .link("/personal-plan")
+                .link("/plan/personal")
                 .build();
 
         List<MenuDTO> officialPlanSubMenus = new ArrayList<>();
@@ -96,25 +96,25 @@ public class MenuController {
                 .id(9L)
                 .title("휴가")
                 .icon("applyDayoff")
-                .link("/apply-dayoff")
+                .link("/dayoff/apply")
                 .build();
 
         MenuDTO applyDayoffSubMenu = MenuDTO.builder()
                 .id(10L)
                 .title("휴가 신청")
-                .link("/apply-dayoff")
+                .link("/dayoff/apply")
                 .build();
 
         MenuDTO dayoffStatusSubMenu = MenuDTO.builder()
                 .id(11L)
                 .title("휴가 현황")
-                .link("/accept-dayoff")
+                .link("/dayoff/current")
                 .build();
 
         MenuDTO approveDayoffSubMenu = MenuDTO.builder()
                 .id(12L)
                 .title("휴가 승인")
-                .link("/current-dayoff")
+                .link("/dayoff/accept")
                 .build();
 
         List<MenuDTO> dayoffSubMenus = new ArrayList<>();
@@ -137,19 +137,19 @@ public class MenuController {
                 .id(14L)
                 .title("조직")
                 .icon("groupChart")
-                .link("/group-chart")
+                .link("/group/chart")
                 .build();
 
         MenuDTO orgChartSubMenu = MenuDTO.builder()
                 .id(15L)
                 .title("조직도")
-                .link("/group-chart")
+                .link("/group/chart")
                 .build();
 
         MenuDTO memberProfileSubMenu = MenuDTO.builder()
                 .id(16L)
                 .title("조직원 프로필")
-                .link("/group-member")
+                .link("/group/member")
                 .build();
 
         List<MenuDTO> groupChartSubMenus = new ArrayList<>();
