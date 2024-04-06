@@ -4,8 +4,11 @@ import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.jobGrade.entity.JobGrade;
+import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -57,4 +60,10 @@ public class Employee extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "grade_no", referencedColumnName = "grade_no")
     private JobGrade jobGrade;
+
+
+    @OneToMany(mappedBy = "employee")
+    private List<Schedule> employeeScheduleList;
+
+
 }

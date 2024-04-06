@@ -31,5 +31,4 @@ public class AuthController {
         log.info("[POST]: 로그인 요청");
         return authService.employeeLogin(requestLoginDto, httpServletResponse);
     }
-
 }
