@@ -1,13 +1,16 @@
 package com.github.riset_backend.schedules.service;
 
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.company.repository.CompanyRepository;
-import com.github.riset_backend.schedules.dto.CompanyScheduleResponseDto;
-import com.github.riset_backend.schedules.dto.UpdateComScheduleDto;
+import com.github.riset_backend.login.employee.entity.Employee;
+import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import com.github.riset_backend.schedules.dto.company.CompanyScheduleResponseDto;
+import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
 import com.github.riset_backend.schedules.entity.Schedule;
-import com.github.riset_backend.schedules.dto.CompanyScheduleRequestDto;
+import com.github.riset_backend.schedules.dto.company.CompanyScheduleRequestDto;
 import com.github.riset_backend.schedules.repository.ScheduleRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,29 +27,36 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CompanySchedulesService {
     private final ScheduleRepository schedulesRepository;
+    private final EmployeeRepository employeeRepository;
     private final CompanyRepository companyRepository;
 
 
     // 회사 일정 추가
     @Transactional
-    public void schedulesAdd(CompanyScheduleRequestDto request) {
+    public void schedulesAdd(CompanyScheduleRequestDto request, CustomUserDetails user) {
 
-        //todo : 회사 정보를 받아야하고 하드코딩 된 부분 수정해야합니다.
-        //todo : jwt 파싱  회사정보
 
-        Company company = companyRepository.findById(3L).orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
+        Optional<Employee> employeeUser = employeeRepository.findByEmployeeId(user.getUsername());
 
-        Schedule schedule = Schedule.builder()
-                .company(company)
-                .startDate(request.startDate())
-                .endDate(request.endDate())
-                .content(request.content())
-                .title(request.title())
-                .writer(request.writer())
-                .build();
+        if (employeeUser.isPresent()) {
+            Company company = companyRepository.findById(employeeUser.get().getCompany().getCompanyNo())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
+            Schedule schedule = Schedule.builder()
+                    .company(company)
+                    .startDate(request.startDate())
+                    .endDate(request.endDate())
+                    .content(request.content())
+                    .title(request.title())
+                    .writer(request.writer())
+                    .build();
 
-        company.getCompanySchedules().add(schedule);
-        companyRepository.save(company);
+            company.getCompanySchedules().add(schedule);
+            companyRepository.save(company);
+        } else {
+            throw new BusinessException(ErrorCode.NOT_ADMIN, "직원 정보를 찾을 수 없습니다.");
+        }
+
+
     }
 
     @Transactional
@@ -73,8 +83,11 @@ public class CompanySchedulesService {
 
 
     // 회사의 해당하는 월의 값을 받아서 전부 return / 회사일정 시 달력의 값에 넣어주기 위해서
-    public Map<String, List<CompanyScheduleResponseDto>> getAllCompanySchedules(String currentMonth) {
-        Company company = companyRepository.findById(3L).orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
+    public Map<String, List<CompanyScheduleResponseDto>> getAllCompanySchedules(String currentMonth, CustomUserDetails user) {
+
+        //회사정보
+        Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
+
         return company.getCompanySchedules().stream()
                 .filter(schedule -> schedule.getStartDate().getMonthValue() == Long.parseLong(currentMonth))
                 .sorted(Comparator.comparing(Schedule::getStartDate))
@@ -90,20 +103,19 @@ public class CompanySchedulesService {
     }
 
     //회사 일정 수정
-    public String deleteCompanySchedule(Long scheduleId, String token) {
-        //todo : 토큰의 회사 유저 확인해야합니다.
-
-
-
+    @Transactional
+    public String deleteCompanySchedule(Long scheduleId, CustomUserDetails user) {
         Optional<Schedule> scheduleOptional = schedulesRepository.findById(scheduleId);
+
+        //유저 확인, 삭제권한이기 때문에 어드민 role 확인 해야함,
+        employeeRepository.findByEmployeeId(user.getUsername()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER, "유저가 없습니다."));
 
         if (scheduleOptional.isPresent()) {
             Schedule schedule = scheduleOptional.get();
             schedulesRepository.delete(schedule);
-            return "일정이 삭제되었습니다";
+            return "삭제되었습니다"; // 삭제 성공 메시지 반환
         } else {
-            return "없는 일정 정보입니다";
+            throw new NoSuchElementException("삭제할 일정을 찾을 수 없습니다"); // 일정이 존재하지 않을 때 예외 던지기
         }
     }
-
 }

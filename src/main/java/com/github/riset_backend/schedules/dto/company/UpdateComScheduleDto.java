@@ -1,4 +1,4 @@
-package com.github.riset_backend.schedules.dto;
+package com.github.riset_backend.schedules.dto.company;
 
 import java.time.LocalDateTime;
 

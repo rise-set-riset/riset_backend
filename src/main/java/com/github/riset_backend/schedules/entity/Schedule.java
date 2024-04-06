@@ -1,7 +1,6 @@
 package com.github.riset_backend.schedules.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
@@ -10,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "schedule")
@@ -65,7 +62,5 @@ public class Schedule {
         this.startDate = startDate;
         this.endDate = endDate;
         this.writer = writer;
-
-
     }
 }
