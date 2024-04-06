@@ -1,4 +1,4 @@
-package com.github.riset_backend.login.auth.filter;
+package com.github.riset_backend.global.config.auth.filter;
 
 import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 import com.github.riset_backend.global.config.exception.BusinessException;
@@ -29,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
+
         // 1. Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
 

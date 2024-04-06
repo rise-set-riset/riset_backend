@@ -1,5 +1,6 @@
 package com.github.riset_backend.login.employee.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
@@ -9,6 +10,7 @@ import lombok.*;
 
 @Getter
 @Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -57,4 +59,8 @@ public class Employee extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "grade_no", referencedColumnName = "grade_no")
     private JobGrade jobGrade;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role roles;
 }
