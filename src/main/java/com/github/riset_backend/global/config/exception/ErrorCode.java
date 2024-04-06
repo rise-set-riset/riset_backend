@@ -93,6 +93,10 @@ public enum ErrorCode {
     // 댓글
     NOT_FOUND_REPLY(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
 
+    // 즐겨찾기
+    EXIST_FAVORITE(HttpStatus.BAD_REQUEST, "이미 즐겨찾기를 한 게시글 입니다."),
+    NOT_FOUND_FAVORITE(HttpStatus.NOT_FOUND, "즐겨찾기 목록에 없습니다."),
+
 
     /**
      * ********************************************* GLOBAL ***********************************************************

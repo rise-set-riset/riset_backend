@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,4 +31,9 @@ public class Favorite {
     @Column(name = "index_number")
     private Integer indexNumber;
 
+    public Favorite(Board board, Employee employee, Integer indexNumber) {
+        this.board = board;
+        this.employee = employee;
+        this.indexNumber = indexNumber;
+    }
 }

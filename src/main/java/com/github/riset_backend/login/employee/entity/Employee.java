@@ -67,6 +67,6 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role roles;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Schedule> employeeScheduleList;
 }

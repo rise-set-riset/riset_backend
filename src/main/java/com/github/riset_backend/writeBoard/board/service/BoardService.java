@@ -71,8 +71,8 @@ public class BoardService {
 
 
     @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, String token, List<MultipartFile> multipartFiles) {
-        Employee employee = employeeRepository.findByEmployeeNo(1L).orElseThrow(
+    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto,  Long employeeNo, List<MultipartFile> multipartFiles) {
+        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
 
