@@ -1,10 +1,10 @@
 package com.github.riset_backend.login.employee.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.jobGrade.entity.JobGrade;
+import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
@@ -69,4 +69,14 @@ public class Employee extends BaseEntity {
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Schedule> employeeScheduleList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<Holiday> holidays;
+
+    // 반차 여부를 나타내는 필드
+    @Transient
+    private Boolean halfDayLeave;
+
+
+
 }

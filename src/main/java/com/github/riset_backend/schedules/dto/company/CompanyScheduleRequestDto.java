@@ -1,10 +1,8 @@
-package com.github.riset_backend.schedules.dto;
+package com.github.riset_backend.schedules.dto.company;
 
-import com.github.riset_backend.schedules.entity.Schedule;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record CompanyScheduleRequestDto(
 

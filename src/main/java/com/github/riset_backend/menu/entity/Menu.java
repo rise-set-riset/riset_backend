@@ -5,11 +5,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Setter
 @Table(name = "menu")
 public class Menu {
 
@@ -22,18 +24,25 @@ public class Menu {
     @JoinColumn(name = "file_id")
     private File file;
 
-    @Column(name = "menu_name")
-    private String menuName;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "parent_id")
-    private Integer parentId;
+    @Column(name = "icon")
+    private String icon;
 
-    @Column(name = "depth")
-    private Integer depth;
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Menu parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Menu> subMenus;
 
     @Column(name = "menu_order")
     private Integer menuOrder;
 
     @Column(name = "menu_url")
     private String menuUrl;
+
+    public Menu() {
+    }
 }

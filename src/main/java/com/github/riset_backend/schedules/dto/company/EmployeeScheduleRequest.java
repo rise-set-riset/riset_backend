@@ -1,8 +1,6 @@
-package com.github.riset_backend.schedules.dto;
+package com.github.riset_backend.schedules.dto.company;
 
-import com.github.riset_backend.login.employee.entity.Employee;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 
