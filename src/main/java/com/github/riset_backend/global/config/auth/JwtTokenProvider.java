@@ -1,17 +1,16 @@
 package com.github.riset_backend.global.config.auth;
 
 
-
 import com.github.riset_backend.global.config.auth.custom.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Date;
 
 
@@ -19,7 +18,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-    private final RedisTemplate<String, String> redisTemplate;
+
     private final UserDetailsServiceImpl customUserDetailService;
 
     @Value("${spring.jwt.secret}")
@@ -104,5 +103,12 @@ public class JwtTokenProvider {
         Jwts.builder()
                 .setClaims(claims)
                 .compact();
+    }
+
+    public String getIdByToken(String token) {
+
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+
+        return claims.isEmpty() ? null : claims.get("sub", String.class);
     }
 }

@@ -31,8 +31,11 @@ public enum ErrorCode {
     USER_AUTH_ERROR(HttpStatus.UNAUTHORIZED, "토큰 검사시 사용자 인증에 실패했습니다."),
     TOKEN_CLAIM_EMPTY(HttpStatus.BAD_REQUEST,"JWT 클레임 문자열이 비어있습니다."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.BAD_REQUEST,"지원되지 않는 JWT 토큰입니다."),
+    VALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "Access Token이 유효합니다."),
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.NOT_FOUND, "존재하지 않는 리프레시 토큰입니다."),
-
+    NOT_FOUND_COOKIE(HttpStatus.NOT_FOUND, "쿠키가 존재하지 않습니다. 다시 로그인 해주세요."),
+    INCORRECT_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "리프레쉬 토큰이 일치하지 않습니다. 다시 로그인 해주세요."),
+    INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다. 다시 로그인 해주세요."),
 
 
     // 상품
@@ -106,6 +109,7 @@ public enum ErrorCode {
     FAIL_SERIALIZE_OBJECT_INTO_JSON(HttpStatus.BAD_REQUEST, "객체를 JSON으로 변환할 수 없습니다."),
     FAIL_DESERIALIZE_JSON_INTO_OBJECT(HttpStatus.BAD_REQUEST, "JSON을 객체로 변환할 수 없습니다."),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+
 
     private final HttpStatus status;
     private final String message;

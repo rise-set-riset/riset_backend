@@ -58,6 +58,14 @@ dependencies {
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// mongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	// webSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:sockjs-client:1.1.2'
+	implementation 'org.webjars:stomp-websocket:2.3.3-1'
+
 
 }
 
