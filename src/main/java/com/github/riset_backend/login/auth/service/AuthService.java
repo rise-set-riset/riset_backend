@@ -4,12 +4,16 @@ package com.github.riset_backend.login.auth.service;
 //import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 
 import com.github.riset_backend.global.config.auth.JwtTokenProvider;
+import com.github.riset_backend.global.config.auth.filter.JwtAuthenticationFilter;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.employee.entity.Employee;
+import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -39,6 +44,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final AuthenticationManager authenticationManager;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Transactional
     public ResponseEntity<String> employeeSignup(RequestSignUpDto requestSignUpDto) {
@@ -79,18 +85,21 @@ public class AuthService {
                 redisTemplate.delete("logout: " + requestLoginDto.id());
             }
 
-            if(!passwordEncoder.matches(requestLoginDto.password(), employee.getPassword())){
+            if (!passwordEncoder.matches(requestLoginDto.password(), employee.getPassword())) {
                 throw new BusinessException(ErrorCode.NOT_EQUAL_PASSWORD);
             }
-
 
 
             accessToken = jwtTokenProvider.createAccessToken(authenticationToken.getName());
             refreshToken = jwtTokenProvider.createRefreshToken(authenticationToken.getName());
 
-//            httpServletResponse.addCookie(new Cookie("refresh_token", tokenDto.getRefreshtoken()));  쿠키 저장
+            log.info("accessToken: {}", accessToken);
+            log.info("refreshToken: {}", refreshToken);
 
-            redisTemplate.opsForValue().set(requestLoginDto.id(), accessToken, Duration.ofHours(1L));
+            httpServletResponse.addHeader("Authorization", accessToken);
+            httpServletResponse.addCookie(new Cookie("refresh_token", refreshToken));
+
+//            redisTemplate.opsForValue().set(requestLoginDto.id(), accessToken, Duration.ofHours(1L));
             redisTemplate.opsForValue().set("RF: " + requestLoginDto.id(), refreshToken, Duration.ofHours(3L));
 
             response.put("message", "로그인 되었습니다");
@@ -109,4 +118,56 @@ public class AuthService {
     }
 
 
+    public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse httpServletResponse) {
+        String accessToken = jwtAuthenticationFilter.resolveToken(request);
+
+        if (jwtTokenProvider.validateToken(accessToken)) {
+            return ResponseEntity.badRequest().body(new BusinessException(ErrorCode.VALID_ACCESS_TOKEN));
+        }
+
+        String refreshToken = findRefreshTokenCookie(request);
+        String name = jwtTokenProvider.getIdByToken(refreshToken);
+        Optional<Employee> employee = Optional.ofNullable(employeeRepository.findByEmployeeId(name).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER)));
+
+        if (!refreshToken.equals(redisTemplate.opsForValue().get("RF: " + name))) {
+            return ResponseEntity.badRequest().body(new BusinessException(ErrorCode.INCORRECT_REFRESH_TOKEN));
+        }
+
+        if(!jwtTokenProvider.validateToken(refreshToken)) {
+            return ResponseEntity.badRequest().body(new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN));
+        }
+
+        accessToken = jwtTokenProvider.createAccessToken(name);
+
+        Role role = employee.get().getRoles();
+        jwtTokenProvider.setRole(accessToken ,role.getType());
+
+        httpServletResponse.addHeader("Authorization", accessToken);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("access_token", accessToken);
+        response.put("http_status", HttpStatus.CREATED.toString());
+
+        return ResponseEntity.ok(response);
+    }
+
+    public String findRefreshTokenCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+
+                if (cookie.getValue() == null) {
+                    throw new BusinessException(ErrorCode.NOT_FOUND_REFRESH_TOKEN);
+                }
+                return cookie.getValue();
+            }
+
+        } else {
+            throw new BusinessException(ErrorCode.NOT_FOUND_COOKIE);
+        }
+        return null;
+    }
 }
