@@ -3,12 +3,14 @@ package com.github.riset_backend.schedules.entity;
 
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.employee.entity.Employee;
+import com.github.riset_backend.vacations.dto.Status;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 @Table(name = "schedule")
@@ -47,31 +49,42 @@ public class Schedule {
 
 
     @Column(name = "status")
-    private String status;
+    private Status status;
+
+    @Column(name = "color")
+    private String color;
 
     @Builder
-    public Schedule(Company company, LocalDateTime startDate, LocalDateTime endDate, String title, String writer, String content) {
+    public Schedule(Company company, Optional<Employee> employee, LocalDateTime startDate, LocalDateTime endDate, String title, String writer, String content, String color) {
+        this.company = company;
+        this.employee = employee.orElse(null);
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.writer = writer;
+        this.content = content;
+        this.color = color;
+    }
+
+    //일정등록
+    public void addEmployee(Employee employee, Company company, LocalDateTime startDate, LocalDateTime endDate, String content, String title, Status status) {
+        this.employee = employee;
         this.company = company;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
-        this.writer = writer;
-        this.content = content;
-    }
-
-    //일정등록
-    public void addEmployee(Employee employee, LocalDateTime startDate, LocalDateTime endDate, String content, String status) {
-        this.employee = employee;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.content = content;
         this.status = status;
+
     }
-    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer) {
+
+    //수정
+    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer, String color) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.writer = writer;
+        this.color = color;
     }
 }

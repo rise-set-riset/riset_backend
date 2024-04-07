@@ -20,8 +20,10 @@ public record CompanyScheduleRequestDto(
         String writer,
 
         @Schema(description = "내용", example = "소중한 프엔, 귀중한 백엔")
-        String content
+        String content,
 
+        @Schema(description = "white, #fffff", example = "색 또는 코드")
+        String color
 
 
 ) {

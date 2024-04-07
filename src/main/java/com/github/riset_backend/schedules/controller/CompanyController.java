@@ -32,7 +32,7 @@ public class CompanyController {
     @PostMapping("/companySchedule")
     @Operation(summary = "회사일정을 등록하는 api 입니다", description = "회사일정을 등록하는 api 입니다")
     public ResponseEntity<CompanyScheduleRequestDto> companyScheduleAdd(@RequestBody CompanyScheduleRequestDto request, @AuthenticationPrincipal CustomUserDetails user) {
-        //todo : 토큰값을 받아야합니다
+
 
         companySchedulesService.schedulesAdd(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(request);
@@ -50,7 +50,7 @@ public class CompanyController {
     @PatchMapping("/update")
     @Operation(summary = "회사의 해당 일정을 수정하는 api 입니다", description = "회사의 해당 일정을 수정하는 api 입니다")
     public ResponseEntity<UpdateComScheduleDto> companyScheduleUpdate(@RequestBody UpdateComScheduleDto request) {
-        //todo : 토큰값을 받아야합니다.
+
 
         companySchedulesService.updateComSchedule(request);
         return ResponseEntity.status(HttpStatus.OK).body(request);

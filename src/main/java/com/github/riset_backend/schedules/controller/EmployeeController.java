@@ -1,15 +1,16 @@
 package com.github.riset_backend.schedules.controller;
 
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
+import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleRequestDTO;
+import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleResponseDTO;
 import com.github.riset_backend.schedules.dto.employee.EmployeeDTO;
-import com.github.riset_backend.schedules.dto.employee.ScheduleDTO;
 import com.github.riset_backend.schedules.service.EmployeeSchedulesService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,15 +22,16 @@ public class EmployeeController {
     private final EmployeeSchedulesService employeeSchedulesService;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user) {
-        List<EmployeeDTO> employees = employeeSchedulesService.getAllEmployees(user);
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("startDate") LocalDate startDate) {
+        List<EmployeeDTO> employees = employeeSchedulesService.getAllEmployees(user, startDate);
         return ResponseEntity.ok(employees);
     }
 
     @PostMapping("/addEmployees")
-    public ScheduleDTO addEmployees(@RequestBody ScheduleDTO scheduleDTO, @AuthenticationPrincipal CustomUserDetails user) {
+    public EmployeeAddScheduleResponseDTO addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
 
-        return employeeSchedulesService.addEmployee(user, scheduleDTO);
+
+        return employeeSchedulesService.addEmployee(user, request);
     }
 
 }

@@ -8,7 +8,8 @@ public record UpdateComScheduleDto(
         String content,
         String writer,
         LocalDateTime startDate,
-        LocalDateTime endDate
+        LocalDateTime endDate,
+        String color
 
 ) {
 }

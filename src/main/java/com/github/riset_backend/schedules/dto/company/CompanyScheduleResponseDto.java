@@ -6,5 +6,6 @@ public record CompanyScheduleResponseDto(
         String title,
         String content,
         String startDate,
-        String endDate
+        String endDate,
+        String color
 ) {}
