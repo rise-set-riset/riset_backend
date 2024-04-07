@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService {
+public class EmployeeSchedulesService {
 
     private final EmployeeRepository employeeRepository;
     private final ScheduleRepository scheduleRepository;
