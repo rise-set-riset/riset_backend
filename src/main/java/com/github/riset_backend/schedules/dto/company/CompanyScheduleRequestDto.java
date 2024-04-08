@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 public record CompanyScheduleRequestDto(
 
 
-        @Schema(description = "원하는 날짜", example = "2023-04-01 09:00")
+        @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
         LocalDateTime startDate,
 
-        @Schema(description = "원하는 날짜", example = "2023-04-01 09:00")
+        @Schema(description = "끝나는 날짜", example = "2023-04-02 09:00")
         LocalDateTime endDate,
 
         @Schema(description = "일정 제목", example = "나는 짱이다")

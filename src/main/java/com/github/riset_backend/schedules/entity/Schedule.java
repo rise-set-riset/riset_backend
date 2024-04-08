@@ -55,6 +55,7 @@ public class Schedule {
     private String color;
 
     @Builder
+    //회사 일정 추가
     public Schedule(Company company, Optional<Employee> employee, LocalDateTime startDate, LocalDateTime endDate, String title, String writer, String content, String color) {
         this.company = company;
         this.employee = employee.orElse(null);
@@ -66,19 +67,7 @@ public class Schedule {
         this.color = color;
     }
 
-    //일정등록
-    public void addEmployee(Employee employee, Company company, LocalDateTime startDate, LocalDateTime endDate, String content, String title, Status status) {
-        this.employee = employee;
-        this.company = company;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.title = title;
-        this.content = content;
-        this.status = status;
-
-    }
-
-    //수정
+    //회사, 직원 일정수정
     public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer, String color) {
         this.title = title;
         this.content = content;
@@ -87,4 +76,20 @@ public class Schedule {
         this.writer = writer;
         this.color = color;
     }
+
+    //직원 일정등록
+    public void addEmployee(Employee employee, Company company, LocalDateTime startDate, LocalDateTime endDate, String content, String title, Status status) {
+        this.employee = employee;
+        this.company = company;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.content = content;
+        this.status = status;
+    }
+
+
+
+
+
 }

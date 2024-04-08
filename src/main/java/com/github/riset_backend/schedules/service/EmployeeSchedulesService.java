@@ -7,6 +7,7 @@ import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
 import com.github.riset_backend.schedules.dto.employee.*;
 import com.github.riset_backend.schedules.entity.Schedule;
 import com.github.riset_backend.schedules.repository.ScheduleRepository;
@@ -15,10 +16,12 @@ import com.github.riset_backend.vacations.dto.Status;
 import com.github.riset_backend.vacations.entity.Holiday;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +33,7 @@ public class EmployeeSchedulesService {
     private final CompanyRepository companyRepository;
 
     // 첫 진입 조회
+    @Transactional(readOnly = true)
     public List<EmployeeDTO> getAllEmployees(CustomUserDetails user, LocalDate target) {
         List<Employee> employees = employeeRepository.findAll();
 
@@ -74,7 +78,7 @@ public class EmployeeSchedulesService {
             // 첫 번째 직원에 대한 처리
             dto.setEditable(true);
             dto.setScheduleDTOs(employee.getEmployeeScheduleList().stream()
-                            .filter(schedule -> schedule.getStartDate().toLocalDate().equals(target))
+                    .filter(schedule -> schedule.getStartDate().toLocalDate().equals(target))
                     .map(schedule -> new ScheduleDTO(schedule.getScheduleNo(), schedule.getStartDate(), schedule.getEndDate(), schedule.getContent(), schedule.getStatus()))
                     .collect(Collectors.toList()));
 
@@ -120,7 +124,7 @@ public class EmployeeSchedulesService {
 
         scheduleRepository.save(schedule);
 
-       EmployeeAddScheduleResponseDTO response = new EmployeeAddScheduleResponseDTO(employee.getEmployeeNo(),
+        EmployeeAddScheduleResponseDTO response = new EmployeeAddScheduleResponseDTO(employee.getEmployeeNo(),
                 company.getCompanyNo(),
                 request.startDateTime(),
                 request.endDateTIme(),
@@ -130,6 +134,33 @@ public class EmployeeSchedulesService {
         return response;
     }
 
+    //직원 스케줄 수정
+    public UpdateComScheduleDto updateSchedule(UpdateComScheduleDto request, CustomUserDetails user) {
+        Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
+        Schedule schedule = scheduleRepository.findById(request.ScheduleId()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE));
+        if (Objects.equals(employee.getEmployeeNo(), schedule.getEmployee().getEmployeeNo())) {
+            schedule.update(request.title(), request.content(), request.startDate(), request.endDate(), schedule.getWriter(), request.color());
+        } else {
+            throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
+        }
+        scheduleRepository.save(schedule);
+
+        return request;
+    }
+
+    // 직원 일정 삭제
+    public String deleteSchedule(CustomUserDetails user, Long scheduleId) {
+
+        Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_BUY_ITEM));
+
+        if (Objects.equals(employee.getEmployeeNo(), schedule.getEmployee().getEmployeeNo())) {
+            scheduleRepository.deleteById(scheduleId);
+            return "삭제 되었습니다";
+        } else {
+            throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
+        }
+    }
 
 
 }
