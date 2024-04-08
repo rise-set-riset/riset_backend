@@ -42,12 +42,14 @@ public class CompanySchedulesService {
             Company company = companyRepository.findById(employeeUser.get().getCompany().getCompanyNo())
                     .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
             Schedule schedule = Schedule.builder()
+                    .employee(employeeUser)
                     .company(company)
                     .startDate(request.startDate())
                     .endDate(request.endDate())
                     .content(request.content())
                     .title(request.title())
                     .writer(request.writer())
+                    .color(request.color())
                     .build();
 
             company.getCompanySchedules().add(schedule);
@@ -59,22 +61,23 @@ public class CompanySchedulesService {
 
     }
 
+    //수정하기
     @Transactional
     public Schedule updateComSchedule(UpdateComScheduleDto request) {
         //todo : token 유효성 확인 해야합니다
         //todo : 에러 상태코드 수정 해야합니다
-        Schedule schedule = schedulesRepository.findById(request.ScheduleId()).orElseThrow(() -> new BusinessException(ErrorCode.NO_BUY_ORDER, "없어!!"));
+        Schedule schedule = schedulesRepository.findById(request.ScheduleId()).orElseThrow(() -> new BusinessException(ErrorCode.NO_BUY_ORDER, "없습니다"));
 
-        if (schedule == null) {
-            throw new BusinessException(ErrorCode.NO_BUY_ORDER, "일정을 찾을 수 없습니다.");
-        }
         schedule.update(
                 request.title(),
                 request.content(),
                 request.startDate(),
                 request.endDate(),
-                request.writer()
+                request.writer(),
+                request.color()
         );
+
+
         Schedule saveSchedule = schedulesRepository.save(schedule);
 
 
@@ -97,7 +100,8 @@ public class CompanySchedulesService {
                         schedule.getTitle(),
                         schedule.getContent(),
                         schedule.getStartDate().toString(),
-                        schedule.getEndDate().toString()
+                        schedule.getEndDate().toString(),
+                        schedule.getColor()
                 ))
                 .collect(Collectors.groupingBy(dto -> String.format("%02d일", LocalDateTime.parse(dto.startDate()).getDayOfMonth()), TreeMap::new, Collectors.toList()));
     }

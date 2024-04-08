@@ -1,7 +1,5 @@
 package com.github.riset_backend.schedules.dto.employee;
 
-import com.github.riset_backend.vacations.dto.LeaveType;
-import com.github.riset_backend.vacations.entity.Holiday;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +15,11 @@ public class EmployeeDTO {
     private String position;
     private String image;
     private String status;
-    private Boolean onLeave;
     private Boolean editable;
-    private List<HolidaysDTO> halfDayLeave;
+    private Boolean isAnnualLeave;
+    private Boolean isHalfDayLeave;
+    private List<HalfDayLeaveDTO> halfDayLeave;
+    private List<AnnualLeaveDTO> annualLeave;
     private List<ScheduleDTO> scheduleDTOs;
 
 

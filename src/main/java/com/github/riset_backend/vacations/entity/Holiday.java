@@ -49,31 +49,26 @@ public class Holiday {
     @Column(name = "comment")
     private String comment;
 
-    // 반차 여부
-    @Column(name = "half_day")
-    private Boolean halfDay;
 
     @Column(name = "leaveStatus")
     private LeaveType leaveStatus;
 
     //연차 일 경우
-    public void addAll(Employee employee, LocalDateTime startDate, String leaveStatus, String comment, boolean halfDay, String status) {
+    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, String comment, String status) {
         this.employee = employee;
         this.startDate = startDate;
-        this.leaveStatus = LeaveType.valueOf(leaveStatus);
+        this.leaveStatus = leaveStatus;
         this.comment = comment;
-        this.halfDay = halfDay;
         this.status = Status.valueOf(status);
     }
 
     //반차일 경우
-    public void addHalf(Employee employee, LocalDateTime startDate, String leaveStatus, LocalDateTime endDate, String comment, Boolean halfDay, String status) {
+    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, String comment, String status) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.leaveStatus = LeaveType.valueOf(leaveStatus);
+        this.leaveStatus = leaveStatus;
         this.comment = comment;
-        this.halfDay = halfDay;
         this.status = Status.valueOf(status);
     }
 

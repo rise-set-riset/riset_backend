@@ -9,7 +9,6 @@ public record RequestHoliday(
         LocalDateTime endDateTime, //끝나는 일자
         String type,
         String comment, //설명
-
         LeaveType status, // 승인값, 상태 처음엔 무조건 대기로
 
         boolean isHalfDay

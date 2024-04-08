@@ -33,13 +33,13 @@ public class HolidayService {
         Holiday holidayEntity;
 
         if (LeaveType.ANNUAL_LEAVE.name().equals(type)) {
-            // 연차 휴가 처리
+            // 연차 처리
             holidayEntity = new Holiday();
-            holidayEntity.addAll(employee, request.startDateTime(), LeaveType.ANNUAL_LEAVE.name(), request.comment(), false, Status.PENDING.name());
+            holidayEntity.addAll(employee, request.startDateTime(), LeaveType.ANNUAL_LEAVE, request.comment(),  Status.PENDING.name());
         } else if (LeaveType.HALF_DAY_LEAVE.name().equals(type)) {
-            // 반차 휴가 처리
+            // 반차 처리
             holidayEntity = new Holiday();
-            holidayEntity.addHalf(employee, request.startDateTime(), LeaveType.HALF_DAY_LEAVE.name(), request.endDateTime(), request.comment(), true, Status.PENDING.name());
+            holidayEntity.addHalf(employee, request.startDateTime(), LeaveType.HALF_DAY_LEAVE, request.endDateTime(), request.comment(), Status.PENDING.name());
         } else {
             // 예외 처리 또는 기본 동작 설정
             throw new IllegalArgumentException("Invalid leave type: " + type);
