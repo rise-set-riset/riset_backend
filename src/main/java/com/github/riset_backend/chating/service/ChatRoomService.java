@@ -1,8 +1,11 @@
 package com.github.riset_backend.chating.service;
 
+import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.CreateChatRoomRequestDto;
+import com.github.riset_backend.chating.entity.Chat;
 import com.github.riset_backend.chating.entity.ChatRoom;
+import com.github.riset_backend.chating.repository.ChatRepository;
 import com.github.riset_backend.chating.repository.ChatRoomRepository;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
@@ -26,6 +29,7 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final EmployeeRepository employeeRepository;
+    private final ChatRepository chatRepository;
 
     public ChatRoomResponseDto createChatRoom(CreateChatRoomRequestDto dto) {
         List<Employee> employees = new ArrayList<>();
@@ -68,5 +72,12 @@ public class ChatRoomService {
             throw new BusinessException(ErrorCode.NOT_FOUND_CHATROOM_MEMBER);
         }
 
+    }
+
+    public List<ChatResponseDto> getChatRoomChat(String roomId) {
+        List<Chat> chats = chatRepository.findAllByRoomId(roomId);
+
+        log.info("chats = {}", chats);
+        return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
     }
 }

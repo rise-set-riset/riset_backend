@@ -19,6 +19,8 @@ public class ChatController {
 
     @MessageMapping("/chat/message/{roomId}")
     public void message(@DestinationVariable("roomId") String roomId, MessageSendDto messageSendDto) {
+        log.info("file ={}", messageSendDto.getBase64File());
+        log.info("확인");
         chatService.sendMessage(messageSendDto, roomId);
     }
 

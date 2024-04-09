@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collation = "chat")
+@Document(collection = "chat")
 public class Chat {
     @Id
     private String id;

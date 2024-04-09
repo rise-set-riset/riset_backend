@@ -9,6 +9,7 @@ import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -31,9 +32,12 @@ public class ChatService {
 
     public void sendMessage(MessageSendDto messageSendDto, String roomId) {
 
-        log.info("messageSendDto = {}", messageSendDto);
-        log.info("roomId = {}", roomId);
+        log.info("Base64File = {}", messageSendDto.getBase64File());
 
+        if(messageSendDto.getBase64File() != null) {
+//            byte[] file = DatatypeConverter.parseBase64Binary();
+            log.info("file111 = {}", messageSendDto.getBase64File());
+        }
 
         chatRoomRepository.findById(messageSendDto.getRoomId()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)

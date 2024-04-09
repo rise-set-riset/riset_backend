@@ -19,4 +19,5 @@ public class MessageSendDto {
     private String msg;
     private List<Long> employeesNo;
     private Long sender;
+    private List<String> base64File;
 }

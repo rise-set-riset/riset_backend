@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(value = "chatRoom")
+@Document(collection = "chatRoom")
 public class ChatRoom {
 
     @Id
