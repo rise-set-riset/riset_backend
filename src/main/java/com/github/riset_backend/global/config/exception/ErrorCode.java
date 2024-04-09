@@ -100,6 +100,12 @@ public enum ErrorCode {
     EXIST_FAVORITE(HttpStatus.BAD_REQUEST, "이미 즐겨찾기를 한 게시글 입니다."),
     NOT_FOUND_FAVORITE(HttpStatus.NOT_FOUND, "즐겨찾기 목록에 없습니다."),
 
+    // 채팅
+    NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다"),
+    DIFFERENT_CHATROOM(HttpStatus.BAD_REQUEST, "채팅방이 다릅니다."),
+    NOT_FOUND_CHATROOM_MEMBER(HttpStatus.NOT_FOUND, "채팅방에 없는 사람입니다."),
+
+
 
     /**
      * ********************************************* GLOBAL ***********************************************************
