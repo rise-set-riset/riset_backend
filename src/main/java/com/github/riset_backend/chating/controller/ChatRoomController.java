@@ -1,27 +1,44 @@
 package com.github.riset_backend.chating.controller;
 
-import com.github.riset_backend.chating.dto.CreateChatRoomRequestDto;
+import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
+import com.github.riset_backend.chating.dto.chatRoomDto.CreateChatRoomRequestDto;
 import com.github.riset_backend.chating.entity.ChatRoom;
-import com.github.riset_backend.chating.repository.ChatRoomRepository;
 import com.github.riset_backend.chating.service.ChatRoomService;
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat")
+@Slf4j
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
     @PostMapping("/room")
-    public ResponseEntity<ChatRoom> createChatRoom (@RequestBody CreateChatRoomRequestDto dto) {
-        ChatRoom chatRoom = chatRoomService.createChatRoom(dto);
+    public ResponseEntity<ChatRoomResponseDto> createChatRoom (@RequestBody CreateChatRoomRequestDto dto) {
+        ChatRoomResponseDto chatRoom = chatRoomService.createChatRoom(dto);
         return ResponseEntity.ok(chatRoom);
     }
+
+    @GetMapping("/room")
+    public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms (@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<ChatRoomResponseDto> chatRoomList = chatRoomService.getChatRoom(customUserDetails.getEmployee().getEmployeeNo());
+        return ResponseEntity.ok(chatRoomList);
+    }
+
+    @PatchMapping("/room/{roomId}")
+    public ResponseEntity<String> leaveChatRoom (@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                 @PathVariable String roomId) {
+        chatRoomService.leaveChatRoom(customUserDetails.getEmployee(), roomId);
+        return ResponseEntity.ok("채팅방을 나갔습니다.");
+    }
+
 
 }
