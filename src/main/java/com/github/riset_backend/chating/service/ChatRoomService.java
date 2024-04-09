@@ -76,8 +76,6 @@ public class ChatRoomService {
 
     public List<ChatResponseDto> getChatRoomChat(String roomId) {
         List<Chat> chats = chatRepository.findAllByRoomId(roomId);
-
-        log.info("chats = {}", chats);
         return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
     }
 }

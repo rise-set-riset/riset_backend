@@ -10,6 +10,8 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -18,9 +20,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @MessageMapping("/chat/message/{roomId}")
-    public void message(@DestinationVariable("roomId") String roomId, MessageSendDto messageSendDto) {
-        log.info("file ={}", messageSendDto.getBase64File());
-        log.info("확인");
+    public void message(@DestinationVariable("roomId") String roomId, MessageSendDto messageSendDto) throws IOException {
         chatService.sendMessage(messageSendDto, roomId);
     }
 

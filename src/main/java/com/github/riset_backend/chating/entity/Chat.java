@@ -23,9 +23,9 @@ public class Chat {
     private String id;
     private String roomId;
     private String msg;
-    private Integer roomNum;
     private List<Long> employees;
     private Employee sender;
+    private List<String> filesName;
     private LocalDateTime date;
 
     public Chat(MessageSendDto messageSendDto, LocalDateTime date, Employee sender) {
@@ -34,5 +34,6 @@ public class Chat {
         this.employees = messageSendDto.getEmployeesNo();
         this.sender = sender;
         this.date = date;
+        this.filesName = messageSendDto.getBase64File();
     }
 }
