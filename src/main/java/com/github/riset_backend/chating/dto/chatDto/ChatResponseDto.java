@@ -21,6 +21,7 @@ public class ChatResponseDto {
     private List<Long> employees;
     private Employee sender;
     private LocalDateTime date;
+    private List<String> fileNames;
 
     public ChatResponseDto(Chat chat) {
         this.roomId = chat.getRoomId();
@@ -28,5 +29,7 @@ public class ChatResponseDto {
         this.employees = chat.getEmployees();
         this.sender = chat.getSender();
         this.date = chat.getDate();
+        this.fileNames = chat.getFilesName();
     }
+
 }
