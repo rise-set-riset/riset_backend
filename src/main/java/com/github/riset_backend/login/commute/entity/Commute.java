@@ -5,6 +5,7 @@ import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 
@@ -20,14 +21,14 @@ public class Commute extends BaseEntity {
     @Column(name = "commute_no")
     private Long commuteNo;
 
+    @Column(name = "commute_date")
+    private LocalDate commuteDate;
+
     @Column(name = "commute_start")
     private LocalTime commuteStart;
 
     @Column(name = "commute_end")
     private LocalTime commuteEnd;
-
-    @Column(name = "status")
-    private String status;
 
     @Column(name = "work_hours")
     private Integer workHours;
@@ -35,4 +36,8 @@ public class Commute extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "employee_no", referencedColumnName = "employee_no")
     private Employee employee;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private CommutePlace commutePlace;
 }
