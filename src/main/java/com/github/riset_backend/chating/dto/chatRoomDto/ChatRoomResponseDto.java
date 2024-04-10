@@ -1,13 +1,11 @@
-package com.github.riset_backend.chating.entity;
+package com.github.riset_backend.chating.dto.chatRoomDto;
 
+import com.github.riset_backend.chating.entity.ChatRoom;
 import com.github.riset_backend.login.employee.entity.Employee;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,18 +14,17 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "chatRoom")
-public class ChatRoom {
+public class ChatRoomResponseDto {
 
-    @Id
     private String id;
+//    private int roomNum;
+//    private String chatRoomName;
     private List<Employee> members;
     private LocalDateTime date;
 
-
-    public ChatRoom(List<Employee> members, LocalDateTime date) {
-        this.members = members;
-        this.date = date;
-
+    public ChatRoomResponseDto(ChatRoom chatRoom) {
+        this.id = chatRoom.getId();
+        this.members = chatRoom.getMembers();
+        this.date = chatRoom.getDate();
     }
 }

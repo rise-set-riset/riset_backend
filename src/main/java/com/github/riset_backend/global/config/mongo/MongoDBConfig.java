@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 @Configuration
 @RequiredArgsConstructor
 public class MongoDBConfig {
-
+//
 //    @Bean
 //    public MappingMongoConverter mappingMongoConverter(
 //            MongoDatabaseFactory mongoDatabaseFactory,

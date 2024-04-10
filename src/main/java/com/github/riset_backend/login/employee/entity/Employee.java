@@ -79,7 +79,7 @@ public class Employee extends BaseEntity {
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Schedule> employeeScheduleList;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Holiday> holidays;
 
     // 반차 여부를 나타내는 필드
