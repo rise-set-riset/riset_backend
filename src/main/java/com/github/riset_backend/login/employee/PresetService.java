@@ -11,12 +11,8 @@ import com.github.riset_backend.login.employee.dto.PresetAdminDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

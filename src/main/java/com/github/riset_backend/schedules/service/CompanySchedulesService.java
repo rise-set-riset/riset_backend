@@ -64,8 +64,6 @@ public class CompanySchedulesService {
     //수정하기
     @Transactional
     public Schedule updateComSchedule(UpdateComScheduleDto request) {
-        //todo : token 유효성 확인 해야합니다
-        //todo : 에러 상태코드 수정 해야합니다
         Schedule schedule = schedulesRepository.findById(request.ScheduleId()).orElseThrow(() -> new BusinessException(ErrorCode.NO_BUY_ORDER, "없습니다"));
 
         schedule.update(
@@ -73,8 +71,7 @@ public class CompanySchedulesService {
                 request.content(),
                 request.startDate(),
                 request.endDate(),
-                request.writer(),
-                request.color()
+                request.writer()
         );
 
 

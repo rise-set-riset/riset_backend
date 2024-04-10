@@ -67,8 +67,8 @@ public class Schedule {
         this.color = color;
     }
 
-    //회사, 직원 일정수정
-    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer, String color) {
+    //직원 일정수정
+    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;

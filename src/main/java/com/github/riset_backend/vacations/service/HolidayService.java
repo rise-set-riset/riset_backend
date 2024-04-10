@@ -51,5 +51,19 @@ public class HolidayService {
         // 처리된 휴가에 대한 정보를 담은 객체 반환
         return request;
     }
+
+//
+//    public RequestHoliday addHoliday(RequestHoliday request, CustomUserDetails user) {
+//        Employee employee = employeeRepository.findByEmployeeId(user.getUsername())
+//                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+//
+//        Holiday holidayEntity = new Holiday();
+//        holidayEntity.addHalf(employee, request.startDateTime(), request.status(), request.endDateTime(), request.comment(), Status.PENDING.name());
+//        holidayRepository.save(holidayEntity);
+//
+//
+//        return request;
+//    }
+
 }
 

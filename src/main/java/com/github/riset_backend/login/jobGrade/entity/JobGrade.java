@@ -1,5 +1,6 @@
 package com.github.riset_backend.login.jobGrade.entity;
 
+import com.github.riset_backend.Settlement.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,5 +20,9 @@ public class JobGrade extends BaseEntity {
 
     @Column(name = "grade")
     private Integer grade;
+
+    @Column(name = "rating")
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
 
 }

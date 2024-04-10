@@ -139,7 +139,7 @@ public class EmployeeSchedulesService {
         Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
         Schedule schedule = scheduleRepository.findById(request.ScheduleId()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE));
         if (Objects.equals(employee.getEmployeeNo(), schedule.getEmployee().getEmployeeNo())) {
-            schedule.update(request.title(), request.content(), request.startDate(), request.endDate(), schedule.getWriter(), request.color());
+            schedule.update(request.title(), request.content(), request.startDate(), request.endDate(), schedule.getWriter());
         } else {
             throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
         }
@@ -161,6 +161,7 @@ public class EmployeeSchedulesService {
             throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
         }
     }
+
 
 
 }

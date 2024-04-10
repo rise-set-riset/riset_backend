@@ -1,4 +1,4 @@
-package com.github.riset_backend.mycompany.ranks.entity;
+package com.github.riset_backend.Settlement.entity;
 
 import jakarta.persistence.*;
 
@@ -16,5 +16,4 @@ public class Position {
 
     @Column(name = "salary")
     private Double salary;
-
 }

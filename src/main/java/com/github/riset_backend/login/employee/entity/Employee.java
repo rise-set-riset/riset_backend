@@ -1,13 +1,16 @@
 package com.github.riset_backend.login.employee.entity;
 
+import com.github.riset_backend.Settlement.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.jobGrade.entity.JobGrade;
+import com.github.riset_backend.myPage.entity.MyImage;
 import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.util.Lazy;
 
 import java.util.List;
 
@@ -29,6 +32,12 @@ public class Employee extends BaseEntity {
 
     @Column(name = "employee_password")
     private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "telNumber")
+    private String telNumber;
 
     @Column(name = "employee_name")
     private String name;
@@ -77,6 +86,13 @@ public class Employee extends BaseEntity {
     @Transient
     private Boolean halfDayLeave;
 
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "myImageId")
+    private MyImage myImage;
+
+    @Enumerated(EnumType.STRING)
+    Rating rating;
 
 
 }

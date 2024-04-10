@@ -72,4 +72,16 @@ public class Holiday {
         this.status = Status.valueOf(status);
     }
 
+    //연차
+    public void leaveUpdate(Employee employee, LocalDateTime startDate, LocalDateTime endDate, String comment) {
+        this.employee = employee;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.comment = comment;
+    }
+
+    public void statusUpdate(Status status) {
+        this.status = status;
+    }
+
 }
