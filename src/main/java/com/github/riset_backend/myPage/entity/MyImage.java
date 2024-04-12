@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MyImage {
     @Id
-    @Column(name = "myImageId")
+    @Column(name = "image_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long myImageId;
+
     private String fileName;
     private String filePath;
 

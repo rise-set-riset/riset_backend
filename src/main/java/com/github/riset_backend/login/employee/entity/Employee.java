@@ -82,13 +82,13 @@ public class Employee extends BaseEntity {
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Holiday> holidays;
 
-    // 반차 여부를 나타내는 필드
-    @Transient
-    private Boolean halfDayLeave;
+//    // 반차 여부를 나타내는 필드
+//    @Transient
+//    private Boolean halfDayLeave;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "myImageId")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "my_image_id", referencedColumnName = "image_id") // 외래 키 명시
     private MyImage myImage;
 
     @Enumerated(EnumType.STRING)

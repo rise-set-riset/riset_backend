@@ -18,14 +18,7 @@ public class MyPageService {
 
 
     private final EmployeeRepository employeeRepository;
-    private final CompanyRepository companyRepository;
-
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
-    boolean matches(CharSequence rawPassword, String encodedPassword) {
-        return false;
-    }
 
     //첫 진입 조회
     public MyPageResponseDto MyPageALL(CustomUserDetails user) {
@@ -43,8 +36,6 @@ public class MyPageService {
                 employee.getJob(),
                 employee.getMyImage().getFilePath()
         );
-
-
         return response;
 
     }

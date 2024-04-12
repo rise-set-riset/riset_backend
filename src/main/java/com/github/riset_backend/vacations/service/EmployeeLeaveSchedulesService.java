@@ -38,20 +38,28 @@ public class EmployeeLeaveSchedulesService {
                 holiday.leaveUpdate(user.getEmployee(), request.startDateTime(), null, request.comment());
             }
         }
+
         holidayRepository.save(holiday);
     }
 
+    //승인/반려 처리
     @Transactional
     public void accessEmployeeHoliday(CustomUserDetails user, StatusUpdateRequestDto request) {
-        Holiday holiday = holidayRepository.findById(request.leaveNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
+        List<Holiday> holidays = holidayRepository.findAllById(request.leaveNo());
 
-        if (Objects.equals(holiday.getEmployee().getEmployeeNo(), user.getEmployee().getEmployeeNo())) {
-            holiday.statusUpdate(request.status());
-        } else {
-            throw new BusinessException(ErrorCode.NOT_USER);
+        for (Holiday holiday : holidays) {
+            if (Objects.equals(holiday.getEmployee().getEmployeeNo(), user.getEmployee().getEmployeeNo())) {
+                holiday.statusUpdate(request.status());
+            } else {
+                throw new BusinessException(ErrorCode.NOT_USER);
+            }
         }
+
+
     }
 
+
+    //목록 조회
     public List<StatusAccessDto> getEmployeeHoliday(CustomUserDetails user, Status status) {
         if (status.equals(Status.PENDING)) {
             return employeeHolidayGet(user, Status.PENDING);

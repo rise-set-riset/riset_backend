@@ -8,9 +8,6 @@ import java.util.Random;
 
 public class RandomCodeGenerator {
 
-
-
-
     // 랜덤 코드 생성
     public static String generateCode() {
 

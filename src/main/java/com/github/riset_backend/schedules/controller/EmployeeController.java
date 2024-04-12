@@ -27,9 +27,9 @@ public class EmployeeController {
 
     @GetMapping
     @Operation(summary = "첫 진입 조회 api 입니다", description = "첫 진입 조회 api 입니다")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("startDate") LocalDate startDate) {
-        List<EmployeeDTO> employees = employeeSchedulesService.getAllEmployees(user, startDate);
-        return ResponseEntity.ok(employees);
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("data") LocalDate data) {
+
+        return ResponseEntity.ok(employeeSchedulesService.getAllEmployees(user, data));
     }
 
     @PostMapping("/addEmployees")
@@ -49,7 +49,6 @@ public class EmployeeController {
     public ResponseEntity<String> updateEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("id") Long id) {
         return ResponseEntity.ok().body(employeeSchedulesService.deleteSchedule(user, id));
     }
-
 
 
 }

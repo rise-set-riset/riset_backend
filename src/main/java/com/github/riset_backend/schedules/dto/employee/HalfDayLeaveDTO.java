@@ -24,8 +24,5 @@ public record HalfDayLeaveDTO(
         @Schema(description = "상태", example = "반려!!!!!!!!!")
         Status halfStatus
 
-
 ) {
-
-
 }

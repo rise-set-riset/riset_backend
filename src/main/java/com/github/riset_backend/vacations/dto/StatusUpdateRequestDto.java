@@ -1,7 +1,9 @@
 package com.github.riset_backend.vacations.dto;
 
+import java.util.List;
+
 public record StatusUpdateRequestDto(
-        Long leaveNo,
+        List<Long> leaveNo,
         Status status
 ) {
 }
