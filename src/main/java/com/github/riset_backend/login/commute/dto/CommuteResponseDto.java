@@ -9,7 +9,11 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class CommuteResponseDto {
-    private String employeeName;
-    private String date;
-    private String commuteType; // 예: "본사(풀근무)", "재택", "외근", "본사(반차)"
+    private Long id;
+    private String way; // 예: "본사(풀근무)", "재택", "외근", "본사(반차)"
+    private String name;
+    private String start;
+    private String color;
+    private String startTime;
+    private String endTime;
 }

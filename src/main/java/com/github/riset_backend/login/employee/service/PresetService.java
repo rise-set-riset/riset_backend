@@ -31,21 +31,15 @@ public class PresetService {
 
         String jwt = token.substring(7);
 
-        if (presetDto.invitedCode() == null) {
-            employee.setRoles(Role.valueOf(presetDto.role()));
+            employee.setRoles(Role.ROLE_ADMIN);
             employeeRepository.save(employee);
-            jwtTokenProvider.setRole(jwt, presetDto.role());
+            jwtTokenProvider.setRole(jwt, "ROLE_ADMIN");
             Company company = Company.builder()
                     .companyName(presetDto.companyName())
                     .companyAddr(presetDto.companyAddr())
                     .build();
             companyRepository.save(company);
-        } else {
-            //TODO 초대 코드 비교 로직
-            employee.setRoles(Role.valueOf(presetDto.role()));
-            employeeRepository.save(employee);
-            jwtTokenProvider.setRole(jwt, presetDto.role());
-        }
+
         return ResponseEntity.ok().body("설정이 완료되었습니다.");
     }
 }

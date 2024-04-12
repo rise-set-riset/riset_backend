@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class PresetController {
     private final PresetService presetService;
 
-    @PostMapping("/role")
+    @PostMapping("/admin")
     public ResponseEntity<String> presetRole(@RequestBody PresetDto presetDto, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestHeader("Authorization") String token) {
 
         log.info("token: {}", token);
         log.info("[POST]: 사전설정 요청");
         return presetService.preset(presetDto, customUserDetails, token);
     }
-
-
 }

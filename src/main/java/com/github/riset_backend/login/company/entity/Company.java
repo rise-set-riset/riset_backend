@@ -24,17 +24,33 @@ public class Company extends BaseEntity {
     @Column(name = "company_no")
     private Long companyNo;
 
+    @Column(name = "parent_company_no")
+    private Integer parentCompanyNo;
+
     @Column(name = "company_name")
     private String companyName;
 
     @Column(name = "company_addr")
     private String companyAddr;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Column(name = "company_phone")
     private String companyPhone;
 
     @Column(name = "zip_code")
     private Integer zipCode;
+
+    @Column(name = "company_tel_no")
+    private String companyTelNo;
+
+    @Column(name = "mdfr_id")
+    private String Mdfr_Id;
+
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> companySchedules = new ArrayList<>();

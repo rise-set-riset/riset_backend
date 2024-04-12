@@ -1,6 +1,7 @@
 package com.github.riset_backend.login.commute.entity;
 
 import com.github.riset_backend.global.BaseEntity;
+import com.github.riset_backend.login.commute.dto.CommuteGetOffDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,7 +38,17 @@ public class Commute extends BaseEntity {
     @JoinColumn(name = "employee_no", referencedColumnName = "employee_no")
     private Employee employee;
 
-    @Column(name = "status")
+    @Column(name = "commute_Place")
     @Enumerated(EnumType.STRING)
     private CommutePlace commutePlace;
+
+    @Column(name = "commute_Status")
+    @Enumerated(EnumType.STRING)
+    private CommuteStatus commuteStatus;
+
+
+    public void updateCommuteInfo(CommuteGetOffDto commuteGetOffDto) {
+        this.commuteEnd = commuteGetOffDto.commuteEnd();
+        this.commuteStatus = CommuteStatus.valueOf(commuteGetOffDto.commuteStatus());
+    }
 }

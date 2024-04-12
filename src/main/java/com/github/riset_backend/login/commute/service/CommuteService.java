@@ -5,10 +5,15 @@ import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.commute.dto.CommuteDto;
+import com.github.riset_backend.login.commute.dto.CommuteGetOffDto;
 import com.github.riset_backend.login.commute.dto.CommuteResponseDto;
+import com.github.riset_backend.login.commute.dto.LocationResponseDto;
 import com.github.riset_backend.login.commute.entity.Commute;
 import com.github.riset_backend.login.commute.entity.CommutePlace;
+import com.github.riset_backend.login.commute.entity.CommuteStatus;
 import com.github.riset_backend.login.commute.repository.CommuteRepository;
+import com.github.riset_backend.login.company.entity.Company;
+import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import com.github.riset_backend.vacations.dto.LeaveType;
@@ -21,11 +26,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -34,90 +38,102 @@ public class CommuteService {
     private final CommuteRepository commuteRepository;
     private final EmployeeRepository employeeRepository;
     private final HolidayRepository holidayRepository;
+    private final CompanyRepository companyRepository;
 
-    public ResponseEntity<?> addCommute(CommuteDto commuteDto) {
-        log.info("dto: {}", commuteDto.toString());
-        Optional<Employee> employee = Optional.ofNullable(employeeRepository.findByEmployeeId(commuteDto.name()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER)));
+    public ResponseEntity<?> addCommute(CommuteDto commuteDto, CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
 
         Commute commute = Commute.builder()
                 .commuteDate(commuteDto.commuteDate())
-                .employee(employee.get())
+                .employee(employee)
                 .commuteStart(commuteDto.commuteStart())
-                .commuteEnd(commuteDto.commuteEnd())
                 .commutePlace(CommutePlace.valueOf(commuteDto.commutePlace()))
+                .commuteStatus(CommuteStatus.valueOf(commuteDto.commuteStatus()))
                 .build();
+
         commuteRepository.save(commute);
 
-        return ResponseEntity.ok().body("추가되었습니다.");
+        return ResponseEntity.ok().body("출근 시간이 추가되었습니다.");
     }
 
-    public List<CommuteResponseDto> getCommuteHistory(CustomUserDetails customUserDetails) {
-        //ToDo: 본사와 지사의 위도, 경도 값을 넘겨줘야 함.
-        Employee employee = employeeRepository.findById(customUserDetails.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+    public ResponseEntity<String> getOff(CommuteGetOffDto commuteGetOffDto, CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
 
-        LocalDate localDate = LocalDate.now();
+        Commute commute = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_COMMUTE));
 
-        int year = localDate.getYear();
-        int month = localDate.getMonthValue();
+        commute.updateCommuteInfo(commuteGetOffDto);
 
+        // 변경된 출근 데이터 저장
+        commuteRepository.save(commute);
+
+        return ResponseEntity.ok("퇴근 시간이 추가되었습니다.");
+    }
+
+
+    public ResponseEntity<List<LocationResponseDto>> getLocation(CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
+
+        Company company = employee.getCompany(); // 유저 객체에 있는 회사 객체 저장
+
+        // 회사 객체로 본사 번호 조회 및 저장 후 반환(리스트)
+        List<Company> childCompanies = companyRepository.findAllByParentCompanyNo(company.getParentCompanyNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_COMPANY));
+
+        List<LocationResponseDto> response = new ArrayList<>();
+
+        for(Company parentCompany: childCompanies){
+            LocationResponseDto locationResponseDto = new LocationResponseDto(
+                    parentCompany.getCompanyNo(),
+                    parentCompany.getCompanyName(),
+                    parentCompany.getLongitude(),
+                    parentCompany.getLatitude());
+            response.add(locationResponseDto);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<List<CommuteResponseDto>> getCommuteHistory(CustomUserDetails customUserDetails, int year, int month) {
+        Employee employee = findById(customUserDetails);
+
+        List<Commute> commutes = commuteRepository.findByYearAndMonthAndEmployee(year, month, employee);
         List<Holiday> holidays = holidayRepository.findByYearAndMonthAndEmployee(year, month, employee);
-        List<Commute> commute = commuteRepository.findByYearAndMonthAndEmployee(year, month, employee);
-
-
-        List<Commute> halfDayLeaves = new ArrayList<>();
-        List<Commute> fullDayWorks = new ArrayList<>();
-        List<Holiday> fullLeaves = new ArrayList<>();
-
-
-        for (Commute record : commute) {
-            long hoursWorked = Duration.between(record.getCommuteStart(), record.getCommuteEnd()).toHours();
-            if (hoursWorked >= 5) { // 본사, 재택, 외근 (풀근무)
-                fullDayWorks.add(record);
-            } else { //본사, 재택, 외근 (반차)
-                halfDayLeaves.add(record);
-            }
-        }
-
-
-        for (Holiday fullLeave : holidays) { // 연차
-            if (fullLeave.getLeaveStatus().ordinal() == LeaveType.ANNUAL_LEAVE.ordinal()) {
-                fullLeaves.add(fullLeave);
-            }
-        }
-
 
         List<CommuteResponseDto> commuteResponseDtos = new ArrayList<>();
 
+        // 출근 기록 처리
+        commutes.forEach(record -> {
+            String color = (Duration.between(record.getCommuteStart(), record.getCommuteEnd()).toHours() >= 5) ? "full" : "half";
 
-        List<CommuteResponseDto> fullDayWorksDtos = fullDayWorks.stream()
-                .map(record -> CommuteResponseDto.builder()
-                        .employeeName(record.getEmployee().getName())
-                        .date(record.getCommuteDate().toString())
-                        .commuteType("풀근무")
-                        .build())
-                .toList();
-        commuteResponseDtos.addAll(fullDayWorksDtos);
+            CommuteResponseDto dto = CommuteResponseDto.builder()
+                    .id(record.getCommuteNo())
+                    .name(record.getEmployee().getName())
+                    .start(record.getCommuteDate().toString())
+                    .way(record.getCommutePlace().getType())
+                    .color(color)
+                    .startTime(record.getCommuteStart().format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .endTime(record.getCommuteEnd().format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .build();
+
+            commuteResponseDtos.add(dto);
+        });
+
+        // 휴가 기록 처리
+        holidays.forEach(leave -> {
+            CommuteResponseDto dto = CommuteResponseDto.builder()
+                    .id(leave.getLeaveNo())
+                    .name(leave.getEmployee().getName())
+                    .start(leave.getStartDate().toString())
+                    .color("leave")
+                    .build();
+
+            commuteResponseDtos.add(dto);
+        });
+
+        return ResponseEntity.ok(commuteResponseDtos);
+    }
 
 
-        List<CommuteResponseDto> halfDayLeavesDtos = halfDayLeaves.stream()
-                .map(record -> CommuteResponseDto.builder()
-                        .employeeName(record.getEmployee().getName())
-                        .date(record.getCommuteDate().toString())
-                        .commuteType("반차")
-                        .build())
-                .toList();
-        commuteResponseDtos.addAll(halfDayLeavesDtos);
-
-
-        List<CommuteResponseDto> fullLeavesDtos = fullLeaves.stream()
-                .map(leave -> CommuteResponseDto.builder()
-                        .employeeName(leave.getEmployee().getName())
-                        .date(leave.getStartDate().toString())
-                        .commuteType("연차")
-                        .build())
-                .toList();
-        commuteResponseDtos.addAll(fullLeavesDtos);
-
-        return commuteResponseDtos;
+    public Employee findById(CustomUserDetails customUserDetails) {
+        return employeeRepository.findById(customUserDetails.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
     }
 }
