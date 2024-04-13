@@ -104,6 +104,7 @@ public enum ErrorCode {
     NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다"),
     DIFFERENT_CHATROOM(HttpStatus.BAD_REQUEST, "채팅방이 다릅니다."),
     NOT_FOUND_CHATROOM_MEMBER(HttpStatus.NOT_FOUND, "채팅방에 없는 사람입니다."),
+    NOT_FOUND_CHAT(HttpStatus.NOT_FOUND, "검색 결과 없습니다."),
 
 
 
