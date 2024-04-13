@@ -36,6 +36,8 @@ public class QHoliday extends EntityPathBase<Holiday> {
 
     public final EnumPath<com.github.riset_backend.vacations.dto.Status> status = createEnum("status", com.github.riset_backend.vacations.dto.Status.class);
 
+    public final NumberPath<Long> vacationsDay = createNumber("vacationsDay", Long.class);
+
     public QHoliday(String variable) {
         this(Holiday.class, forVariable(variable), INITS);
     }

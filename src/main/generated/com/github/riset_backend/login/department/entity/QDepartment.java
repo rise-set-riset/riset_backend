@@ -33,8 +33,6 @@ public class QDepartment extends EntityPathBase<Department> {
 
     public final NumberPath<Long> deptNo = createNumber("deptNo", Long.class);
 
-    public final com.github.riset_backend.login.employee.entity.QEmployee employee;
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> localDateTime = _super.localDateTime;
 
@@ -63,7 +61,6 @@ public class QDepartment extends EntityPathBase<Department> {
     public QDepartment(Class<? extends Department> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.company = inits.isInitialized("company") ? new com.github.riset_backend.login.company.entity.QCompany(forProperty("company")) : null;
-        this.employee = inits.isInitialized("employee") ? new com.github.riset_backend.login.employee.entity.QEmployee(forProperty("employee"), inits.get("employee")) : null;
     }
 
 }

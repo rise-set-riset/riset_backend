@@ -1,8 +1,7 @@
-package com.github.riset_backend.email.entity;
+package com.github.riset_backend.manageCompany.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.github.riset_backend.manageCompany.entity.Email;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -16,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QEmail extends EntityPathBase<Email> {
 
-    private static final long serialVersionUID = 51222415L;
+    private static final long serialVersionUID = -1114014381L;
 
     public static final QEmail email = new QEmail("email");
 

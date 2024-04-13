@@ -27,8 +27,6 @@ public class Department extends BaseEntity {
     private Company company;
 
 
-    @ManyToOne
-    @JoinColumn(name = "employee_no")
-    private Employee employee;
+
 
 }

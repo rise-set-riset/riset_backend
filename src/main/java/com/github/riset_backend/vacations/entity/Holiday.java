@@ -52,7 +52,7 @@ public class Holiday {
     @Column(name = "leaveStatus")
     private LeaveType leaveStatus;
 
-    //휴가 일수
+    //휴가 일수 추가
     private Long vacationsDay;
 
 
