@@ -83,6 +83,7 @@ public class SecurityConfig {
                                         "/health",
                                         "/chat/**",
                                         "/ws-stomp").permitAll()
+                                .requestMatchers("/company/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

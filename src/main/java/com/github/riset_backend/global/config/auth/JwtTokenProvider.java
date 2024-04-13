@@ -59,7 +59,6 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = customUserDetailService.loadUserByUsername(this.parseClaims(token));
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
-        log.info("Authentication authorities: " + authentication.getAuthorities());
         return authentication;
     }
 
