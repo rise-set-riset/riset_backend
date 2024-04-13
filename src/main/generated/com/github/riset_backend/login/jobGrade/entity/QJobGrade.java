@@ -2,6 +2,7 @@ package com.github.riset_backend.login.jobGrade.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.github.riset_backend.manageCompany.dto.Rating;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -31,7 +32,7 @@ public class QJobGrade extends EntityPathBase<JobGrade> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> localDateTime = _super.localDateTime;
 
-    public final EnumPath<com.github.riset_backend.Settlement.dto.Rating> rating = createEnum("rating", com.github.riset_backend.Settlement.dto.Rating.class);
+    public final EnumPath<Rating> rating = createEnum("rating", Rating.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

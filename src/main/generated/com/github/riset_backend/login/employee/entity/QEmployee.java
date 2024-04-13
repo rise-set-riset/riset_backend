@@ -2,6 +2,7 @@ package com.github.riset_backend.login.employee.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.github.riset_backend.manageCompany.dto.Rating;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -62,7 +63,7 @@ public class QEmployee extends EntityPathBase<Employee> {
 
     public final StringPath position = createString("position");
 
-    public final EnumPath<com.github.riset_backend.Settlement.dto.Rating> rating = createEnum("rating", com.github.riset_backend.Settlement.dto.Rating.class);
+    public final EnumPath<Rating> rating = createEnum("rating", Rating.class);
 
     public final EnumPath<Role> roles = createEnum("roles", Role.class);
 

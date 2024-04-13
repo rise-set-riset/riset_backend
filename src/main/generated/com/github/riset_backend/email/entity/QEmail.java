@@ -2,6 +2,7 @@ package com.github.riset_backend.email.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.github.riset_backend.manageCompany.entity.Email;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

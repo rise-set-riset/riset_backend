@@ -1,6 +1,6 @@
 package com.github.riset_backend.login.employee.entity;
 
-import com.github.riset_backend.Settlement.dto.Rating;
+import com.github.riset_backend.manageCompany.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
@@ -10,7 +10,6 @@ import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.util.Lazy;
 
 import java.util.List;
 

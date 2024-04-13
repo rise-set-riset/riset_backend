@@ -35,4 +35,11 @@ public class Commute extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "employee_no", referencedColumnName = "employee_no")
     private Employee employee;
+
+
+
+    //반차 신청시 퇴근시간 업데이트
+    public void updateCommuteEnd(LocalTime commuteEnd) {
+        this.commuteEnd = commuteEnd;
+    }
 }

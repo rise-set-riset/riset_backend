@@ -18,7 +18,7 @@ package com.github.riset_backend.Settlement.dto;
 
 public record SettlementDTO(
         String name,   // 이름
-        Rating Rating, // 직책
+        com.github.riset_backend.manageCompany.dto.Rating Rating, // 직책
         double totalSalary,
         double healthInsurance, //건강보험
         double nationalPension, //국민연금

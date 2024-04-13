@@ -1,4 +1,4 @@
-package com.github.riset_backend.email.entity;
+package com.github.riset_backend.manageCompany.entity;
 
 
 import jakarta.persistence.*;

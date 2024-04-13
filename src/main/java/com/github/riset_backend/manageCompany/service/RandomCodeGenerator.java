@@ -1,8 +1,4 @@
-package com.github.riset_backend.email.service;
-
-import com.github.riset_backend.login.company.entity.Company;
-import com.github.riset_backend.login.company.repository.CompanyRepository;
-import lombok.RequiredArgsConstructor;
+package com.github.riset_backend.manageCompany.service;
 
 import java.util.Random;
 

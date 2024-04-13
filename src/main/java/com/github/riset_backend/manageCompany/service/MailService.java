@@ -1,7 +1,7 @@
-package com.github.riset_backend.email.service;
+package com.github.riset_backend.manageCompany.service;
 
-import com.github.riset_backend.email.entity.Email;
-import com.github.riset_backend.email.repository.EmailRepository;
+import com.github.riset_backend.manageCompany.entity.Email;
+import com.github.riset_backend.manageCompany.repository.EmailRepository;
 import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
@@ -106,7 +106,7 @@ public class MailService {
     }
 
 
-    //메일 발송 로직 분리
+    //메일 발송 로직 분리`
     private void sendVerificationEmail(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(sendEmail); //보내는사람

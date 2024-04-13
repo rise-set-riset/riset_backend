@@ -1,6 +1,6 @@
-package com.github.riset_backend.email.repository;
+package com.github.riset_backend.manageCompany.repository;
 
-import com.github.riset_backend.email.entity.Email;
+import com.github.riset_backend.manageCompany.entity.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

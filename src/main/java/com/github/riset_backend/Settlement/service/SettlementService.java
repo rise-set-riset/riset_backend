@@ -1,6 +1,6 @@
 package com.github.riset_backend.Settlement.service;
 
-import com.github.riset_backend.Settlement.dto.Rating;
+import com.github.riset_backend.manageCompany.dto.Rating;
 import com.github.riset_backend.Settlement.dto.SettlementDTO;
 import com.github.riset_backend.Settlement.dto.SettlementServiceResponse;
 import com.github.riset_backend.login.employee.entity.Employee;
