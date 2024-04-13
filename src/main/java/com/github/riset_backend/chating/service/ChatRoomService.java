@@ -78,4 +78,14 @@ public class ChatRoomService {
         List<Chat> chats = chatRepository.findAllByRoomId(roomId);
         return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
     }
+
+    public List<ChatResponseDto> getChatRoomChatOne(String roomId, String msg) {
+       List<Chat> chats = chatRepository.findByRoomIdAndMsgContaining(roomId, msg);
+
+       if (chats.isEmpty()) {
+           throw new BusinessException(ErrorCode.NOT_FOUND_CHAT);
+       }
+
+        return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
+    }
 }

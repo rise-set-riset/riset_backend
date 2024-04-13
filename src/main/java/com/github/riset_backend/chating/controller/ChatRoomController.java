@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chat")
+@RequestMapping("/chatRoom")
 @Slf4j
 public class ChatRoomController {
 
@@ -37,30 +37,36 @@ public class ChatRoomController {
     private String bucket;
     private final AmazonS3 amazonS3;
 
-    @PostMapping("/room")
+    @PostMapping
     public ResponseEntity<ChatRoomResponseDto> createChatRoom (@RequestBody CreateChatRoomRequestDto dto) {
         ChatRoomResponseDto chatRoom = chatRoomService.createChatRoom(dto);
         return ResponseEntity.ok(chatRoom);
     }
 
-    @GetMapping("/room")
+    @GetMapping
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms (@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<ChatRoomResponseDto> chatRoomList = chatRoomService.getChatRoom(customUserDetails.getEmployee().getEmployeeNo());
         return ResponseEntity.ok(chatRoomList);
     }
 
-    @PatchMapping("/room/{roomId}")
+    @PatchMapping("/{roomId}")
     public ResponseEntity<String> leaveChatRoom (@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                  @PathVariable String roomId) {
         chatRoomService.leaveChatRoom(customUserDetails.getEmployee(), roomId);
         return ResponseEntity.ok("채팅방을 나갔습니다.");
     }
 
-    @GetMapping("/room/{roomId}/chat")
+    @GetMapping("/{roomId}/chat")
     public ResponseEntity<List<ChatResponseDto>> getChatRoomChat (@PathVariable String roomId) {
 
         List<ChatResponseDto> chats = chatRoomService.getChatRoomChat(roomId);
         return ResponseEntity.ok(chats);
+    }
+
+    @GetMapping("/{roomId}/chatOne")
+    public ResponseEntity<List<ChatResponseDto>> getChatRoomChatOne (@PathVariable String roomId, @RequestParam String msg) {
+        List<ChatResponseDto> chat = chatRoomService.getChatRoomChatOne(roomId, msg);
+        return ResponseEntity.ok(chat);
     }
 
 //    @PostMapping("/test")

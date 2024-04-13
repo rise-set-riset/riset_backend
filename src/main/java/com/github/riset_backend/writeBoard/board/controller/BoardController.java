@@ -25,8 +25,9 @@ public class BoardController {
 
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
-                                                              @RequestParam(defaultValue = "10") int size) {
-        List<BoardResponseDto> boards = boardService.getAllBoard(page, size);
+                                                              @RequestParam(defaultValue = "10") int size,
+                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
         return ResponseEntity.ok(boards);
     }
 

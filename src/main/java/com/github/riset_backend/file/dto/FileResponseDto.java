@@ -10,12 +10,14 @@ import java.math.BigInteger;
 @Getter
 @Setter
 public class FileResponseDto {
+    private Long fileId;
     private String fileName;
     private Long fileSize;
     private String fileType;
     private String fileUrl;
 
     public FileResponseDto(File file) {
+        this.fileId = file.getFileId();
         this.fileName = file.getFileName();
         this.fileSize = file.getFileSize();
         this.fileType = file.getFileType();

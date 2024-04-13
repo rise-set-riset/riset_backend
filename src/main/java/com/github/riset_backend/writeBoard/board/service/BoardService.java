@@ -16,6 +16,8 @@ import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.board.repository.BoardRepository;
 import com.github.riset_backend.writeBoard.boardFile.entity.BoardFile;
 import com.github.riset_backend.writeBoard.boardFile.repository.BoardFileRepository;
+import com.github.riset_backend.writeBoard.favorite.entity.Favorite;
+import com.github.riset_backend.writeBoard.favorite.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,12 +47,22 @@ public class BoardService {
     private final EmployeeRepository employeeRepository;
     private final FileRepository fileRepository;
     private final BoardFileRepository boardFileRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
-    public List<BoardResponseDto> getAllBoard(int page, int size) {
+    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Slice<Board> boards = boardRepository.findSliceByDeletedOrderByCreateAtDesc(null ,pageRequest);
-        return boards.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+
+        List<BoardResponseDto> boardResponseDtos = new ArrayList<>();
+
+        boards.forEach(board -> {
+            boolean like = !favoriteBoard.isEmpty() && favoriteBoard.contains(board.getBoardNo());
+            boardResponseDtos.add(new BoardResponseDto(board, like));
+        });
+
+        return boardResponseDtos;
     }
 
     @Transactional
@@ -95,7 +107,7 @@ public class BoardService {
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
 
-        return BoardResponseDto.ToBoardResponseDto(newBoard, newFiles, board.getEmployee().getName());
+        return new BoardResponseDto(newBoard);
     }
 
 

@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface ChatRepository extends MongoRepository<Chat, String> {
     List<Chat> findAllByRoomId(String roomId);
+
+    List<Chat> findByRoomIdAndMsgContaining(String roomId, String msg);
 }
