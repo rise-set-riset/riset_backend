@@ -10,9 +10,6 @@ public record EmployeeAddScheduleResponseDTO(
         @Schema(description = "직원 id", example = "1")
         Long employeeId,
 
-        @Schema(description = "회사id", example = "1")
-        Long companyId,
-
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
         LocalDateTime startDateTime,
 

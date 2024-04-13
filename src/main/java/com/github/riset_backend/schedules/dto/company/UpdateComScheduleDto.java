@@ -21,10 +21,7 @@ public record UpdateComScheduleDto(
         LocalDateTime startDate,
 
         @Schema(description = "끝나는 날짜", example = "2023-04-01 09:00")
-        LocalDateTime endDate,
-
-        @Schema(description = "색상", example = "color, #fffff")
-        String color
+        LocalDateTime endDate
 
 ) {
 }

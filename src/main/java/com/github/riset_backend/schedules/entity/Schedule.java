@@ -1,6 +1,7 @@
 package com.github.riset_backend.schedules.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.vacations.dto.Status;
@@ -25,10 +26,12 @@ public class Schedule {
 
     @ManyToOne
     @JoinColumn(name = "employee_no")
+    @JsonBackReference
     private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "company_no")
+    @JsonBackReference
     private Company company;
 
     @Column(name = "start_dt")
@@ -67,14 +70,13 @@ public class Schedule {
         this.color = color;
     }
 
-    //회사, 직원 일정수정
-    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer, String color) {
+    //직원 일정수정
+    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.writer = writer;
-        this.color = color;
     }
 
     //직원 일정등록
@@ -87,9 +89,4 @@ public class Schedule {
         this.content = content;
         this.status = status;
     }
-
-
-
-
-
 }

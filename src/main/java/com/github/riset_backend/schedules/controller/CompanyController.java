@@ -1,9 +1,7 @@
 package com.github.riset_backend.schedules.controller;
 
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
-import com.github.riset_backend.schedules.dto.company.CompanyScheduleRequestDto;
-import com.github.riset_backend.schedules.dto.company.CompanyScheduleResponseDto;
-import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
+import com.github.riset_backend.schedules.dto.company.*;
 import com.github.riset_backend.schedules.service.CompanySchedulesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,16 +13,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @Tag(name = "회사 일정 등록,수정,조회, 삭제 api 입니다", description = "회사의 일정 등록,수정,삭제,조회 api 입니다")
 public class CompanyController {
-
-
     private static final Logger log = LoggerFactory.getLogger(CompanyController.class);
     private final CompanySchedulesService companySchedulesService;
 
@@ -46,7 +44,7 @@ public class CompanyController {
 
     @PatchMapping("/update")
     @Operation(summary = "회사의 해당 일정을 수정하는 api 입니다", description = "회사의 해당 일정을 수정하는 api 입니다")
-    public ResponseEntity<UpdateComScheduleDto> companyScheduleUpdate(@RequestBody UpdateComScheduleDto request) {
+    public ResponseEntity<CompanyUpdateDateTimeDto> companyScheduleUpdate(@RequestBody CompanyUpdateDateTimeDto request) {
         companySchedulesService.updateComSchedule(request);
         return ResponseEntity.status(HttpStatus.OK).body(request);
     }
@@ -58,4 +56,6 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
 
     }
+
+
 }

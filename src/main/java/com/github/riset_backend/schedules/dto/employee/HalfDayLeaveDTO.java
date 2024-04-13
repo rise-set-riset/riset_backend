@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public record HalfDayLeaveDTO(
 
         @Schema(description = "반차 id", example = "1")
-        Long halfNo,
+        Long leaveNo,
 
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
         LocalDateTime halfStartDateTime,
@@ -24,8 +24,5 @@ public record HalfDayLeaveDTO(
         @Schema(description = "상태", example = "반려!!!!!!!!!")
         Status halfStatus
 
-
 ) {
-
-
 }

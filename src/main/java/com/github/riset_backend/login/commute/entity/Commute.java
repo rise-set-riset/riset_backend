@@ -51,4 +51,9 @@ public class Commute extends BaseEntity {
         this.commuteEnd = commuteGetOffDto.commuteEnd();
         this.commuteStatus = CommuteStatus.valueOf(commuteGetOffDto.commuteStatus());
     }
+
+    //반차 신청시 퇴근시간 업데이트
+    public void updateCommuteEnd(LocalTime commuteEnd) {
+        this.commuteEnd = commuteEnd;
+    }
 }

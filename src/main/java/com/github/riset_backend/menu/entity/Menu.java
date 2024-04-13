@@ -1,7 +1,6 @@
 package com.github.riset_backend.menu.entity;
 
 import com.github.riset_backend.file.entity.File;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import jakarta.persistence.*;
 import lombok.*;
 
