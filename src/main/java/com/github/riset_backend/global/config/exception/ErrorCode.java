@@ -107,6 +107,9 @@ public enum ErrorCode {
 
 
 
+    // 출퇴근
+    NOT_FOUND_COMPANY(HttpStatus.NOT_FOUND, "존재하지 않는 본사입니다."),
+    NOT_FOUND_COMMUTE(HttpStatus.NOT_FOUND, "존재하지 않는 출근 기록입니다."),
     /**
      * ********************************************* GLOBAL ***********************************************************
      */
