@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     @Value("${cloud.aws.s3.bucket}")
@@ -95,6 +96,8 @@ public class BoardService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
 
+        log.info("employee = {}", employee);
+
         Board board = Board.boardRequestToBoard(boardRequestDto, employee);
 
         List<File> files = new ArrayList<>();
@@ -113,6 +116,9 @@ public class BoardService {
         Board newBoard = boardRepository.save(board);
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
+
+        log.info("newBoard = {}", newBoard);
+        log.info("newFiles = {}", newFiles);
 
         return new BoardResponseDto(newBoard, newFiles);
     }
