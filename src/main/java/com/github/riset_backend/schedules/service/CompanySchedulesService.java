@@ -18,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,6 +32,7 @@ import java.util.stream.Stream;
 @Transactional(readOnly = true)
 public class CompanySchedulesService {
     private static final Logger log = LoggerFactory.getLogger(CompanySchedulesService.class);
+
     private final ScheduleRepository schedulesRepository;
     private final EmployeeRepository employeeRepository;
     private final CompanyRepository companyRepository;
