@@ -45,11 +45,11 @@ public class CompanySchedulesService {
         Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
 
-        String yearString = total.substring(0, 4);
+        int year = Integer.parseInt(total.substring(0, 4));
         String currentMonth = total.substring(4, 6).replaceFirst("^0*", "");
 
         return company.getCompanySchedules().stream()
-                .filter(schedule -> String.valueOf(schedule.getStartDate().getYear()).equals(yearString))
+                .filter(schedule -> String.valueOf(schedule.getStartDate().getYear()).equals(String.valueOf(year)))
                 .filter(schedule -> String.valueOf(schedule.getStartDate().getMonthValue()).equals(currentMonth))
                 .map(schedule -> new CompanyScheduleResponseDto(
                         schedule.getScheduleNo(),
@@ -142,22 +142,22 @@ public class CompanySchedulesService {
     @Transactional
     public Schedule updateComSchedule(CompanyUpdateDateTimeDto request) {
 
-        LocalDateTime startDateTime = null;
-        LocalDateTime endDateTime = null;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
 
         try {
             // startDate가 T를 포함하는지 확인하여 처리합니다.
             if (request.start().contains("T")) {
-                startDateTime = LocalDateTime.parse(request.start(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                start = LocalDateTime.parse(request.start(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                startDateTime = LocalDateTime.parse(request.start() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                start = LocalDateTime.parse(request.start() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
 
             // endDate가 T를 포함하는지 확인하여 처리합니다.
             if (request.end().contains("T")) {
-                endDateTime = LocalDateTime.parse(request.end(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                end = LocalDateTime.parse(request.end(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                endDateTime = LocalDateTime.parse(request.end() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                end = LocalDateTime.parse(request.end() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
@@ -166,7 +166,7 @@ public class CompanySchedulesService {
         // DTO의 String 타입 필드들을 Map으로 추출
         Map<String, String> fieldValues = extractStringFields(request);
         // Custom Repository 메서드를 호출하여 스케줄 동적 업데이트 실행
-        schedulesRepository.updateScheduleDynamic(request.scheduleNo(), fieldValues, startDateTime, endDateTime);
+        schedulesRepository.updateScheduleDynamic(request.scheduleNo(), fieldValues, start, end);
 
         // 업데이트된 스케줄을 조회하여 반환, 없으면 BusinessException 발생
         return schedulesRepository.findById(request.scheduleNo())

@@ -72,7 +72,7 @@ public class EmployeeSchedulesService {
         EmployeeBooleanResponse booleanResponse = new EmployeeBooleanResponse(hasHalfLeave, hasAnnualLeave, hasSchedules);
 
         EmployeeAll combinedResponse = new EmployeeAll(employee.getEmployeeNo(), employee.getName(),
-                employee.getDepartment().getDeptName(), employee.getPosition(),employee.getMyImage().getFilePath(),
+                employee.getPosition(),employee.getMyImage().getFilePath(),
                 commuteStartTime, commuteEndTime, commutePlace, booleanResponse, schedules, halfLeave, annualLeave);
 
 
