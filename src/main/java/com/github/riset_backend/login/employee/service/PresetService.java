@@ -34,10 +34,8 @@ public class PresetService {
             employee.setRoles(Role.ROLE_ADMIN);
             employeeRepository.save(employee);
             jwtTokenProvider.setRole(jwt, "ROLE_ADMIN");
-            Company company = Company.builder()
-                    .companyName(presetDto.companyName())
-                    .companyAddr(presetDto.companyAddr())
-                    .build();
+
+            Company company = presetDto.toEntity();
             companyRepository.save(company);
 
         return ResponseEntity.ok().body("설정이 완료되었습니다.");
