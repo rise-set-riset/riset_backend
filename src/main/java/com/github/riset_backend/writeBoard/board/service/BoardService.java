@@ -48,12 +48,19 @@ public class BoardService {
     private final FileRepository fileRepository;
     private final BoardFileRepository boardFileRepository;
     private final FavoriteRepository favoriteRepository;
+//    private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size) {
+    public List<BoardResponseDto> getAllBoard(int page, int size, Long empolyeeNo) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Slice<Board> boards = boardRepository.findSliceByDeletedOrderByCreateAtDesc(null ,pageRequest);
-        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+//        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+
+        Employee employee1 = employeeRepository.findByEmployeeNo(empolyeeNo).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+        );
+
+        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee1).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
 
         List<BoardResponseDto> boardResponseDtos = new ArrayList<>();
 
