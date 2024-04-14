@@ -26,8 +26,12 @@ public class BoardController {
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
                                                               @RequestParam(defaultValue = "10") int size,
-                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
+                                                              @RequestParam(defaultValue = "1") Long empolyeeNo
+//                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+//        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
+        List<BoardResponseDto> boards = boardService.getAllBoard(page, size, empolyeeNo);
+
         return ResponseEntity.ok(boards);
     }
 
@@ -47,9 +51,12 @@ public class BoardController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard(@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
-                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
-                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
+                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles
+//                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+//        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
+        BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
+
         return ResponseEntity.ok(board);
     }
 
