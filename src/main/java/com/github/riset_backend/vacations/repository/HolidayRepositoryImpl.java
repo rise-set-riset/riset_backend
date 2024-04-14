@@ -23,8 +23,7 @@ public class HolidayRepositoryImpl implements HolidayRepositoryCustom {
         QHoliday holidays = QHoliday.holiday;
 
         List<Holiday> holidayList = queryFactory
-                .select(holidays)
-                .from(holidays)
+                .selectFrom(holidays)
                 .where(holidays.startDate.year().eq(data.getYear())
                         .and(holidays.employee.employeeNo.eq(id))
                         .and(holidays.leaveStatus.eq(LeaveType.HALF_DAY_LEAVE))

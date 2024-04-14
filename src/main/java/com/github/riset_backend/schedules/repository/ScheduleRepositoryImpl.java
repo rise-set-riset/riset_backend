@@ -65,8 +65,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         QSchedule schedules = QSchedule.schedule;
 
         List<Schedule> scheduleResponses = queryFactory
-                .select(schedules)
-                .from(schedules)
+                .selectFrom(schedules)
                 .where(schedules.startDate.year().eq(data.getYear())
                         .and(schedules.employee.employeeNo.eq(id))
                         .and(schedules.startDate.month().eq(data.getMonthValue()))
