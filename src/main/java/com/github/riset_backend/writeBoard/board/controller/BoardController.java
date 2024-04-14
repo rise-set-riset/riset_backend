@@ -30,9 +30,7 @@ public class BoardController {
                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         log.info("실행이 된다.");
-        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
-
-
+        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
         return ResponseEntity.ok(boards);
     }
 
