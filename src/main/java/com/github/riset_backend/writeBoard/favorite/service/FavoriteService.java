@@ -30,7 +30,7 @@ public class FavoriteService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public FavoriteResponseDto createFavoriteBoard(Long boardNo, Employee employee) {
+    public List<FavoriteResponseDto> createFavoriteBoard(Long boardNo, Employee employee) {
         Integer index_number;
 
         Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
@@ -54,7 +54,12 @@ public class FavoriteService {
         Favorite favorite = new Favorite(board, employee, index_number);
         Favorite newFavorite = favoriteRepository.save(favorite);
 
-        return new FavoriteResponseDto(newFavorite);
+        List<Favorite> newFavorites = favoriteRepository.findAllByEmployee(employee);
+
+//        PageRequest pageRequest = PageRequest.of(0, 5);
+//        Slice<Favorite> newFavorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
+
+        return newFavorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -114,7 +119,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponseDto deleteFavoriteBoard(Long favoriteId, Employee employee) {
+    public List<FavoriteResponseDto> deleteFavoriteBoard(Long favoriteId, Employee employee) {
        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(
                () -> new BusinessException(ErrorCode.NOT_FOUND_FAVORITE)
        );
@@ -130,7 +135,13 @@ public class FavoriteService {
        });
 
        favoriteRepository.delete(favorite);
-       return new FavoriteResponseDto(favorite);
+
+       List<Favorite> newFavorites = favoriteRepository.findAllByEmployee(employee);
+
+//        PageRequest pageRequest = PageRequest.of(0, 5);
+//        Slice<Favorite> newFavorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
+
+       return newFavorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
 
     }
 }
