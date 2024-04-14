@@ -27,12 +27,11 @@ public class BoardController {
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
                                                               @RequestParam(defaultValue = "10") int size,
-                                                              @RequestParam(defaultValue = "1") Long empolyeeNo
-//                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         log.info("실행이 된다.");
-//        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
-        List<BoardResponseDto> boards = boardService.getAllBoard(page, size, empolyeeNo);
+        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
+
 
         return ResponseEntity.ok(boards);
     }
