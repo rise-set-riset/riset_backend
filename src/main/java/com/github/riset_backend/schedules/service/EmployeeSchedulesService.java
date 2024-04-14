@@ -90,14 +90,14 @@ public class EmployeeSchedulesService {
         Company company = companyRepository.findById(employee.getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
 
-        schedule.addEmployee(employee, company, request.startDateTime(), request.endDateTIme(), request.title());
+        schedule.addEmployee(employee, company, request.startTime(), request.endTime(), request.title());
 
         scheduleRepository.save(schedule);
 
         return new EmployeeAddScheduleResponseDTO(
                 schedule.getScheduleNo(),
-                request.startDateTime(),
-                request.endDateTIme(),
+                request.startTime(),
+                request.endTime(),
                 request.title());
     }
 
