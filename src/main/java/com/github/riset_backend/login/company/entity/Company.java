@@ -51,7 +51,7 @@ public class Company extends BaseEntity {
     @Column(name = "mdfr_id")
     private String Mdfr_Id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> companySchedules = new ArrayList<>();
 
 

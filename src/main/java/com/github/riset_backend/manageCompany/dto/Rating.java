@@ -1,6 +1,5 @@
 package com.github.riset_backend.manageCompany.dto;
 
-
 //ㅎㅎㅎ
 public enum Rating {
 
@@ -21,4 +20,3 @@ public enum Rating {
         return salary;
     }
 }
-
