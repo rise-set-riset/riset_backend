@@ -114,7 +114,7 @@ public class BoardService {
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
 
-        return new BoardResponseDto(newBoard);
+        return new BoardResponseDto(newBoard, newFiles);
     }
 
 

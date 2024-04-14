@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -45,8 +46,6 @@ public class Board  {
 
     @Column(name = "deleted")
     private String deleted;
-
-
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardFile> boardFiles;
