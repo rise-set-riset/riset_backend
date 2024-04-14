@@ -83,7 +83,7 @@ public class SecurityConfig {
                                         "/health",
                                         "/chat/**",
                                         "/ws-stomp",
-                                        "/board").permitAll()
+                                        "/board/**").permitAll()
                                 .requestMatchers("/company/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
