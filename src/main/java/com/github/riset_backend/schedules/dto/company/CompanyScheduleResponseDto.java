@@ -18,10 +18,10 @@ public record CompanyScheduleResponseDto(
         String content,
 
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
-        String startTime,
+        String start,
 
         @Schema(description = "끝나는 날짜", example = "2023-04-02 09:00")
-        String endTime,
+        String end,
 
         @Schema(description = "색상", example = "color, #fffff")
         String color

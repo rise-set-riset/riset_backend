@@ -27,7 +27,7 @@ public class EmployeeController {
 
     @GetMapping
     @Operation(summary = "첫 진입 조회 api 입니다", description = "첫 진입 조회 api 입니다")
-    public ResponseEntity<List<EmployeeAll>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("data") LocalDate data) {
+    public ResponseEntity<List<EmployeeAll>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("employeeDate") LocalDate data) {
         return ResponseEntity.ok(employeeSchedulesService.getAllEmployees(user, data));
     }
 

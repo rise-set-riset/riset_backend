@@ -29,18 +29,19 @@ public class CompanyController {
     //회사 일정 추가
     @PostMapping("/companySchedule")
     @Operation(summary = "회사일정을 등록하는 api 입니다", description = "회사일정을 등록하는 api 입니다")
-    public ResponseEntity<CompanyScheduleRequestDto> companyScheduleAdd(@RequestBody CompanyScheduleRequestDto request, @AuthenticationPrincipal CustomUserDetails user) {
-        companySchedulesService.schedulesAdd(request, user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(request);
+    public ResponseEntity<CompanyResponseDto> companyScheduleAdd(@RequestBody CompanyScheduleRequestDto request, @AuthenticationPrincipal CustomUserDetails user) {
+        CompanyResponseDto a= companySchedulesService.schedulesAdd(request, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(a);
     }
 
     //회사일정의 해당 월 일정 가져오기
     @GetMapping("/get")
     @Operation(summary = "회사의 해당 월 일정을 가져오는 api 입니다", description = "회사의 해당 월 일정을 가져오는 api 입니다")
-    public ResponseEntity<Map<String, List<CompanyScheduleResponseDto>>> companyScheduleAdd(@RequestParam("currentMonth") String currentMonth, @AuthenticationPrincipal CustomUserDetails user) {
-        Map<String, List<CompanyScheduleResponseDto>> CompanyScheduleResponseDto = companySchedulesService.getAllCompanySchedules(currentMonth, user);
-        return ResponseEntity.status(HttpStatus.OK).body(CompanyScheduleResponseDto);
+    public ResponseEntity<List<CompanyScheduleResponseDto>> getCompanySchedules(@RequestParam("currentMonth") String currentMonth, @AuthenticationPrincipal CustomUserDetails user) {
+        List<CompanyScheduleResponseDto> schedules = companySchedulesService.getAllCompanySchedules(currentMonth, user);
+        return ResponseEntity.status(HttpStatus.OK).body(schedules);
     }
+
 
     @PatchMapping("/update")
     @Operation(summary = "회사의 해당 일정을 수정하는 api 입니다", description = "회사의 해당 일정을 수정하는 api 입니다")
