@@ -30,6 +30,7 @@ public class BoardController {
                                                               @RequestParam(defaultValue = "1") Long empolyeeNo
 //                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
+        log.info("실행이 된다.");
 //        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
         List<BoardResponseDto> boards = boardService.getAllBoard(page, size, empolyeeNo);
 
