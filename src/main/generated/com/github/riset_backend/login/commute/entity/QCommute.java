@@ -24,11 +24,17 @@ public class QCommute extends EntityPathBase<Commute> {
 
     public final com.github.riset_backend.global.QBaseEntity _super = new com.github.riset_backend.global.QBaseEntity(this);
 
+    public final DatePath<java.time.LocalDate> commuteDate = createDate("commuteDate", java.time.LocalDate.class);
+
     public final TimePath<java.time.LocalTime> commuteEnd = createTime("commuteEnd", java.time.LocalTime.class);
 
     public final NumberPath<Long> commuteNo = createNumber("commuteNo", Long.class);
 
+    public final EnumPath<CommutePlace> commutePlace = createEnum("commutePlace", CommutePlace.class);
+
     public final TimePath<java.time.LocalTime> commuteStart = createTime("commuteStart", java.time.LocalTime.class);
+
+    public final EnumPath<CommuteStatus> commuteStatus = createEnum("commuteStatus", CommuteStatus.class);
 
     //inherited
     public final NumberPath<Long> createdBy = _super.createdBy;
@@ -37,8 +43,6 @@ public class QCommute extends EntityPathBase<Commute> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> localDateTime = _super.localDateTime;
-
-    public final StringPath status = createString("status");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

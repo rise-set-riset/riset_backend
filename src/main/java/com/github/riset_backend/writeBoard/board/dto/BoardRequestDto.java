@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardRequestDto {
-
     private String title;
     private String content;
 }

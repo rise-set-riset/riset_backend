@@ -29,7 +29,7 @@ public class EmployeeLeaveSchedulesService {
     @Transactional
     public void updateEmployeeHoliday(CustomUserDetails user, UpdateEmployeeRequestDto request) {
 
-        Holiday holiday = holidayRepository.findById(request.leaveNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
+        Holiday holiday = holidayRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
 
         if (Objects.equals(holiday.getEmployee().getEmployeeNo(), user.getEmployee().getEmployeeNo())) {
             if (request.isHalfDay()) {
@@ -71,6 +71,7 @@ public class EmployeeLeaveSchedulesService {
         return Collections.emptyList();
 
     }
+
 
     public List<StatusAccessDto> employeeHolidayGet(CustomUserDetails user, Status status) {
         List<Holiday> holidays = holidayRepository.findByStatus(status); // 해당 상태에 따라 필터링된 휴가 목록을 얻음

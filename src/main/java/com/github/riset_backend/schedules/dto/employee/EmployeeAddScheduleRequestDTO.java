@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record EmployeeAddScheduleRequestDTO(
 
-        Long schedueNo,
+        Long scheduleNo,
 
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
         LocalDateTime startDateTime,

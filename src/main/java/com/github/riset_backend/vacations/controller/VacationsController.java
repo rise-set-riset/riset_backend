@@ -24,7 +24,7 @@ public class VacationsController {
 
     @PostMapping("/addHoliday")
     @Operation(summary = "연차/반차 신청하는 api 입니다", description = "연차/반차 신청할 수 있습니다")
-    public String holiday(@RequestBody RequestHoliday holiday, @AuthenticationPrincipal CustomUserDetails user) {
+    public String holiday(@RequestBody HolidayRequest holiday, @AuthenticationPrincipal CustomUserDetails user) {
         return holidayService.addHoliday(holiday, user).toString();
     }
 
