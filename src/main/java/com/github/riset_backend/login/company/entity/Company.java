@@ -51,9 +51,14 @@ public class Company extends BaseEntity {
     @Column(name = "mdfr_id")
     private String Mdfr_Id;
 
-    @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> companySchedules = new ArrayList<>();
 
 
+    public Company(Double latitude, Double longitude, String companyName, String companyAddr) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.companyName = companyName;
+        this.companyAddr = companyAddr;
+    }
 }

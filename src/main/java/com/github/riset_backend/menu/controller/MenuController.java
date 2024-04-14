@@ -17,6 +17,7 @@ public class MenuController {
 
     @GetMapping
     public MenuResponseDTO getMenus() {
+
         // 유저 정보 생성
         UserDTO user = new UserDTO("유저 이미지 url", "홍길동", "사원");
 

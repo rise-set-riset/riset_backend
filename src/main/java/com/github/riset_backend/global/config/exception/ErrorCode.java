@@ -118,7 +118,9 @@ public enum ErrorCode {
     TEST(HttpStatus.INTERNAL_SERVER_ERROR, "테스트 에러"),
     FAIL_SERIALIZE_OBJECT_INTO_JSON(HttpStatus.BAD_REQUEST, "객체를 JSON으로 변환할 수 없습니다."),
     FAIL_DESERIALIZE_JSON_INTO_OBJECT(HttpStatus.BAD_REQUEST, "JSON을 객체로 변환할 수 없습니다."),
-    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    NOT_FOUND_HOLIDAY(HttpStatus.INTERNAL_SERVER_ERROR, "휴가를 찾을 수 없습니다.");
+
 
 
     private final HttpStatus status;

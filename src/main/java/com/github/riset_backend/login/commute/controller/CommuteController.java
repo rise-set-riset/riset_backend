@@ -3,10 +3,7 @@ package com.github.riset_backend.login.commute.controller;
 
 import com.amazonaws.Response;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
-import com.github.riset_backend.login.commute.dto.CommuteDto;
-import com.github.riset_backend.login.commute.dto.CommuteGetOffDto;
-import com.github.riset_backend.login.commute.dto.CommuteResponseDto;
-import com.github.riset_backend.login.commute.dto.LocationResponseDto;
+import com.github.riset_backend.login.commute.dto.*;
 import com.github.riset_backend.login.commute.service.CommuteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,5 +45,10 @@ public class CommuteController {
     @GetMapping("/company-location")
     public ResponseEntity<List<LocationResponseDto>> companyLocation(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commuteService.getLocation(customUserDetails);
+    }
+
+    @GetMapping("/get-status")
+    public ResponseEntity<StatusResponseDto> getStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return commuteService.getStatus(customUserDetails);
     }
 }

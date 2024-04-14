@@ -4,10 +4,7 @@ package com.github.riset_backend.login.commute.service;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
-import com.github.riset_backend.login.commute.dto.CommuteDto;
-import com.github.riset_backend.login.commute.dto.CommuteGetOffDto;
-import com.github.riset_backend.login.commute.dto.CommuteResponseDto;
-import com.github.riset_backend.login.commute.dto.LocationResponseDto;
+import com.github.riset_backend.login.commute.dto.*;
 import com.github.riset_backend.login.commute.entity.Commute;
 import com.github.riset_backend.login.commute.entity.CommutePlace;
 import com.github.riset_backend.login.commute.entity.CommuteStatus;
@@ -30,6 +27,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static ch.qos.logback.classic.spi.ThrowableProxyVO.build;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -95,45 +94,61 @@ public class CommuteService {
     public ResponseEntity<List<CommuteResponseDto>> getCommuteHistory(CustomUserDetails customUserDetails, int year, int month) {
         Employee employee = findById(customUserDetails);
 
-        List<Commute> commutes = commuteRepository.findByYearAndMonthAndEmployee(year, month, employee);
-        List<Holiday> holidays = holidayRepository.findByYearAndMonthAndEmployee(year, month, employee);
 
         List<CommuteResponseDto> commuteResponseDtos = new ArrayList<>();
 
-        // 출근 기록 처리
+        List<Commute> commutes = commuteRepository.findByYearAndMonthAndEmployee(year, month, employee);
+        List<Holiday> holidays = holidayRepository.findByYearAndMonthAndEmployee(year, month, employee);
+
+
         commutes.forEach(record -> {
-            String color = (Duration.between(record.getCommuteStart(), record.getCommuteEnd()).toHours() >= 5) ? "full" : "half";
+            String color = (record.getCommuteStart() != null && record.getCommuteEnd() != null && Duration.between(record.getCommuteStart(), record.getCommuteEnd()).toHours() >= 5) ? "full" : "half";
 
             CommuteResponseDto dto = CommuteResponseDto.builder()
                     .id(record.getCommuteNo())
-                    .name(record.getEmployee().getName())
-                    .start(record.getCommuteDate().toString())
-                    .way(record.getCommutePlace().getType())
+                    .name(record.getEmployee() != null ? record.getEmployee().getName() : null)
+                    .start(record.getCommuteDate() != null ? record.getCommuteDate().toString() : null)
+                    .way(record.getCommutePlace() != null ? record.getCommutePlace().getType() : null)
                     .color(color)
-                    .startTime(record.getCommuteStart().format(DateTimeFormatter.ofPattern("HH:mm")))
-                    .endTime(record.getCommuteEnd().format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .startTime(record.getCommuteStart() != null ? record.getCommuteStart().format(DateTimeFormatter.ofPattern("HH:mm")) : null)
+                    .endTime(record.getCommuteEnd() != null ? record.getCommuteEnd().format(DateTimeFormatter.ofPattern("HH:mm")) : null)
                     .build();
 
             commuteResponseDtos.add(dto);
         });
 
-        // 휴가 기록 처리
         holidays.forEach(leave -> {
-            CommuteResponseDto dto = CommuteResponseDto.builder()
-                    .id(leave.getLeaveNo())
-                    .name(leave.getEmployee().getName())
-                    .start(leave.getStartDate().toString())
-                    .color("leave")
-                    .build();
+            if (leave != null) {
+                CommuteResponseDto dto = CommuteResponseDto.builder()
+                        .id(leave.getLeaveNo())
+                        .name(leave.getEmployee() != null ? leave.getEmployee().getName() : null)
+                        .start(leave.getStartDate() != null ? leave.getStartDate().toString() : null)
+                        .color("leave")
+                        .build();
 
-            commuteResponseDtos.add(dto);
+                commuteResponseDtos.add(dto);
+            }
         });
 
         return ResponseEntity.ok(commuteResponseDtos);
     }
 
+    public ResponseEntity<StatusResponseDto> getStatus(CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
+
+        Optional<Commute> comOptional = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee);
+
+        if(comOptional.isPresent()){
+            StatusResponseDto dto = new StatusResponseDto(comOptional.get().getCommuteStatus().toString());
+            return ResponseEntity.ok(dto);
+        } else {
+            return null;
+        }
+    }
 
     public Employee findById(CustomUserDetails customUserDetails) {
         return employeeRepository.findById(customUserDetails.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
     }
+
+
 }

@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -26,12 +27,10 @@ public class BoardController {
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
                                                               @RequestParam(defaultValue = "10") int size,
-                                                              @RequestParam(defaultValue = "1") Long empolyeeNo
-//                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-//        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, empolyeeNo);
-        List<BoardResponseDto> boards = boardService.getAllBoard(page, size, empolyeeNo);
-
+        log.info("실행이 된다.");
+        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
         return ResponseEntity.ok(boards);
     }
 
@@ -54,6 +53,7 @@ public class BoardController {
                                                         @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles
 //                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
+        log.info("실행이 된다.");
 //        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
         BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
 

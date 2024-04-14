@@ -1,12 +1,14 @@
 package com.github.riset_backend.writeBoard.board.dto;
 
 import com.github.riset_backend.file.dto.FileResponseDto;
+import com.github.riset_backend.file.entity.File;
 import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.boardFile.entity.BoardFile;
 import com.github.riset_backend.writeBoard.reply.dto.ReplyResponseDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,5 +43,14 @@ public class PostResponseDto {
         this.date = board.getCreateAt();
         this.files = board.getBoardFiles().stream().map(BoardFile::getFile).map(FileResponseDto::new).collect(Collectors.toList());;
         this.comment =  board.getReplies().stream().map(ReplyResponseDto::new).toList();
+    }
+
+    public PostResponseDto(Board board, List<File> files) {
+        this.id = board.getBoardNo();
+        this.title = board.getTitle();
+        this.content = board.getContent();
+        this.date = board.getCreateAt();
+        this.files = files.stream().map(FileResponseDto::new).toList();
+        this.comment = board.getReplies() != null ? board.getReplies().stream().map(ReplyResponseDto::new).toList() : new ArrayList<>();
     }
 }

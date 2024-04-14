@@ -34,6 +34,11 @@ public class BoardResponseDto {
         this.post = new PostResponseDto(board);
     }
 
+    public BoardResponseDto(Board board, List<File> files) {
+        this.user = board.getEmployee();
+        this.post = new PostResponseDto(board, files);
+    }
+
 //    public static BoardResponseDto ToBoardResponseDto (Board board, List<File> files, String writer) {
 //        return BoardResponseDto.builder()
 //                .id(board.getBoardNo())

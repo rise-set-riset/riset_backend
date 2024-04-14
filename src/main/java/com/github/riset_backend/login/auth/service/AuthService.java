@@ -24,8 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -107,7 +105,7 @@ public class AuthService {
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();
@@ -169,5 +167,14 @@ public class AuthService {
             throw new BusinessException(ErrorCode.NOT_FOUND_COOKIE);
         }
         return null;
+    }
+
+    public ResponseEntity<String> checkId(String id) {
+        Optional<Employee> employee = employeeRepository.findByEmployeeId(id);
+
+        if(employee.isPresent()) {
+            return ResponseEntity.badRequest().body("이미 존재하는 아이디입니다.");
+        }
+        return ResponseEntity.ok().body("사용할 수 있는 아이디입니다.");
     }
 }

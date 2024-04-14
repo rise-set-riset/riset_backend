@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     @Value("${cloud.aws.s3.bucket}")
@@ -51,16 +52,16 @@ public class BoardService {
 //    private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public List<BoardResponseDto> getAllBoard(int page, int size, Long empolyeeNo) {
+    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Slice<Board> boards = boardRepository.findSliceByDeletedOrderByCreateAtDesc(null ,pageRequest);
+        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+
+//        Employee employee1 = employeeRepository.findByEmployeeNo(empolyeeNo).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+//        );
+
 //        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
-
-        Employee employee1 = employeeRepository.findByEmployeeNo(empolyeeNo).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-        );
-
-        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee1).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
 
         List<BoardResponseDto> boardResponseDtos = new ArrayList<>();
 
@@ -95,6 +96,8 @@ public class BoardService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
 
+        log.info("employee = {}", employee);
+
         Board board = Board.boardRequestToBoard(boardRequestDto, employee);
 
         List<File> files = new ArrayList<>();
@@ -114,7 +117,10 @@ public class BoardService {
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
 
-        return new BoardResponseDto(newBoard);
+        log.info("newBoard = {}", newBoard);
+        log.info("newFiles = {}", newFiles);
+
+        return new BoardResponseDto(newBoard, newFiles);
     }
 
 
