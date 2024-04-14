@@ -4,7 +4,7 @@ import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
 import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleRequestDTO;
 import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleResponseDTO;
-import com.github.riset_backend.schedules.dto.employee.EmployeeDTO;
+import com.github.riset_backend.schedules.dto.employee.schedulesALL.EmployeeAll;
 import com.github.riset_backend.schedules.service.EmployeeSchedulesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +27,7 @@ public class EmployeeController {
 
     @GetMapping
     @Operation(summary = "첫 진입 조회 api 입니다", description = "첫 진입 조회 api 입니다")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("data") LocalDate data) {
-
+    public ResponseEntity<List<EmployeeAll>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("data") LocalDate data) {
         return ResponseEntity.ok(employeeSchedulesService.getAllEmployees(user, data));
     }
 

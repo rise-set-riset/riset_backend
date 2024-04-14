@@ -32,11 +32,21 @@ public class QCompany extends EntityPathBase<Company> {
 
     public final ListPath<com.github.riset_backend.schedules.entity.Schedule, com.github.riset_backend.schedules.entity.QSchedule> companySchedules = this.<com.github.riset_backend.schedules.entity.Schedule, com.github.riset_backend.schedules.entity.QSchedule>createList("companySchedules", com.github.riset_backend.schedules.entity.Schedule.class, com.github.riset_backend.schedules.entity.QSchedule.class, PathInits.DIRECT2);
 
+    public final StringPath companyTelNo = createString("companyTelNo");
+
     //inherited
     public final NumberPath<Long> createdBy = _super.createdBy;
 
+    public final NumberPath<Double> latitude = createNumber("latitude", Double.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> localDateTime = _super.localDateTime;
+
+    public final NumberPath<Double> longitude = createNumber("longitude", Double.class);
+
+    public final StringPath Mdfr_Id = createString("Mdfr_Id");
+
+    public final NumberPath<Integer> parentCompanyNo = createNumber("parentCompanyNo", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

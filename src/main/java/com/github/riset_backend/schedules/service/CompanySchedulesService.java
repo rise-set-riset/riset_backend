@@ -56,9 +56,9 @@ public class CompanySchedulesService {
                 .collect(Collectors.groupingBy(dto -> {
                     LocalDateTime startDate;
                     try {
-                        startDate = LocalDateTime.parse(dto.startDate());
+                        startDate = LocalDateTime.parse(dto.startTime());
                     } catch (DateTimeParseException e) {
-                        startDate = LocalDate.parse(dto.startDate(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
+                        startDate = LocalDate.parse(dto.startTime(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
                     }
                     return String.format("%02d일", startDate.getDayOfMonth());
                 }, TreeMap::new, Collectors.toList()));
@@ -76,17 +76,17 @@ public class CompanySchedulesService {
 
         try {
             // startDate가 T를 포함하는지 확인하여 처리합니다.
-            if (request.startDate().contains("T")) {
-                startDateTime = LocalDateTime.parse(request.startDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            if (request.startTime().contains("T")) {
+                startDateTime = LocalDateTime.parse(request.startTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                startDateTime = LocalDateTime.parse(request.startDate() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                startDateTime = LocalDateTime.parse(request.startTime() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
 
             // endDate가 T를 포함하는지 확인하여 처리합니다.
-            if (request.endDate().contains("T")) {
-                endDateTime = LocalDateTime.parse(request.endDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            if (request.endTime().contains("T")) {
+                endDateTime = LocalDateTime.parse(request.endTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                endDateTime = LocalDateTime.parse(request.endDate() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                endDateTime = LocalDateTime.parse(request.endTime() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);
@@ -125,17 +125,17 @@ public class CompanySchedulesService {
 
         try {
             // startDate가 T를 포함하는지 확인하여 처리합니다.
-            if (request.startDate().contains("T")) {
-                startDateTime = LocalDateTime.parse(request.startDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            if (request.startTime().contains("T")) {
+                startDateTime = LocalDateTime.parse(request.startTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                startDateTime = LocalDateTime.parse(request.startDate() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                startDateTime = LocalDateTime.parse(request.startTime() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
 
             // endDate가 T를 포함하는지 확인하여 처리합니다.
-            if (request.endDate().contains("T")) {
-                endDateTime = LocalDateTime.parse(request.endDate(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            if (request.endTime().contains("T")) {
+                endDateTime = LocalDateTime.parse(request.endTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             } else {
-                endDateTime = LocalDateTime.parse(request.endDate() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                endDateTime = LocalDateTime.parse(request.endTime() + "T00:00:00", DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             }
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.FORBIDDEN_ERROR);

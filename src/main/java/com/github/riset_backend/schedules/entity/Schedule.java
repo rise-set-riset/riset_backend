@@ -71,22 +71,26 @@ public class Schedule {
     }
 
     //직원 일정수정
-    public void update(String title, String content, LocalDateTime startDate, LocalDateTime endDate, String writer) {
+    public void update(String title, LocalDateTime startDate, LocalDateTime endDate) {
         this.title = title;
-        this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.writer = writer;
+
     }
 
-    //직원 일정등록
-    public void addEmployee(Employee employee, Company company, LocalDateTime startDate, LocalDateTime endDate, String content, String title, Status status) {
+    //직원 일정추가
+    public void addEmployee(Employee employee, Company company, LocalDateTime startDate, LocalDateTime endDate, String title) {
         this.employee = employee;
         this.company = company;
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
-        this.content = content;
-        this.status = status;
+    }
+
+
+    public void addTime(LocalDateTime startDate, LocalDateTime endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        // 다른 필드들 초기화
     }
 }

@@ -57,22 +57,20 @@ public class Holiday {
 
 
     //연차 일 경우
-    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, String comment) {
+    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, Status status) {
         this.employee = employee;
         this.startDate = startDate;
         this.leaveStatus = leaveStatus;
-        this.comment = comment;
-        this.status = Status.valueOf(String.valueOf(status));
+        this.status = status;
     }
 
     // 반차일 경우
-    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, String comment) {
+    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, Status status) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.leaveStatus = leaveStatus;
-        this.comment = comment;
-        this.status = Status.valueOf(String.valueOf(status));
+        this.status = status;
     }
 
     //연차/반차 수정

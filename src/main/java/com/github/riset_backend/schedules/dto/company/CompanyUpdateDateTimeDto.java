@@ -17,10 +17,10 @@ public record CompanyUpdateDateTimeDto(
         String writer,
 
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
-        String startDate,
+        String startTime,
 
         @Schema(description = "끝나는 날짜", example = "2023-04-01 09:00")
-        String endDate,
+        String endTime,
 
         @Schema(description = "색상", example = "color, #fffff")
         String color
