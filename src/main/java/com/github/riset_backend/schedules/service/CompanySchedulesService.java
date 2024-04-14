@@ -38,7 +38,7 @@ public class CompanySchedulesService {
     private final CompanyRepository companyRepository;
 
     // 회사의 해당하는 월의 값을 받아서 전부 return / 회사일정 시 달력의 값에 넣어주기 위해서
-    public Map<String, List<CompanyScheduleResponseDto>> getAllCompanySchedules(String total, CustomUserDetails user) {
+    public List<CompanyScheduleResponseDto> getAllCompanySchedules(String total, CustomUserDetails user) {
         // 회사정보
         Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
@@ -53,15 +53,7 @@ public class CompanySchedulesService {
                 .filter(schedule -> String.valueOf(schedule.getStartDate().getMonthValue()).equals(currentMonth))
                 .sorted(Comparator.comparing(Schedule::getStartDate))
                 .map(mapToDto)
-                .collect(Collectors.groupingBy(dto -> {
-                    LocalDateTime startDate;
-                    try {
-                        startDate = LocalDateTime.parse(dto.startTime());
-                    } catch (DateTimeParseException e) {
-                        startDate = LocalDate.parse(dto.startTime(), DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
-                    }
-                    return String.format("%02d일", startDate.getDayOfMonth());
-                }, TreeMap::new, Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     // 회사 일정 추가
@@ -153,8 +145,6 @@ public class CompanySchedulesService {
     }
 
 
-
-
     //삭제
     @Transactional
     public String deleteCompanySchedule(Long scheduleId, CustomUserDetails user) {
@@ -171,8 +161,6 @@ public class CompanySchedulesService {
             throw new NoSuchElementException("삭제할 일정을 찾을 수 없습니다"); // 일정이 존재하지 않을 때 예외 던지기
         }
     }
-
-
 
 
     //String 추출 대입
