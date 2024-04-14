@@ -45,17 +45,12 @@ public class CompanySchedulesService {
         Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
 
-        int year = Integer.parseInt(total.substring(0, 4));
+        String yearString = total.substring(0, 4);
         String currentMonth = total.substring(4, 6).replaceFirst("^0*", "");
 
         return company.getCompanySchedules().stream()
-                .peek(schedule -> {
-                    System.out.println("Schedule Year: " + schedule.getStartDate().getYear() +
-                            ", Month: " + schedule.getStartDate().getMonthValue());
-                })
-                .filter(schedule -> String.valueOf(schedule.getStartDate().getYear()).equals(String.valueOf(year)))
+                .filter(schedule -> String.valueOf(schedule.getStartDate().getYear()).equals(yearString))
                 .filter(schedule -> String.valueOf(schedule.getStartDate().getMonthValue()).equals(currentMonth))
-                .peek(schedule -> String.valueOf(schedule.getStartDate().getMonthValue()).equals(currentMonth))
                 .map(schedule -> new CompanyScheduleResponseDto(
                         schedule.getScheduleNo(),
                         schedule.getWriter(),
@@ -123,7 +118,6 @@ public class CompanySchedulesService {
             throw new BusinessException(ErrorCode.EXPIRED_JWT_ERROR, "유저 정보를 찾을 수 없습니다.");
         }
     }
-
 
 
     private LocalDateTime parseDateTime(String dateTimeString) {
