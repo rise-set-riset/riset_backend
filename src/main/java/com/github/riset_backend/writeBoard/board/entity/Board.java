@@ -46,6 +46,8 @@ public class Board  {
     @Column(name = "deleted")
     private String deleted;
 
+
+
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardFile> boardFiles;
 

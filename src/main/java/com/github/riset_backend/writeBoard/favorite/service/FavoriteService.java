@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final EmployeeRepository employeeRepository;
     private final BoardRepository boardRepository;
 
     @Transactional
