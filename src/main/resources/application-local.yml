@@ -47,7 +47,6 @@ spring:
     mongodb:
       uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
 
-
   h2:
     console:
       enabled: true
