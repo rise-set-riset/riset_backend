@@ -39,8 +39,17 @@ spring:
       host: riset-redis-ro.l4h4dd.ng.0001.apn2.cache.amazonaws.com # 로컬에서 테스트 할 때는 localhost로 사용
       port: 6379
 
+#    mongodb:
+#      host: ec2-3-39-211-52.ap-northeast-2.compute.amazonaws.com
+#      username: riset
+#      password: riset1234
+#      database: chat_db
     mongodb:
-      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+      uri: mongodb+srv://riset:riset1234@ec2-3-39-211-52.ap-northeast-2.compute.amazonaws.com/chat_db
+
+
+  #    mongodb:
+#      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
 #
 #  mongodb:
 #    uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
