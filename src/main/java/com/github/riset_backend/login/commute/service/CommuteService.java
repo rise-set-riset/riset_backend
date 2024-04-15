@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class CommuteService {
     private final HolidayRepository holidayRepository;
     private final CompanyRepository companyRepository;
 
-    public ResponseEntity<?> addCommute(CommuteDto commuteDto, CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> registerCommute(CommuteDto commuteDto, CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
         Commute commute = Commute.builder()
@@ -55,6 +56,23 @@ public class CommuteService {
         return ResponseEntity.ok().body("출근 시간이 추가되었습니다.");
     }
 
+    public ResponseEntity<?> addCommute(CustomUserDetails customUserDetails, CommuteRequestDto commuteRequestDto) {
+        Employee employee = findById(customUserDetails);
+
+        Commute commute = Commute.builder()
+                .commuteDate(commuteRequestDto.commuteDate())
+                .employee(employee)
+                .commuteStart(commuteRequestDto.commuteStart())
+                .commuteEnd(commuteRequestDto.commuteEnd())
+                .commutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()))
+                .commuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()))
+                .build();
+
+        commuteRepository.save(commute);
+
+        return ResponseEntity.ok().body("출퇴근 시간이 추가되었습니다.");
+    }
+
     public ResponseEntity<String> getOff(CommuteGetOffDto commuteGetOffDto, CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
@@ -65,7 +83,33 @@ public class CommuteService {
         // 변경된 출근 데이터 저장
         commuteRepository.save(commute);
 
-        return ResponseEntity.ok("퇴근 시간이 추가되었습니다.");
+        return ResponseEntity.ok().body("퇴근 시간이 추가되었습니다.");
+    }
+
+    public ResponseEntity<RecordResponseDto> getRecord(CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
+
+        LocalDate localDate = LocalDate.now();
+        LocalTime localTime = LocalTime.now();
+
+        Optional<Commute> comOptional = commuteRepository.findByEmployeeAndCommuteDate(employee, localDate);
+
+        if(comOptional.isPresent()){
+            RecordResponseDto recordResponseDto = RecordResponseDto.builder()
+                    .commuteDate(comOptional.get().getCommuteDate().toString())
+                    .commuteStart(comOptional.get().getCommuteStart().toString())
+                    .commutePlace(comOptional.get().getCommutePlace().toString())
+                    .name(employee.getName())
+                    .build();
+            return ResponseEntity.ok().body(recordResponseDto);
+        } else {
+            RecordResponseDto recordResponseDto = RecordResponseDto.builder()
+                    .commuteDate(localDate.toString())
+                    .name(employee.getName())
+                    .commuteStart(localTime.format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .build();
+            return ResponseEntity.ok().body(recordResponseDto);
+        }
     }
 
 
@@ -88,7 +132,7 @@ public class CommuteService {
             response.add(locationResponseDto);
         }
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().body(response);
     }
 
     public ResponseEntity<List<CommuteResponseDto>> getCommuteHistory(CustomUserDetails customUserDetails, int year, int month) {
@@ -130,7 +174,7 @@ public class CommuteService {
             }
         });
 
-        return ResponseEntity.ok(commuteResponseDtos);
+        return ResponseEntity.ok().body(commuteResponseDtos);
     }
 
     public ResponseEntity<StatusResponseDto> getStatus(CustomUserDetails customUserDetails) {
@@ -140,7 +184,7 @@ public class CommuteService {
 
         if(comOptional.isPresent()){
             StatusResponseDto dto = new StatusResponseDto(comOptional.get().getCommuteStatus().toString());
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.ok().body(dto);
         } else {
             return null;
         }

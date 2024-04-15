@@ -2,6 +2,7 @@ package com.github.riset_backend.login.auth.controller;
 
 
 import com.github.riset_backend.global.config.exception.BusinessException;
+import com.github.riset_backend.login.auth.dto.RequestCheckIdDto;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.auth.service.AuthService;
@@ -26,9 +27,9 @@ public class AuthController {
         return authService.employeeSignup(requestSignUpDto);
     }
 
-    @GetMapping("/checkId")
-    public ResponseEntity<String> checkId(@RequestBody String Id) {
-        return authService.checkId(Id);
+    @PostMapping("/checkId")
+    public ResponseEntity<String> checkId(@RequestBody RequestCheckIdDto id) {
+        return authService.checkId(id);
     }
 
     @PostMapping("/login")
