@@ -4,7 +4,6 @@ package com.github.riset_backend.schedules.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.employee.entity.Employee;
-import com.github.riset_backend.schedules.dto.company.TestDto;
 import com.github.riset_backend.vacations.dto.Status;
 import jakarta.persistence.*;
 import lombok.Builder;
