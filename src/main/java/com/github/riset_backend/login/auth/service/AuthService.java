@@ -7,6 +7,7 @@ import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 import com.github.riset_backend.global.config.auth.filter.JwtAuthenticationFilter;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
+import com.github.riset_backend.login.auth.dto.RequestCheckIdDto;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -169,12 +170,11 @@ public class AuthService {
         return null;
     }
 
-    public ResponseEntity<String> checkId(String id) {
-        Optional<Employee> employee = employeeRepository.findByEmployeeId(id);
-
-        if(employee.isPresent()) {
-            return ResponseEntity.badRequest().body("이미 존재하는 아이디입니다.");
+    public ResponseEntity<String> checkId(RequestCheckIdDto requestCheckIdDto) {
+        if (employeeRepository.existsByEmployeeId(requestCheckIdDto.id())) {
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
         }
-        return ResponseEntity.ok().body("사용할 수 있는 아이디입니다.");
+
+       return ResponseEntity.ok().body("사용할 수 있는 아이디입니다.");
     }
 }
