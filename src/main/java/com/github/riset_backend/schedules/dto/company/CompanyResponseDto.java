@@ -4,16 +4,13 @@ import java.time.LocalDateTime;
 
 public record CompanyResponseDto(
         Long scheduleNo,
-        LocalDateTime startDate,
-        LocalDateTime endDate,
+        LocalDateTime start,
+        LocalDateTime end,
         String title,
         String writer,
         String content,
         String color
 ) {
 
-    public Long getScheduleNo() {
-        return this.scheduleNo;
-    }
 
 }

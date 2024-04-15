@@ -7,13 +7,13 @@ import java.util.List;
 
 public record EmployeeAll(
         Long employeeId,
-        String name,
-        String department,
+//        String name,
+//        String department,
         String position,
         String image,
         String commuteStartTime,
         String commuteEndTime,
-        CommutePlace commutePlace,
+        String endTime, CommutePlace commutePlace,
         EmployeeBooleanResponse booleanResponse,
         List<EmployeeSchedulesResponse> schedulesDetail,
         List<EmployeeHalfLeaveResponse> halfLeaveDetail,

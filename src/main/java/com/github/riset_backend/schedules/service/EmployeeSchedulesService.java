@@ -15,17 +15,15 @@ import com.github.riset_backend.schedules.dto.employee.*;
 import com.github.riset_backend.schedules.dto.employee.schedulesALL.*;
 import com.github.riset_backend.schedules.entity.Schedule;
 import com.github.riset_backend.schedules.repository.ScheduleRepository;
-import com.github.riset_backend.vacations.dto.Status;
+
 import com.github.riset_backend.vacations.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -72,7 +70,7 @@ public class EmployeeSchedulesService {
         EmployeeBooleanResponse booleanResponse = new EmployeeBooleanResponse(hasHalfLeave, hasAnnualLeave, hasSchedules);
 
         EmployeeAll combinedResponse = new EmployeeAll(employee.getEmployeeNo(), employee.getName(),
-                employee.getDepartment().getDeptName(), employee.getPosition(),employee.getMyImage().getFilePath(),
+                employee.getPosition(),employee.getMyImage().getFilePath(),
                 commuteStartTime, commuteEndTime, commutePlace, booleanResponse, schedules, halfLeave, annualLeave);
 
 
