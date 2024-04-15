@@ -1,7 +1,8 @@
 package com.github.riset_backend.login.auth.controller;
 
 
-import com.github.riset_backend.global.config.exception.BusinessException;
+import com.github.riset_backend.login.auth.dto.FindIdRequestDto;
+import com.github.riset_backend.login.auth.dto.FindPasswordRequestDto;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.auth.service.AuthService;
@@ -37,10 +38,15 @@ public class AuthController {
         return authService.employeeLogin(requestLoginDto, httpServletResponse);
     }
 
-
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletResponse response, HttpServletRequest request){
 
         return authService.refresh(request, response);
     }
+
+    @PostMapping("/find-id")
+    public ResponseEntity<?> findId(@RequestBody FindIdRequestDto findIdRequestDto) { return authService.findId(findIdRequestDto); }
+
+    @PostMapping("/find-password")
+    public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequestDto findPasswordRequestDto) { return authService.findPassword(findPasswordRequestDto);}
 }

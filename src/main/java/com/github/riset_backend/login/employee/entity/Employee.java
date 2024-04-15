@@ -93,5 +93,4 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     Rating rating;
 
-
 }
