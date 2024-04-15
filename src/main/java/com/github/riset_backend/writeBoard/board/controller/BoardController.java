@@ -27,20 +27,30 @@ public class BoardController {
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
                                                               @RequestParam(defaultValue = "10") int size,
+                                                              @RequestParam(defaultValue = "") String title,
                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        log.info("실행이 된다.");
-        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
+        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size, title);
         return ResponseEntity.ok(boards);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<BoardResponseDto>> getSearchAllBoard(@RequestParam(defaultValue = "1") int page,
-                                                                    @RequestParam(defaultValue = "10") int size,
-                                                                    @RequestParam(defaultValue = "") String title) {
-        List<BoardResponseDto> boards = boardService.getSearchAllBoard(page, size, title);
+    @GetMapping("/mine")
+    public ResponseEntity<List<BoardResponseDto>> getAllBoardByEmployeeNo (@RequestParam(defaultValue = "1") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "") String title,
+                                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        List<BoardResponseDto> boards = boardService.getAllBoardByEmployeeNo(customUserDetails.getEmployee(), page, size, title);
         return ResponseEntity.ok(boards);
     }
+
+//    @GetMapping("/search")
+//    public ResponseEntity<List<BoardResponseDto>> getSearchAllBoard(@RequestParam(defaultValue = "1") int page,
+//                                                                    @RequestParam(defaultValue = "10") int size,
+//                                                                    @RequestParam(defaultValue = "") String title) {
+//        List<BoardResponseDto> boards = boardService.getSearchAllBoard(page, size, title);
+//        return ResponseEntity.ok(boards);
+//    }
 
     @GetMapping("/{boardNo}")
     public ResponseEntity<BoardResponseDto> getBoardByBoardNo(@PathVariable Long boardNo) {
@@ -50,13 +60,10 @@ public class BoardController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard(@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
-                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles
-//                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
+                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        log.info("실행이 된다.");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
-        BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
-
+        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
         return ResponseEntity.ok(board);
     }
 

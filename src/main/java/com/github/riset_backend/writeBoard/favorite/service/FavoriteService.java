@@ -63,9 +63,9 @@ public class FavoriteService {
     }
 
     @Transactional
-    public List<FavoriteResponseDto> getAllFavoriteBoard(Employee employee, int page, int size) {
+    public List<FavoriteResponseDto> getAllFavoriteBoard(Employee employee, int page, int size, String title) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Slice<Favorite> favorites = favoriteRepository.findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(employee, null ,pageRequest);
+        Slice<Favorite> favorites = favoriteRepository.findSliceByEmployeeAndBoard_TitleContainingAndBoard_DeletedOrderByIndexNumber(employee, title,null ,pageRequest);
 
         return favorites.stream().map(FavoriteResponseDto::new).collect(Collectors.toList());
     }

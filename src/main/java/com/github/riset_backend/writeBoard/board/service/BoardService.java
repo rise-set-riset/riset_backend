@@ -49,12 +49,11 @@ public class BoardService {
     private final FileRepository fileRepository;
     private final BoardFileRepository boardFileRepository;
     private final FavoriteRepository favoriteRepository;
-//    private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size) {
+    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size, String title) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Slice<Board> boards = boardRepository.findSliceByDeletedOrderByCreateAtDesc(null ,pageRequest);
+        Slice<Board> boards = boardRepository.findSliceByDeletedAndTitleContainingOrderByCreateAtDesc(null, title, pageRequest);
         List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
 
 //        Employee employee1 = employeeRepository.findByEmployeeNo(empolyeeNo).orElseThrow(
@@ -73,12 +72,12 @@ public class BoardService {
         return boardResponseDtos;
     }
 
-    @Transactional
-    public List<BoardResponseDto> getSearchAllBoard(int page, int size, String title) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Slice<Board> boards = boardRepository.findSliceByDeletedAndTitleContainingOrderByCreateAtDesc(null ,title, pageRequest);
-        return boards.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
-    }
+//    @Transactional
+//    public List<BoardResponseDto> getSearchAllBoard(int page, int size, String title) {
+//        PageRequest pageRequest = PageRequest.of(page, size);
+//        Slice<Board> boards = boardRepository.findSliceByDeletedAndTitleContainingOrderByCreateAtDesc(null ,title, pageRequest);
+//        return boards.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+//    }
 
     @Transactional
     public BoardResponseDto getBoardByBoardNo(Long boardNo) {
@@ -116,9 +115,6 @@ public class BoardService {
         Board newBoard = boardRepository.save(board);
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
-
-        log.info("newBoard = {}", newBoard);
-        log.info("newFiles = {}", newFiles);
 
         return new BoardResponseDto(newBoard, newFiles);
     }
@@ -205,6 +201,20 @@ public class BoardService {
 
         board.setDeleted("y");
         return new BoardResponseDto(board);
+    }
+
+    @Transactional
+    public List<BoardResponseDto> getAllBoardByEmployeeNo(Employee employee, int page, int size, String title) {
+
+        Employee employee1 = employeeRepository.findByEmployeeNo(1L).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+        );
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Slice<Board> boards = boardRepository.findSliceByEmployeeAndTitleContainingAndDeletedOrderByCreateAt(employee1, title, null,pageRequest);
+
+        log.info("boards = {}", boards);
+        return boards.stream().map(BoardResponseDto::new).collect(Collectors.toList());
     }
 
 
