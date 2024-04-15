@@ -32,6 +32,8 @@ public class ChatRoomService {
     private final ChatRepository chatRepository;
 
     public ChatRoomResponseDto createChatRoom(CreateChatRoomRequestDto dto) {
+
+
         List<Employee> employees = new ArrayList<>();
 
         dto.getMembers().forEach(employeeNo -> {
@@ -41,11 +43,20 @@ public class ChatRoomService {
             employees.add(employee);
         });
 
-        LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        log.info("employees = {}", employees);
 
-         ChatRoom chatRoom = new ChatRoom(employees, now);
+//        LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime now = LocalDateTime.now();
+
+
+        ChatRoom chatRoom = new ChatRoom(employees, now);
+
+        log.info("ChatRoom = {}", chatRoom);
 
          ChatRoom createChatRoom = chatRoomRepository.save(chatRoom);
+
+        log.info("createChatRoom = {}", createChatRoom);
+
          return new ChatRoomResponseDto(createChatRoom);
     }
 

@@ -39,6 +39,7 @@ public class ChatRoomController {
 
     @PostMapping
     public ResponseEntity<ChatRoomResponseDto> createChatRoom (@RequestBody CreateChatRoomRequestDto dto) {
+        log.info("controller 실행");
         ChatRoomResponseDto chatRoom = chatRoomService.createChatRoom(dto);
         return ResponseEntity.ok(chatRoom);
     }

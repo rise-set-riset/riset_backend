@@ -36,6 +36,7 @@ public class UploadImageService {
 
         Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
 
+
         // 저장경로 설정
         String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
         // 파일 이름 생성 (UUID + 원본 파일 이름)

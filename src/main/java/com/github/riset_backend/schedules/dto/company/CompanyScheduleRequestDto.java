@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 public record CompanyScheduleRequestDto(
-        Long id,
 
+        Long scheduleNo,
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
         String start,
         @Schema(description = "끝나는 날짜", example = "2023-04-02 09:00")
