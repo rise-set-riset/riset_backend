@@ -74,4 +74,14 @@ public class BoardController {
         BoardResponseDto board = boardService.deletedBoard(boardNo);
         return ResponseEntity.ok(board);
     }
+
+    @GetMapping("/mine")
+    public ResponseEntity<List<BoardResponseDto>> getAllBoardByEmployeeNo (@RequestParam(defaultValue = "1") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "") String title,
+                                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        List<BoardResponseDto> boards = boardService.getAllBoardByEmployeeNo(customUserDetails.getEmployee(), page, size, title);
+        return ResponseEntity.ok(boards);
+    }
 }

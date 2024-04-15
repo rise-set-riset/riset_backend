@@ -207,6 +207,16 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    @Transactional
+    public List<BoardResponseDto> getAllBoardByEmployeeNo(Employee employee, int page, int size, String title) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Slice<Board> boards = boardRepository.findSliceByEmployeeAndTitleContainingAndDeletedOrderByCreateAt(employee, title, null,pageRequest);
+
+        return boards.stream().map(BoardResponseDto::new).collect(Collectors.toList());
+    }
+
+
 
     private record Result(File file, BoardFile boardFile) {
     }
