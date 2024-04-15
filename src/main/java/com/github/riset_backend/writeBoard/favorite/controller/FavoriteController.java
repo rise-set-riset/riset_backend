@@ -27,10 +27,10 @@ public class FavoriteController {
     }
 
     @PostMapping("/{boardNo}")
-    public ResponseEntity<FavoriteResponseDto> createFavoriteBoard (@PathVariable Long boardNo,
+    public ResponseEntity<List<FavoriteResponseDto>> createFavoriteBoard (@PathVariable Long boardNo,
                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        FavoriteResponseDto favorite = favoriteService.createFavoriteBoard(boardNo, customUserDetails.getEmployee());
-        return ResponseEntity.ok(favorite);
+        List<FavoriteResponseDto> favorites = favoriteService.createFavoriteBoard(boardNo, customUserDetails.getEmployee());
+        return ResponseEntity.ok(favorites);
     }
 
     @PatchMapping("/update/{boardNo}")
@@ -43,11 +43,11 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/delete/{favoriteId}")
-    public ResponseEntity<FavoriteResponseDto> deleteFavoriteBoard (@PathVariable Long favoriteId,
+    public ResponseEntity<List<FavoriteResponseDto>> deleteFavoriteBoard (@PathVariable Long favoriteId,
                                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails
                                                        ) {
-        FavoriteResponseDto favorite = favoriteService.deleteFavoriteBoard(favoriteId, customUserDetails.getEmployee());
-        return ResponseEntity.ok(favorite);
+        List<FavoriteResponseDto> favorites = favoriteService.deleteFavoriteBoard(favoriteId, customUserDetails.getEmployee());
+        return ResponseEntity.ok(favorites);
     }
 
 }
