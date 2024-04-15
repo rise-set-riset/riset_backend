@@ -45,9 +45,11 @@ public class ChatRoomService {
 
         log.info("employees = {}", employees);
 
-        LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//        LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime now = LocalDateTime.now();
 
-         ChatRoom chatRoom = new ChatRoom(employees, now);
+
+        ChatRoom chatRoom = new ChatRoom(employees, now);
 
         log.info("ChatRoom = {}", chatRoom);
 
