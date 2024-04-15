@@ -45,7 +45,7 @@ spring:
 #      password: riset1234
 #      database: chat_db
     mongodb:
-      uri: mongodb://riset:riset1234@3.39.211.52:27017/chat_db?directConnection=true&appName=mongosh+2.2.3
+      uri: mongodb://riset:riset1234@3.39.211.52:27017/chat_db??retryWrites=true&w=majority&appName=chat
 
 
   #    mongodb:
