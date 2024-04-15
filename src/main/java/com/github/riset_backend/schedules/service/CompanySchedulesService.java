@@ -7,11 +7,8 @@ import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
-import com.github.riset_backend.schedules.dto.company.CompanyResponseDto;
-import com.github.riset_backend.schedules.dto.company.CompanyScheduleResponseDto;
-import com.github.riset_backend.schedules.dto.company.CompanyUpdateDateTimeDto;
+import com.github.riset_backend.schedules.dto.company.*;
 import com.github.riset_backend.schedules.entity.Schedule;
-import com.github.riset_backend.schedules.dto.company.CompanyScheduleRequestDto;
 import com.github.riset_backend.schedules.repository.ScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,8 +35,10 @@ public class CompanySchedulesService {
     private final EmployeeRepository employeeRepository;
     private final CompanyRepository companyRepository;
 
+
+    // 회사정보 조회
     public List<CompanyScheduleResponseDto> getAllCompanySchedules(String total, CustomUserDetails user) {
-        // 회사정보
+
         Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
 
@@ -63,78 +60,61 @@ public class CompanySchedulesService {
                 .collect(Collectors.toList());
     }
 
-
     //회사 일정 추가
-    //회사 추가
     @Transactional
-    public CompanyResponseDto schedulesAdd(CompanyScheduleRequestDto request, CustomUserDetails user) {
-        Optional<Employee> employeeUser = employeeRepository.findByEmployeeId(user.getUsername());
+    public CompanyScheduleRequestDto schedulesAdd(CompanyScheduleRequestDto request, CustomUserDetails user) {
+        Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
 
-        if (employeeUser.isPresent()) {
-            LocalDateTime startDateTime;
-            LocalDateTime endDateTime;
 
-            try {
-                // 시작 시간 및 종료 시간을 파싱합니다.
-                startDateTime = parseDateTime(request.start());
-                endDateTime = parseDateTime(request.end());
-            } catch (DateTimeParseException e) {
-                // 날짜 및 시간 형식이 올바르지 않은 경우 적절한 예외를 던집니다.
-                throw new BusinessException(ErrorCode.EXIST_FAVORITE, "날짜 및 시간 형식이 올바르지 않습니다.");
-            }
+        log.info(String.valueOf(employee.getEmployeeNo()));
 
-            Company company = employeeUser.get().getCompany();
-
-            // 스케줄 객체 생성
-            Schedule schedule = Schedule.builder()
-                    .employee(employeeUser)
-                    .company(company)
-                    .startDate(startDateTime)
-                    .endDate(endDateTime)
-                    .content(request.content())
-                    .title(request.title())
-                    .writer(request.writer())
-                    .color(request.color())
-                    .build();
-
-            company.getCompanySchedules().add(schedule);
-
-            // 스케줄 저장 및 ID 반환
-            Schedule savedSchedule = schedulesRepository.save(schedule);
-            System.out.println("Saved scheduleNo: " + savedSchedule.getScheduleNo());
-            // 스케줄 번호도 함께 반환합니다.
-            return new CompanyResponseDto(
-                    savedSchedule.getScheduleNo(), // 스케줄 번호
-                    savedSchedule.getStartDate(), // 시작 날짜
-                    savedSchedule.getEndDate(), // 끝나는 날짜
-                    savedSchedule.getTitle(), // 일정 제목
-                    savedSchedule.getWriter(), // 작성자
-                    savedSchedule.getContent(), // 내용
-                    savedSchedule.getColor() // 색상
-            );
-
-        } else {
-            // 유저가 존재하지 않으면 적절한 예외를 던집니다.
-            throw new BusinessException(ErrorCode.EXPIRED_JWT_ERROR, "유저 정보를 찾을 수 없습니다.");
+        Schedule schedule = new Schedule();
+        if (!request.start().contains("T") && request.end().contains("T")) {
+            // 시작일이 없고 종료일에 시간 정보가 포함되어 있으면
+            // 시작일에는 T00:00을 붙이고, 종료일의 시간을 23:59로 변경하여 저장
+            schedule.addTime(request.start() + "T00:00", request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee);
         }
-    }
+        if (request.start().contains("T") && request.end().contains("T")) {
+            // 시작일과 종료일이 모두 시간 정보를 포함하고, 일자가 같은 경우
+            if (request.start().substring(0, 10).equals(request.end().substring(0, 10))) {
+                schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee);
+            } else {
+                // 시작일과 종료일이 모두 시간 정보를 포함하지만, 일자가 다른 경우
+                // 종료일의 시간을 23:59로 변경하여 저장
+                schedule.addTime(request.start(), request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee);
+            }
+        } else if (!request.start().contains("T") && !request.end().contains("T")) {
+            schedule.addTime(request.start() + "T00:00", request.end() + "T23:59", request.title(), request.writer(), request.content(), request.color(), employee);
+        } else if (!request.start().contains("T") && !request.end().contains("T") && request.start().equals(request.end())) {
+            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee);
+        } else if (request.start().substring(0, 10).equals(request.end().substring(0, 10)) && request.start().contains("T")) {
+            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(),employee);
+        }
 
+        String startDateString = schedule.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        String endDateString = schedule.getEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-    private LocalDateTime parseDateTime(String dateTimeString) {
-        // 문자열을 T를 기준으로 날짜와 시간으로 분리합니다.
-        String[] dateTimeParts = dateTimeString.split("T");
+// 시작일이 T00:00:00일 경우 시간 정보를 잘라냄
+        if (schedule.getStartDate().toLocalTime().equals(LocalTime.MIN)) {
+            startDateString = schedule.getStartDate().toLocalDate().toString();
+        }
 
-        // 날짜 부분과 시간 부분을 추출합니다.
-        String dateString = dateTimeParts[0];
-        String timeString = dateTimeParts.length > 1 ? dateTimeParts[1] : "00:00"; // 시간 부분이 없으면 "00:00"을 기본값으로 설정합니다.
+// 종료일이 T23:59:00일 경우 시간 정보를 T24:00으로 변경
+        if (schedule.getEndDate().toLocalTime().equals(LocalTime.of(23, 59))) {
+            endDateString = schedule.getEndDate().toLocalDate().plusDays(1).toString();
+        }
 
-        // 날짜와 시간을 파싱하여 LocalDateTime으로 변환합니다.
-        LocalDate date = LocalDate.parse(dateString);
-        LocalTime time = LocalTime.parse(timeString);
-
-
-        // LocalDateTime 객체를 생성합니다.
-        return LocalDateTime.of(date, time);
+        Long save = schedulesRepository.save(schedule).getScheduleNo();
+// 변경된 시작일과 종료일을 CompanyScheduleRequestDto로 반환
+        return new CompanyScheduleRequestDto(
+                save,
+                startDateString,
+                endDateString,
+                schedule.getTitle(),
+                schedule.getWriter(),
+                schedule.getContent(),
+                schedule.getColor()
+        );
     }
 
 
@@ -193,7 +173,7 @@ public class CompanySchedulesService {
     }
 
 
-    //String 추출 대입
+    // String 추출 대입
     private Map<String, String> extractStringFields(CompanyUpdateDateTimeDto dto) {
         return Stream.of(
                         getFieldEntry("title", dto.title()),
@@ -205,7 +185,7 @@ public class CompanySchedulesService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    //map 엔트리 생성
+    // map 엔트리 생성
     private Map.Entry<String, String> getFieldEntry(String fieldName, String value) {
         return new AbstractMap.SimpleEntry<>(fieldName, value);
     }

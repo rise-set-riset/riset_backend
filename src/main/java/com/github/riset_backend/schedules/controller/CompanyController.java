@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
@@ -29,8 +28,8 @@ public class CompanyController {
     //회사 일정 추가
     @PostMapping("/companySchedule")
     @Operation(summary = "회사일정을 등록하는 api 입니다", description = "회사일정을 등록하는 api 입니다")
-    public ResponseEntity<CompanyResponseDto> companyScheduleAdd(@RequestBody CompanyScheduleRequestDto request, @AuthenticationPrincipal CustomUserDetails user) {
-        CompanyResponseDto a= companySchedulesService.schedulesAdd(request, user);
+    public ResponseEntity<CompanyScheduleRequestDto> companyScheduleAdd(@RequestBody CompanyScheduleRequestDto request, @AuthenticationPrincipal CustomUserDetails user) {
+        CompanyScheduleRequestDto a= companySchedulesService.schedulesAdd(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(a);
     }
 
