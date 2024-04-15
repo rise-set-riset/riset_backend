@@ -44,8 +44,11 @@ spring:
 #      username: riset
 #      password: riset1234
 #      database: chat_db
+#    mongodb:
+#      uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@cluster0.gxcuioi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
     mongodb:
-      uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@cluster0.gxcuioi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@cluster0.gxcuioi.mongodb.net/chat_db?retryWrites=true&w=majority&appName=Cluster0
 
 
   #    mongodb:
