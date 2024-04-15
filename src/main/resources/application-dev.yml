@@ -40,11 +40,14 @@ spring:
       port: 6379
 
     mongodb:
-      host: 3.39.211.52
-      username: riset
-      password: riset1234
-      database: chat_db
-      port: 27017
+      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+
+#    mongodb:
+#      host: 3.39.211.52
+#      username: riset
+#      password: riset1234
+#      database: chat_db
+#      port: 27017
   #    mongodb:
 #      uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@cluster0.gxcuioi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
