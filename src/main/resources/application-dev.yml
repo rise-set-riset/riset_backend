@@ -6,6 +6,7 @@ spring:
       on-profile: dev
     import:
       - application-aws.yaml
+      - application-oauth.yml
 
   mail:
     host: smtp.gmail.com
