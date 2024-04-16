@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,14 +91,14 @@ public class CommuteService {
         Employee employee = findById(customUserDetails);
 
         LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now();
+        OffsetTime offsetTime = OffsetTime.now();
 
         Optional<Commute> comOptional = commuteRepository.findByEmployeeAndCommuteDate(employee, localDate);
 
         if(comOptional.isPresent()){
             RecordResponseDto recordResponseDto = RecordResponseDto.builder()
                     .commuteDate(comOptional.get().getCommuteDate().toString())
-                    .commuteStart(comOptional.get().getCommuteStart().toString())
+                    .startTime(comOptional.get().getCommuteStart().toString())
                     .commutePlace(comOptional.get().getCommutePlace().toString())
                     .name(employee.getName())
                     .build();
@@ -106,7 +107,7 @@ public class CommuteService {
             RecordResponseDto recordResponseDto = RecordResponseDto.builder()
                     .commuteDate(localDate.toString())
                     .name(employee.getName())
-                    .commuteStart(localTime.format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .startTime(offsetTime.format(DateTimeFormatter.ofPattern("HH:mm")))
                     .build();
             return ResponseEntity.ok().body(recordResponseDto);
         }
@@ -180,7 +181,7 @@ public class CommuteService {
     public ResponseEntity<StatusResponseDto> getStatus(CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
-        Optional<Commute> comOptional = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee);
+        Optional<Commute> comOptional = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee); // 조회문 수정
 
         if(comOptional.isPresent()){
             StatusResponseDto dto = new StatusResponseDto(comOptional.get().getCommuteStatus().toString());
