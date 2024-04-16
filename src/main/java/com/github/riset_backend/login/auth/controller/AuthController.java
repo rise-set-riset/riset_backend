@@ -2,6 +2,7 @@ package com.github.riset_backend.login.auth.controller;
 
 
 
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.login.auth.dto.FindIdRequestDto;
 import com.github.riset_backend.login.auth.dto.FindPasswordRequestDto;
 import com.github.riset_backend.global.config.exception.BusinessException;
@@ -14,7 +15,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -52,4 +56,9 @@ public class AuthController {
 
     @PostMapping("/find-password")
     public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequestDto findPasswordRequestDto) { return authService.findPassword(findPasswordRequestDto);}
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<List<?>> userInfo() {
+        return authService.getUserInfo();
+    }
 }

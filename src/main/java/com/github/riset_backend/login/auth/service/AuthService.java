@@ -4,15 +4,12 @@ package com.github.riset_backend.login.auth.service;
 //import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 
 import com.github.riset_backend.global.config.auth.JwtTokenProvider;
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.auth.filter.JwtAuthenticationFilter;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 
-import com.github.riset_backend.login.auth.dto.FindIdRequestDto;
-import com.github.riset_backend.login.auth.dto.FindPasswordRequestDto;
-import com.github.riset_backend.login.auth.dto.RequestCheckIdDto;
-import com.github.riset_backend.login.auth.dto.RequestLoginDto;
-import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
+import com.github.riset_backend.login.auth.dto.*;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
@@ -35,9 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -114,6 +109,7 @@ public class AuthService {
             response.put("token_type", "Bearer");
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
+            response.put("유저 고유 아이디", employee.getEmployeeNo().toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -225,5 +221,50 @@ public class AuthService {
 
 
         return ResponseEntity.ok().body("입력하신 이메일로 임시 비밀번호를 발송하였습니다.");
+    }
+
+    public ResponseEntity<List<?>> getUserInfo() {
+        List<Employee> employees = employeeRepository.findAllByRoles(Role.ROLE_EMPLOYEE).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        List<Employee> employeeList = employeeRepository.findAllByRoles(Role.ROLE_ADMIN).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        List<AllUserResponseDto> allUserResponseDtos = new ArrayList<>();
+
+
+        employees.forEach(employee -> {
+            if(employee.getMyImage() == null) {
+                AllUserResponseDto dto = AllUserResponseDto.builder()
+                        .name(employee.getName())
+                        .build();
+                allUserResponseDtos.add(dto);
+            } else{
+                AllUserResponseDto dto = AllUserResponseDto.builder()
+                        .name(employee.getName())
+                        .profileId(employee.getMyImage().getMyImageId())
+                        .profileName(employee.getMyImage().getFileName())
+                        .profilePath(employee.getMyImage().getFilePath())
+                        .build();
+                allUserResponseDtos.add(dto);
+            }
+
+        });
+
+        employeeList.forEach(employee -> {
+            if(employee.getMyImage() == null) {
+                AllUserResponseDto dto = AllUserResponseDto.builder()
+                        .name(employee.getName())
+                        .build();
+                allUserResponseDtos.add(dto);
+            } else {
+                AllUserResponseDto dto = AllUserResponseDto.builder()
+                        .name(employee.getName())
+                        .profileId(employee.getMyImage().getMyImageId())
+                        .profileName(employee.getMyImage().getFileName())
+                        .profilePath(employee.getMyImage().getFilePath())
+                        .build();
+                allUserResponseDtos.add(dto);
+            }
+            });
+
+        return ResponseEntity.ok().body(allUserResponseDtos);
     }
 }
