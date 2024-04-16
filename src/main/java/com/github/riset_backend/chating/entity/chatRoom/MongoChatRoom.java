@@ -1,7 +1,6 @@
-package com.github.riset_backend.chating.entity;
+package com.github.riset_backend.chating.entity.chatRoom;
 
 import com.github.riset_backend.login.employee.entity.Employee;
-import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "chatRoom")
-public class ChatRoom {
+public class MongoChatRoom {
 
     @Id
     private String id;
@@ -25,7 +24,7 @@ public class ChatRoom {
     private LocalDateTime date;
 
 
-    public ChatRoom(List<Employee> members, LocalDateTime date) {
+    public MongoChatRoom(List<Employee> members, LocalDateTime date) {
         this.members = members;
         this.date = date;
 

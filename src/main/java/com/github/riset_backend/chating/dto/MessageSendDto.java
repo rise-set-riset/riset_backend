@@ -9,12 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class MessageSendDto {
     private String roomId;
     private String msg;
-    private List<Long> employeesNo;
+    private List<Long> members;
     private Long sender;
     private List<String> base64File;
 }
