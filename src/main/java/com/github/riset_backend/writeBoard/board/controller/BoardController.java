@@ -50,12 +50,11 @@ public class BoardController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BoardResponseDto> createBoard(@RequestPart(value = "dto", required = false) BoardRequestDto boardRequestDto,
-                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles
-//                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
+                                                        @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
+                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        log.info("실행이 된다.");
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee().getEmployeeNo() , multipartFiles);
-        BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
+        BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee(), multipartFiles);
+//        BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
 
         return ResponseEntity.ok(board);
     }
