@@ -21,6 +21,10 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     Slice<Favorite> findSliceByEmployeeAndBoard_DeletedOrderByIndexNumber(Employee employee, String deleted, PageRequest pageRequest);
 
+//    Slice<Favorite> findSliceByEmployeeAndBoard_Title(Employee employee, String title, PageRequest pageRequest);
+
+    Slice<Favorite> findSliceByEmployeeAndBoard_TitleContainingAndBoard_DeletedOrderByIndexNumber(Employee employee, String title, String deleted,PageRequest pageRequest);
+
     List<Favorite> findByEmployeeOrderByIndexNumber(Employee employee);
 
 

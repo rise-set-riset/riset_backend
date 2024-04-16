@@ -25,7 +25,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("")
-    public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "10") int size,
                                                               @RequestParam(defaultValue = "") String title,
                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails

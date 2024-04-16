@@ -21,8 +21,9 @@ public class FavoriteController {
     @GetMapping()
     public ResponseEntity<List<FavoriteResponseDto>> getAllFavoriteBoard (@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                                           @RequestParam(defaultValue = "0") int page,
-                                                                          @RequestParam(defaultValue = "10") int size) {
-        List<FavoriteResponseDto> favorites = favoriteService.getAllFavoriteBoard(customUserDetails.getEmployee(), page, size);
+                                                                          @RequestParam(defaultValue = "10") int size,
+                                                                          @RequestParam(defaultValue = "") String title) {
+        List<FavoriteResponseDto> favorites = favoriteService.getAllFavoriteBoard(customUserDetails.getEmployee(), page, size, title);
         return ResponseEntity.ok(favorites);
     }
 
