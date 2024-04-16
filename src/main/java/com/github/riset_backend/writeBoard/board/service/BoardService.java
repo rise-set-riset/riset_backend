@@ -16,6 +16,8 @@ import com.github.riset_backend.writeBoard.board.entity.Board;
 import com.github.riset_backend.writeBoard.board.repository.BoardRepository;
 import com.github.riset_backend.writeBoard.boardFile.entity.BoardFile;
 import com.github.riset_backend.writeBoard.boardFile.repository.BoardFileRepository;
+import com.github.riset_backend.writeBoard.favorite.entity.Favorite;
+import com.github.riset_backend.writeBoard.favorite.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     @Value("${cloud.aws.s3.bucket}")
@@ -45,12 +48,29 @@ public class BoardService {
     private final EmployeeRepository employeeRepository;
     private final FileRepository fileRepository;
     private final BoardFileRepository boardFileRepository;
+    private final FavoriteRepository favoriteRepository;
+//    private final EmployeeRepository employeeRepository;
 
     @Transactional
-    public List<BoardResponseDto> getAllBoard(int page, int size) {
+    public List<BoardResponseDto> getAllBoard(Employee employee, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Slice<Board> boards = boardRepository.findSliceByDeletedOrderByCreateAtDesc(null ,pageRequest);
-        return boards.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+
+//        Employee employee1 = employeeRepository.findByEmployeeNo(empolyeeNo).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
+//        );
+
+//        List<Long> favoriteBoard = favoriteRepository.findAllByEmployee(employee).stream().map(Favorite::getBoard).map(Board::getBoardNo).toList();
+
+        List<BoardResponseDto> boardResponseDtos = new ArrayList<>();
+
+        boards.forEach(board -> {
+            boolean like = !favoriteBoard.isEmpty() && favoriteBoard.contains(board.getBoardNo());
+            boardResponseDtos.add(new BoardResponseDto(board, like));
+        });
+
+        return boardResponseDtos;
     }
 
     @Transactional
@@ -71,11 +91,7 @@ public class BoardService {
 
 
     @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto,  Long employeeNo, List<MultipartFile> multipartFiles) {
-        Employee employee = employeeRepository.findByEmployeeNo(employeeNo).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-        );
-
+    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto,  Employee employee, List<MultipartFile> multipartFiles) {
         Board board = Board.boardRequestToBoard(boardRequestDto, employee);
 
         List<File> files = new ArrayList<>();
@@ -95,7 +111,10 @@ public class BoardService {
         List<File> newFiles = fileRepository.saveAll(files);
         boardFileRepository.saveAll(boardFiles);
 
-        return BoardResponseDto.ToBoardResponseDto(newBoard, newFiles, board.getEmployee().getName());
+        log.info("newBoard = {}", newBoard);
+        log.info("newFiles = {}", newFiles);
+
+        return new BoardResponseDto(newBoard, newFiles);
     }
 
 
@@ -181,6 +200,16 @@ public class BoardService {
         board.setDeleted("y");
         return new BoardResponseDto(board);
     }
+
+    @Transactional
+    public List<BoardResponseDto> getAllBoardByEmployeeNo(Employee employee, int page, int size, String title) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Slice<Board> boards = boardRepository.findSliceByEmployeeAndTitleContainingAndDeletedOrderByCreateAt(employee, title, null,pageRequest);
+
+        return boards.stream().map(BoardResponseDto::new).collect(Collectors.toList());
+    }
+
 
 
     private record Result(File file, BoardFile boardFile) {

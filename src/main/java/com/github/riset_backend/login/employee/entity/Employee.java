@@ -1,9 +1,11 @@
 package com.github.riset_backend.login.employee.entity;
 
+import com.github.riset_backend.manageCompany.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.jobGrade.entity.JobGrade;
+import com.github.riset_backend.myPage.entity.MyImage;
 import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
@@ -29,6 +31,12 @@ public class Employee extends BaseEntity {
 
     @Column(name = "employee_password")
     private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "telNumber")
+    private String telNumber;
 
     @Column(name = "employee_name")
     private String name;
@@ -73,10 +81,16 @@ public class Employee extends BaseEntity {
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
     private List<Holiday> holidays;
 
-    // 반차 여부를 나타내는 필드
-    @Transient
-    private Boolean halfDayLeave;
+//    // 반차 여부를 나타내는 필드
+//    @Transient
+//    private Boolean halfDayLeave;
 
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "my_image_id", referencedColumnName = "image_id") // 외래 키 명시
+    private MyImage myImage;
+
+    @Enumerated(EnumType.STRING)
+    Rating rating;
 
 }

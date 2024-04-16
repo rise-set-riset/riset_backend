@@ -7,25 +7,30 @@ import com.github.riset_backend.global.config.auth.JwtTokenProvider;
 import com.github.riset_backend.global.config.auth.filter.JwtAuthenticationFilter;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
+
+import com.github.riset_backend.login.auth.dto.FindIdRequestDto;
+import com.github.riset_backend.login.auth.dto.FindPasswordRequestDto;
+import com.github.riset_backend.login.auth.dto.RequestCheckIdDto;
 import com.github.riset_backend.login.auth.dto.RequestLoginDto;
 import com.github.riset_backend.login.auth.dto.RequestSignUpDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
+import com.github.riset_backend.manageCompany.service.RandomCodeGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +47,12 @@ public class AuthService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JavaMailSender mailSender;
     private final RedisTemplate<String, String> redisTemplate;
-    private final AuthenticationManager authenticationManager;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${spring.mail.username}")
+    private String sendEmail;
 
     @Transactional
     public ResponseEntity<String> employeeSignup(RequestSignUpDto requestSignUpDto) {
@@ -78,8 +86,8 @@ public class AuthService {
         String refreshToken = "";
         try {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestLoginDto.id(), requestLoginDto.password());
-            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             if (redisTemplate.opsForValue().get("logout: " + requestLoginDto.id()) != null) {
                 redisTemplate.delete("logout: " + requestLoginDto.id());
@@ -107,7 +115,7 @@ public class AuthService {
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } catch (BadCredentialsException e) {
             e.printStackTrace();
@@ -169,5 +177,53 @@ public class AuthService {
             throw new BusinessException(ErrorCode.NOT_FOUND_COOKIE);
         }
         return null;
+    }
+
+    public ResponseEntity<String> checkId(RequestCheckIdDto requestCheckIdDto) {
+        if (employeeRepository.existsByEmployeeId(requestCheckIdDto.id())) {
+            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+        }
+
+       return ResponseEntity.ok().body("사용할 수 있는 아이디입니다.");
+    }
+
+    public ResponseEntity<?> findId(FindIdRequestDto findIdRequestDto) {
+        Optional<Employee> employee = employeeRepository.findByName(findIdRequestDto.name());
+
+        if(employee.isPresent()){
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(sendEmail); //보내는사람
+            message.setTo(findIdRequestDto.email()); //받는사람
+            message.setSubject(findIdRequestDto.name() + "님의 아이디 안내 이메일입니다."); //제목
+            message.setText("안녕하세요. 아이디 안내 관련 이메일입니다." + "[" + findIdRequestDto.name() + "]" + "님의 아이디는 " + employee.get().getEmployeeId() + "입니다."); // 본문
+            mailSender.send(message);
+            return ResponseEntity.ok().body("입력하신 이메일로 아이디를 발송하였습니다.");
+        } else{
+            return ResponseEntity.badRequest().body("알 수 없는 요청입니다.");
+        }
+
+    }
+
+    public ResponseEntity<?> findPassword(FindPasswordRequestDto findPasswordRequestDto) {
+        Optional<Employee> employee = employeeRepository.findByEmployeeId(findPasswordRequestDto.id());
+        employee.orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+
+        String code = RandomCodeGenerator.generateCode() + "!";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(sendEmail); //보내는사람
+        message.setTo(findPasswordRequestDto.email()); //받는사람
+        message.setSubject(findPasswordRequestDto.id() + "님의 임시비밀번호 안내 이메일입니다."); //제목
+        message.setText("안녕하세요. 임시비밀번호 안내 관련 이메일입니다." + "[" + findPasswordRequestDto.id() + "]" +"님의 임시 비밀번호는 "
+                + code + " 입니다."); // 본문
+        mailSender.send(message);
+
+
+
+        employee.get().setPassword(passwordEncoder.encode(code));
+        employeeRepository.save(employee.get());
+
+
+        return ResponseEntity.ok().body("입력하신 이메일로 임시 비밀번호를 발송하였습니다.");
     }
 }

@@ -104,9 +104,13 @@ public enum ErrorCode {
     NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다"),
     DIFFERENT_CHATROOM(HttpStatus.BAD_REQUEST, "채팅방이 다릅니다."),
     NOT_FOUND_CHATROOM_MEMBER(HttpStatus.NOT_FOUND, "채팅방에 없는 사람입니다."),
+    NOT_FOUND_CHAT(HttpStatus.NOT_FOUND, "검색 결과 없습니다."),
 
 
 
+    // 출퇴근
+    NOT_FOUND_COMPANY(HttpStatus.NOT_FOUND, "존재하지 않는 본사입니다."),
+    NOT_FOUND_COMMUTE(HttpStatus.NOT_FOUND, "존재하지 않는 출근 기록입니다."),
     /**
      * ********************************************* GLOBAL ***********************************************************
      */
@@ -114,7 +118,9 @@ public enum ErrorCode {
     TEST(HttpStatus.INTERNAL_SERVER_ERROR, "테스트 에러"),
     FAIL_SERIALIZE_OBJECT_INTO_JSON(HttpStatus.BAD_REQUEST, "객체를 JSON으로 변환할 수 없습니다."),
     FAIL_DESERIALIZE_JSON_INTO_OBJECT(HttpStatus.BAD_REQUEST, "JSON을 객체로 변환할 수 없습니다."),
-    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error");
+    SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    NOT_FOUND_HOLIDAY(HttpStatus.INTERNAL_SERVER_ERROR, "휴가를 찾을 수 없습니다.");
+
 
 
     private final HttpStatus status;

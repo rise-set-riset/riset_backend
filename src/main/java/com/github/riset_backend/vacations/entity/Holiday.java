@@ -29,7 +29,6 @@ public class Holiday {
     @JoinColumn(name = "employee_no")
     private Employee employee;
 
-
     @Column(name = "start_dt")
     private LocalDateTime startDate;
 
@@ -53,23 +52,37 @@ public class Holiday {
     @Column(name = "leaveStatus")
     private LeaveType leaveStatus;
 
+    //휴가 일수 추가
+    private Long vacationsDay;
+
+
     //연차 일 경우
-    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, String comment, String status) {
+    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, Status status) {
         this.employee = employee;
         this.startDate = startDate;
         this.leaveStatus = leaveStatus;
-        this.comment = comment;
-        this.status = Status.valueOf(status);
+        this.status = status;
     }
 
-    //반차일 경우
-    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, String comment, String status) {
+    // 반차일 경우
+    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, Status status) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.leaveStatus = leaveStatus;
+        this.status = status;
+    }
+
+    //연차/반차 수정
+    public void leaveUpdate(Employee employee, LocalDateTime startDate, LocalDateTime endDate, String comment) {
+        this.employee = employee;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.comment = comment;
-        this.status = Status.valueOf(status);
+    }
+
+    public void statusUpdate(Status status) {
+        this.status = status;
     }
 
 }

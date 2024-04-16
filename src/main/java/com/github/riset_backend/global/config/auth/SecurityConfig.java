@@ -60,21 +60,21 @@ public class SecurityConfig {
                 .headers((h) -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .cors(c -> {
-                            CorsConfigurationSource source = request -> {
-                                // Cors 허용 패턴
-                                CorsConfiguration config = new CorsConfiguration();
-                                config.setAllowedOrigins(
-                                        List.of("*")
-                                );
-                                config.setAllowedMethods(
-                                        List.of("*")
-                                );
-                                return config;
-                            };
-                            c.configurationSource(source);
-                        }
-                )
+//                .cors(c -> {
+//                            CorsConfigurationSource source = request -> {
+//                                // Cors 허용 패턴
+//                                CorsConfiguration config = new CorsConfiguration();
+//                                config.setAllowedOrigins(
+//                                        List.of("*")
+//                                );
+//                                config.setAllowedMethods(
+//                                        List.of("*")
+//                                );
+//                                return config;
+//                            };
+//                            c.configurationSource(source);
+//                        }
+//                )
                 .sessionManagement((session) ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -89,7 +89,10 @@ public class SecurityConfig {
                                         "/images/**",
                                         "/health",
                                         "/chat/**",
-                                        "/ws-stomp").permitAll()
+                                        "/ws-stomp",
+                                        "/chatRoom/**",
+                                        "/api/menus").permitAll()
+                                .requestMatchers("/company/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

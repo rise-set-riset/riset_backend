@@ -3,6 +3,7 @@ package com.github.riset_backend.login.department.entity;
 
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
+import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,8 @@ public class Department extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "company_no", referencedColumnName = "company_no")
     private Company company;
+
+
 
 
 }

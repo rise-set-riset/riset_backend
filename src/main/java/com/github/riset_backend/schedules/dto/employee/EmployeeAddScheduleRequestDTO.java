@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public record EmployeeAddScheduleRequestDTO(
+
+        Long scheduleNo,
+
         @Schema(description = "시작 날짜", example = "2023-04-01 09:00")
-        LocalDateTime startDateTime,
+        LocalDateTime startTime,
 
         @Schema(description = "끝나는 날짜", example = "2023-04-01 09:00")
-        LocalDateTime endDateTIme,
+        LocalDateTime endTime,
 
         @Schema(description = "내용", example = "소중한 프엔, 귀중한 백엔")
         String content,

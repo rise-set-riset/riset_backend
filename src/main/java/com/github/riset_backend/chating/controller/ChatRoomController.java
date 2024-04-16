@@ -1,16 +1,11 @@
 package com.github.riset_backend.chating.controller;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.github.riset_backend.chating.dto.TestDto;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
-import com.github.riset_backend.chating.dto.chatRoomDto.CreateChatRoomRequestDto;
-import com.github.riset_backend.chating.entity.ChatRoom;
+import com.github.riset_backend.chating.dto.chatRoomDto.MongoCreateChatRoomRequestDto;
 import com.github.riset_backend.chating.service.ChatRoomService;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,16 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/chat")
+@RequestMapping("/chatRoom")
 @Slf4j
 public class ChatRoomController {
 
@@ -37,30 +27,36 @@ public class ChatRoomController {
     private String bucket;
     private final AmazonS3 amazonS3;
 
-    @PostMapping("/room")
-    public ResponseEntity<ChatRoomResponseDto> createChatRoom (@RequestBody CreateChatRoomRequestDto dto) {
+    @PostMapping
+    public ResponseEntity<ChatRoomResponseDto> createChatRoom (@RequestBody MongoCreateChatRoomRequestDto dto) {
         ChatRoomResponseDto chatRoom = chatRoomService.createChatRoom(dto);
         return ResponseEntity.ok(chatRoom);
     }
 
-    @GetMapping("/room")
+    @GetMapping
     public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms (@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        List<ChatRoomResponseDto> chatRoomList = chatRoomService.getChatRoom(customUserDetails.getEmployee().getEmployeeNo());
+        List<ChatRoomResponseDto> chatRoomList = chatRoomService.getChatRoom(customUserDetails.getEmployee());
         return ResponseEntity.ok(chatRoomList);
     }
 
-    @PatchMapping("/room/{roomId}")
+    @PatchMapping("/{roomId}")
     public ResponseEntity<String> leaveChatRoom (@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                                 @PathVariable String roomId) {
+                                                 @PathVariable Long roomId) {
         chatRoomService.leaveChatRoom(customUserDetails.getEmployee(), roomId);
         return ResponseEntity.ok("채팅방을 나갔습니다.");
     }
 
-    @GetMapping("/room/{roomId}/chat")
-    public ResponseEntity<List<ChatResponseDto>> getChatRoomChat (@PathVariable String roomId) {
+    @GetMapping("/{roomId}/chat")
+    public ResponseEntity<List<ChatResponseDto>> getChatRoomChat (@PathVariable Long roomId) {
 
         List<ChatResponseDto> chats = chatRoomService.getChatRoomChat(roomId);
         return ResponseEntity.ok(chats);
+    }
+
+    @GetMapping("/{roomId}/chatOne")
+    public ResponseEntity<List<ChatResponseDto>> getChatRoomChatOne (@PathVariable Long roomId, @RequestParam String msg) {
+        List<ChatResponseDto> chat = chatRoomService.getChatRoomChatOne(roomId, msg);
+        return ResponseEntity.ok(chat);
     }
 
 //    @PostMapping("/test")
