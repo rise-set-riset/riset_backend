@@ -2,6 +2,9 @@ package com.github.riset_backend.global.config.auth;
 
 
 import com.github.riset_backend.global.config.auth.filter.JwtAuthenticationFilter;
+import com.github.riset_backend.global.config.oAuth.custom.CustomOAuth2UserService;
+import com.github.riset_backend.global.config.oAuth.handler.MyAuthenticationFailureHandler;
+import com.github.riset_backend.global.config.oAuth.handler.MyAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,10 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
+    private final MyAuthenticationFailureHandler oAuth2LoginFailureHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -85,7 +92,13 @@ public class SecurityConfig {
                                         "/ws-stomp").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
+                        .userInfoEndpoint(endpoint -> endpoint.userService(customOAuth2UserService))
+                )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
