@@ -86,7 +86,7 @@ public class Employee extends BaseEntity {
 //    private Boolean halfDayLeave;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "my_image_id", referencedColumnName = "image_id") // 외래 키 명시
     private MyImage myImage;
 
