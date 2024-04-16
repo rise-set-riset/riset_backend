@@ -234,11 +234,13 @@ public class AuthService {
             if(employee.getMyImage() == null) {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
+                        .employeeId(employee.getEmployeeNo())
                         .build();
                 allUserResponseDtos.add(dto);
             } else{
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
+                        .employeeId(employee.getEmployeeNo())
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
@@ -252,11 +254,13 @@ public class AuthService {
             if(employee.getMyImage() == null) {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
+                        .employeeId(employee.getEmployeeNo())
                         .build();
                 allUserResponseDtos.add(dto);
             } else {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
+                        .employeeId(employee.getEmployeeNo())
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
