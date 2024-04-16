@@ -3,6 +3,7 @@ package com.github.riset_backend.chating.service;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.MongoCreateChatRoomRequestDto;
+import com.github.riset_backend.chating.dto.chatRoomDto.UpdateChatRoomDto;
 import com.github.riset_backend.chating.entity.ChatRoomEmployee;
 import com.github.riset_backend.chating.entity.chat.Chat;
 import com.github.riset_backend.chating.entity.chatRoom.ChatRoom;
@@ -34,13 +35,26 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomEmployeeRepository chatRoomEmployeeRepository;
     private final ChatRepository chatRepository;
-//    private final MongoChatRoomRepository mongoChatRoomRepository;
+
+    //    private final MongoChatRoomRepository mongoChatRoomRepository;
 //    private final MongoChatRepository mongoChatRepository;
 
     @Transactional
+    public ChatRoomResponseDto updateChatRoomName(Employee employee, Long chatRoomId, UpdateChatRoomDto dto) {
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
+        );
+
+        chatRoom.setChatRoomName(dto.getChatRoomName());
+        ChatRoom updateRoom = chatRoomRepository.save(chatRoom);
+
+        return new ChatRoomResponseDto(updateRoom);
+    }
+
+
+    @Transactional
     public ChatRoomResponseDto createChatRoom(MongoCreateChatRoomRequestDto dto) {
-
-
         List<Employee> employees = new ArrayList<>();
 
         dto.getMembers().forEach(employeeNo -> {
@@ -51,8 +65,10 @@ public class ChatRoomService {
         });
 
         LocalDateTime now = LocalDateTime.now();
+        List<String> strings = employees.stream().map(Employee::getName).toList();
+        String chatRoomName = strings.stream().collect(Collectors.joining(" "));
 
-        ChatRoom chatRoom = new ChatRoom(now);
+        ChatRoom chatRoom = new ChatRoom(now, chatRoomName);
         ChatRoom newChatRoom = chatRoomRepository.save(chatRoom);
 
         List<Employee> employeeList = new ArrayList<>();
@@ -76,7 +92,14 @@ public class ChatRoomService {
     @Transactional
     public List<ChatRoomResponseDto> getChatRoom(Employee employee) {
         List<ChatRoom> chatRooms = chatRoomEmployeeRepository.findAllByEmployeeAndDeleted(employee, null).stream().map(ChatRoomEmployee::getChatRoom).toList();
-        return chatRooms.stream().map(ChatRoomResponseDto::new).collect(Collectors.toList());
+        return chatRooms.stream().map(chatRoom -> {
+           List<Chat> chats = chatRepository.findAllByChatRoom_ChatRoomId(chatRoom.getChatRoomId());
+           if (chats.isEmpty()) {
+               return new ChatRoomResponseDto(chatRoom);
+           }
+           Chat lastChat = chats.get(chats.size() -1);
+           return new ChatRoomResponseDto(chatRoom, lastChat);
+        }).collect(Collectors.toList());
 
 //         List<MongoChatRoom> mongoChatRooms = mongoChatRoomRepository.findAllByMembersContains(1L);
 //         return mongoChatRooms.stream().map(MongoChatRoomResponseDto::new).collect(Collectors.toList());

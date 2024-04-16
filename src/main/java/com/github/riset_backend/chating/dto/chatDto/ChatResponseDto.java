@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class ChatResponseDto {
 
     private Long chatRoomId;
     private String msg;
-    private List<Employee> members;
+    private List<MemberResponseDto> members;
     private Employee sender;
     private LocalDateTime date;
     private String fileNames;
@@ -27,9 +28,12 @@ public class ChatResponseDto {
     public ChatResponseDto(Chat chat, List<Employee> members) {
         this.chatRoomId = chat.getChatRoom().getChatRoomId();
         this.msg = chat.getMsg();
-        this.members = members;
+        this.members = members.stream().map(MemberResponseDto::new).collect(Collectors.toList());
         this.sender = chat.getSender();
         this.date = chat.getCreateAt();
         this.fileNames = chat.getFilesName();
+    }
+
+    public ChatResponseDto(ChatRoom chatRoom) {
     }
 }

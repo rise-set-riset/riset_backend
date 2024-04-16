@@ -133,6 +133,9 @@ public class BoardService {
         } catch (IOException e) {
             throw new BusinessException(ErrorCode.FAIL_FILE_UPLOAD);
         }
+
+        log.info("multipartFile.getContentType() = {}", multipartFile.getContentType());
+
         File file = new File(fileName, amazonS3.getUrl(bucket, fileName).toString(), multipartFile.getSize(), multipartFile.getContentType());
         BoardFile boardFile = new BoardFile(board, file);
         Result result = new Result(file, boardFile);

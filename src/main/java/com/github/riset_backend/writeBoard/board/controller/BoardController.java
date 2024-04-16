@@ -24,17 +24,17 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("")
-    public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
-        log.info("실행이 된다.");
-        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
-        return ResponseEntity.ok(boards);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<BoardResponseDto>> getAllBoard(@RequestParam(defaultValue = "1") int page,
+//                                                              @RequestParam(defaultValue = "10") int size,
+//                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails
+//    ) {
+//        log.info("실행이 된다.");
+//        List<BoardResponseDto> boards = boardService.getAllBoard(customUserDetails.getEmployee(), page, size);
+//        return ResponseEntity.ok(boards);
+//    }
 
-    @GetMapping("/search")
+    @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> getSearchAllBoard(@RequestParam(defaultValue = "1") int page,
                                                                     @RequestParam(defaultValue = "10") int size,
                                                                     @RequestParam(defaultValue = "") String title) {

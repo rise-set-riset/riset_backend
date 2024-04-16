@@ -4,7 +4,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.MongoCreateChatRoomRequestDto;
+import com.github.riset_backend.chating.dto.chatRoomDto.UpdateChatRoomDto;
 import com.github.riset_backend.chating.service.ChatRoomService;
+import com.github.riset_backend.chating.service.ChatService;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,14 @@ public class ChatRoomController {
         return ResponseEntity.ok("채팅방을 나갔습니다.");
     }
 
+    @PatchMapping("/roomName/{roomId}")
+    public ResponseEntity<ChatRoomResponseDto> updateChatRoomName (@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                                   @PathVariable Long roomId,
+                                                                   @RequestBody UpdateChatRoomDto dto) {
+        ChatRoomResponseDto chatRoomResponseDto = chatRoomService.updateChatRoomName(customUserDetails.getEmployee(), roomId, dto);
+        return ResponseEntity.ok(chatRoomResponseDto);
+    }
+
     @GetMapping("/{roomId}/chat")
     public ResponseEntity<List<ChatResponseDto>> getChatRoomChat (@PathVariable Long roomId) {
 
@@ -58,6 +68,8 @@ public class ChatRoomController {
         List<ChatResponseDto> chat = chatRoomService.getChatRoomChatOne(roomId, msg);
         return ResponseEntity.ok(chat);
     }
+
+
 
 //    @PostMapping("/test")
 //    public String test (@RequestBody TestDto testDto) throws IOException {
