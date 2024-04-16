@@ -1,6 +1,6 @@
-package com.github.riset_backend.chating.entity;
+package com.github.riset_backend.chating.entity.chat;
 
-import com.github.riset_backend.chating.dto.MessageSendDto;
+import com.github.riset_backend.chating.dto.MongoMessageSendDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "chat")
-public class Chat {
+public class MongoChat {
     @Id
     private String id;
     private String roomId;
@@ -28,12 +27,12 @@ public class Chat {
     private List<String> filesName;
     private LocalDateTime date;
 
-    public Chat(MessageSendDto messageSendDto, LocalDateTime date, Employee sender) {
-        this.roomId = messageSendDto.getRoomId();
-        this.msg = messageSendDto.getMsg();
-        this.employees = messageSendDto.getEmployeesNo();
+    public MongoChat(MongoMessageSendDto mongoMessageSendDto, LocalDateTime date, Employee sender) {
+        this.roomId = mongoMessageSendDto.getRoomId();
+        this.msg = mongoMessageSendDto.getMsg();
+        this.employees = mongoMessageSendDto.getEmployeesNo();
         this.sender = sender;
         this.date = date;
-        this.filesName = messageSendDto.getBase64File();
+        this.filesName = mongoMessageSendDto.getBase64File();
     }
 }

@@ -9,10 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class TestDto {
-
-    private List<String> files;
-
+@NoArgsConstructor
+public class MongoMessageSendDto {
+    private String roomId;
+    private String msg;
+    private List<Long> employeesNo;
+    private Long sender;
+    private List<String> base64File;
 }

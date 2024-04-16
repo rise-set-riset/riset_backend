@@ -2,11 +2,13 @@ package com.github.riset_backend.chating.service;
 
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
-import com.github.riset_backend.chating.dto.chatRoomDto.CreateChatRoomRequestDto;
-import com.github.riset_backend.chating.entity.Chat;
-import com.github.riset_backend.chating.entity.ChatRoom;
-import com.github.riset_backend.chating.repository.ChatRepository;
-import com.github.riset_backend.chating.repository.ChatRoomRepository;
+import com.github.riset_backend.chating.dto.chatRoomDto.MongoCreateChatRoomRequestDto;
+import com.github.riset_backend.chating.entity.ChatRoomEmployee;
+import com.github.riset_backend.chating.entity.chat.Chat;
+import com.github.riset_backend.chating.entity.chatRoom.ChatRoom;
+import com.github.riset_backend.chating.repository.ChatRoomEmployeeRepository;
+import com.github.riset_backend.chating.repository.chat.ChatRepository;
+import com.github.riset_backend.chating.repository.chatRoom.ChatRoomRepository;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -14,11 +16,10 @@ import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,11 +28,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ChatRoomService {
 
-    private final ChatRoomRepository chatRoomRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ChatRepository chatRepository;
 
-    public ChatRoomResponseDto createChatRoom(CreateChatRoomRequestDto dto) {
+
+    private final EmployeeRepository employeeRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomEmployeeRepository chatRoomEmployeeRepository;
+    private final ChatRepository chatRepository;
+//    private final MongoChatRoomRepository mongoChatRoomRepository;
+//    private final MongoChatRepository mongoChatRepository;
+
+    @Transactional
+    public ChatRoomResponseDto createChatRoom(MongoCreateChatRoomRequestDto dto) {
 
 
         List<Employee> employees = new ArrayList<>();
@@ -43,60 +50,105 @@ public class ChatRoomService {
             employees.add(employee);
         });
 
-        log.info("employees = {}", employees);
-
-//        LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime now = LocalDateTime.now();
 
+        ChatRoom chatRoom = new ChatRoom(now);
+        ChatRoom newChatRoom = chatRoomRepository.save(chatRoom);
 
-        ChatRoom chatRoom = new ChatRoom(employees, now);
+        List<Employee> employeeList = new ArrayList<>();
 
-        log.info("ChatRoom = {}", chatRoom);
+        employees.forEach(employee -> {
+            ChatRoomEmployee chatRoomEmployee = new ChatRoomEmployee(newChatRoom, employee);
+            ChatRoomEmployee chatRoomEmployee1 = chatRoomEmployeeRepository.save(chatRoomEmployee);
+            employeeList.add(chatRoomEmployee1.getEmployee());
+        });
 
-         ChatRoom createChatRoom = chatRoomRepository.save(chatRoom);
+        return new ChatRoomResponseDto(newChatRoom, employeeList);
 
-        log.info("createChatRoom = {}", createChatRoom);
+//
+//        MongoChatRoom mongoChatRoom = new MongoChatRoom(employees, now);
+//        MongoChatRoom createMongoChatRoom = mongoChatRoomRepository.save(mongoChatRoom);
+//        return new MongoChatRoomResponseDto(createMongoChatRoom);
 
-         return new ChatRoomResponseDto(createChatRoom);
+
     }
 
-    public List<ChatRoomResponseDto> getChatRoom(Long employeeNo) {
-         List<ChatRoom> chatRooms = chatRoomRepository.findAllByMembersContains(1L);
-         return chatRooms.stream().map(ChatRoomResponseDto::new).collect(Collectors.toList());
+    @Transactional
+    public List<ChatRoomResponseDto> getChatRoom(Employee employee) {
+        List<ChatRoom> chatRooms = chatRoomEmployeeRepository.findAllByEmployeeAndDeleted(employee, null).stream().map(ChatRoomEmployee::getChatRoom).toList();
+        return chatRooms.stream().map(ChatRoomResponseDto::new).collect(Collectors.toList());
+
+//         List<MongoChatRoom> mongoChatRooms = mongoChatRoomRepository.findAllByMembersContains(1L);
+//         return mongoChatRooms.stream().map(MongoChatRoomResponseDto::new).collect(Collectors.toList());
     }
 
-    public boolean leaveChatRoom(Employee employee, String roomId) {
+    public boolean leaveChatRoom(Employee employee, Long roomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
         );
 
-        List<Employee> members = chatRoom.getMembers();
-        List<Long> membersNo = members.stream().map(Employee::getEmployeeNo).collect(Collectors.toList());
+        ChatRoomEmployee chatRoomEmployee = chatRoomEmployeeRepository.findByChatRoomAndEmployee(chatRoom, employee).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
+        );
 
-        if (membersNo.contains(employee.getEmployeeNo())) {
-            int index = membersNo.indexOf(employee.getEmployeeNo());
-            members.remove(index);
-            chatRoom.setMembers(members);
-            chatRoomRepository.save(chatRoom);
-            return true;
-        } else {
-            throw new BusinessException(ErrorCode.NOT_FOUND_CHATROOM_MEMBER);
+
+        chatRoomEmployee.setDeleted("Y");
+        chatRoomEmployeeRepository.save(chatRoomEmployee);
+        return true;
+
+
+//        MongoChatRoom mongoChatRoom = mongoChatRoomRepository.findById(roomId).orElseThrow(
+//                () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
+//        );
+//
+//        List<Employee> members = mongoChatRoom.getMembers();
+//        List<Long> membersNo = members.stream().map(Employee::getEmployeeNo).collect(Collectors.toList());
+//
+//        if (membersNo.contains(employee.getEmployeeNo())) {
+//            int index = membersNo.indexOf(employee.getEmployeeNo());
+//            members.remove(index);
+//            mongoChatRoom.setMembers(members);
+//            mongoChatRoomRepository.save(mongoChatRoom);
+//            return true;
+//        } else {
+//            throw new BusinessException(ErrorCode.NOT_FOUND_CHATROOM_MEMBER);
+//        }
+
+    }
+
+
+
+    @Transactional
+    public List<ChatResponseDto> getChatRoomChat(Long roomId) {
+
+        List<Chat> chats = chatRepository.findAllByChatRoom_ChatRoomId(roomId);
+
+
+        return chats.stream().map(chat -> {
+            return new ChatResponseDto(chat, chat.getChatRoom().getChatRoomEmployees().stream().map(ChatRoomEmployee::getEmployee).collect(Collectors.toList()));
+        }).collect(Collectors.toList());
+
+
+//        List<MongoChat> mongoChats =mongoChatRepository.findAllByRoomId(roomId);
+//        return mongoChats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ChatResponseDto> getChatRoomChatOne(Long roomId, String msg) {
+        List<Chat> chats = chatRepository.findAllByChatRoom_ChatRoomIdAndMsgContaining(roomId, msg);
+        if (chats.isEmpty()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_CHAT);
         }
 
-    }
-
-    public List<ChatResponseDto> getChatRoomChat(String roomId) {
-        List<Chat> chats = chatRepository.findAllByRoomId(roomId);
-        return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
-    }
-
-    public List<ChatResponseDto> getChatRoomChatOne(String roomId, String msg) {
-       List<Chat> chats = chatRepository.findByRoomIdAndMsgContaining(roomId, msg);
-
-       if (chats.isEmpty()) {
-           throw new BusinessException(ErrorCode.NOT_FOUND_CHAT);
-       }
-
-        return chats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
+        return chats.stream().map(chat -> {
+            return new ChatResponseDto(chat, chat.getChatRoom().getChatRoomEmployees().stream().map(ChatRoomEmployee::getEmployee).collect(Collectors.toList()));
+        }).collect(Collectors.toList());
+//       List<MongoChat> mongoChats = mongoChatRepository.findByRoomIdAndMsgContaining(roomId, msg);
+//
+//       if (mongoChats.isEmpty()) {
+//           throw new BusinessException(ErrorCode.NOT_FOUND_CHAT);
+//       }
+//
+//        return mongoChats.stream().map(ChatResponseDto::new).collect(Collectors.toList());
     }
 }

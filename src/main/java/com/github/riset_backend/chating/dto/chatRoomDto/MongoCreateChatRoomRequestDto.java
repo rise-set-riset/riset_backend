@@ -5,14 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateChatRoomRequestDto {
+public class MongoCreateChatRoomRequestDto {
     private List<Long> members;
 //    private LocalDateTime createAt;
 }
