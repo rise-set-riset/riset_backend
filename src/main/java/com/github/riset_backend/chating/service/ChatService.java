@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.github.riset_backend.chating.dto.MessageSendDto;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatDto.MongoChatResponseDto;
+import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.entity.chat.Chat;
 import com.github.riset_backend.chating.entity.chatRoom.ChatRoom;
 import com.github.riset_backend.chating.repository.chat.ChatRepository;
@@ -87,8 +88,6 @@ public class ChatService {
 
         Chat chat = new Chat(chatRoom, messageSendDto, now, sender, fileName);
         Chat newChat = chatRepository.save(chat);
-
-        log.info("여기까지 실행!!!!!!!");
 
         messagingTemplate.convertAndSend("/sub/chat/message/" + roomId, new ChatResponseDto(newChat, members));
 
