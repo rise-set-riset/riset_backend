@@ -8,5 +8,5 @@ public record RecordResponseDto(
         String commutePlace,
         String name,
         String commuteDate,
-        String commuteStart) {
+        String startTime) {
 }
