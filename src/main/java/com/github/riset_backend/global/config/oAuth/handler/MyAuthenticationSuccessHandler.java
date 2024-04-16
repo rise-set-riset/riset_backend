@@ -34,7 +34,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
+        log.info("asdasd");
         // OAuth2User로 캐스팅하여 인증된 사용자 정보를 가져온다.
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
@@ -83,6 +83,13 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
         } else {
             // 회원이 존재하지 않을경우, 서비스 제공자와 email을 쿼리스트링으로 전달하는 url을 만들어준다.
+            String accessToken = jwtTokenProvider.createAccessToken(email);
+            String refreshToken = jwtTokenProvider.createRefreshToken(email);
+
+            response.addHeader("Authorization", accessToken);
+            response.addCookie(new Cookie("refresh_token", refreshToken));
+
+            redisTemplate.opsForValue().set("RF: " + email, refreshToken, Duration.ofHours(3L));
             Employee employee = Employee.builder()
                     .employeeId(email)
                     .name(name)
