@@ -1,8 +1,16 @@
 package com.github.riset_backend.Settlement.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "`position`")
 public class Position {
@@ -15,5 +23,5 @@ public class Position {
     private String positionName;
 
     @Column(name = "salary")
-    private Double salary;
+    private Integer salary;
 }

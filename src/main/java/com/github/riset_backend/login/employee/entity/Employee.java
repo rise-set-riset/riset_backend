@@ -1,5 +1,6 @@
 package com.github.riset_backend.login.employee.entity;
 
+import com.github.riset_backend.Settlement.entity.Position;
 import com.github.riset_backend.manageCompany.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
@@ -11,6 +12,8 @@ import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -53,11 +56,21 @@ public class Employee extends BaseEntity {
     @Column(name = "employee_job")
     private String job;
 
+    @Column(name = "total_annual_leave", columnDefinition = "INT DEFAULT 15")
+    private Integer totalAnnualLeave;
+
+    @Column(name = "date_of_join")
+    private Date dateOfJoin;
+
+
     @Column(name = "employee_position")
     private String position;
 
     @Column(name = "zip_code")
     private String zipCode;
+
+    @Column(name = "salary")
+    private Integer salary;
 
     @ManyToOne
     @JoinColumn(name = "department_no", referencedColumnName = "department_no")
