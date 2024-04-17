@@ -109,7 +109,7 @@ public class AuthService {
             response.put("token_type", "Bearer");
             response.put("access_token", accessToken);
             response.put("refresh_token", refreshToken);
-            response.put("유저 고유 아이디", employee.getEmployeeNo().toString());
+            response.put("userId", employee.getEmployeeNo().toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -179,8 +179,6 @@ public class AuthService {
         if (employeeRepository.existsByEmployeeId(requestCheckIdDto.id())) {
             return true;
         }
-
-
         return false;
     }
 

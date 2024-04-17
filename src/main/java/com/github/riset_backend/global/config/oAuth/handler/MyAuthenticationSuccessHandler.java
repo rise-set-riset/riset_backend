@@ -70,7 +70,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
 
             // accessToken을 쿼리스트링에 담는 url을 만들어준다.
-            String targetUrl = UriComponentsBuilder.fromUriString("https://riset-frontend.vercel.app/home")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
                     .queryParam("accessToken", accessToken)
                     .queryParam("refreshToken", refreshToken)
                     .build()
@@ -78,7 +78,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
                     .toUriString();
             log.info("redirect 준비");
             // 로그인 확인 페이지로 리다이렉트 시킨다.
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+            response.sendRedirect(targetUrl);
 
 
         } else {
@@ -98,14 +98,14 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
             employeeRepository.save(employee);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("https://riset-frontend.vercel.app/authority")
+            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
                     .queryParam("email", (String) oAuth2User.getAttribute("email"))
                     .queryParam("provider", provider)
                     .build()
                     .encode(StandardCharsets.UTF_8)
                     .toUriString();
             // 회원가입 페이지로 리다이렉트 시킨다.
-            getRedirectStrategy().sendRedirect(request, response, targetUrl);
+            response.sendRedirect(targetUrl);
         }
     }
 
