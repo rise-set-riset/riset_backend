@@ -70,7 +70,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
 
             // accessToken을 쿼리스트링에 담는 url을 만들어준다.
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://riset-frontend.vercel.app/home")
                     .queryParam("accessToken", accessToken)
                     .queryParam("refreshToken", refreshToken)
                     .build()
@@ -98,7 +98,7 @@ public class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucce
 
             employeeRepository.save(employee);
 
-            String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000")
+            String targetUrl = UriComponentsBuilder.fromUriString("https://riset-frontend.vercel.app/authority")
                     .queryParam("email", (String) oAuth2User.getAttribute("email"))
                     .queryParam("provider", provider)
                     .build()
