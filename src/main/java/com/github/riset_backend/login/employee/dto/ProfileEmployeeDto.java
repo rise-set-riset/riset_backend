@@ -22,7 +22,7 @@ public class ProfileEmployeeDto {
     private String name;
     private String employeeId;
     private JobGradeResponseDto jobGrade;
-    private Date dateOfJoin;
+    private String dateOfJoin;
     private Integer totalAnnualLeave;
     private Integer salary;
     private DepartResponseDto depart;

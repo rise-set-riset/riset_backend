@@ -6,6 +6,7 @@ import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.department.dto.DepartMentRequestDto;
+import com.github.riset_backend.login.department.dto.DepartResponseDto;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.department.repository.DepartmentRepository;
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -15,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,5 +45,12 @@ public class DepartMentController {
         }
 
 
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<DepartResponseDto>> getCompanyDepart (@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long companyNo = customUserDetails.getEmployee().getCompany().getCompanyNo();
+        List<DepartResponseDto> departments = departmentRepository.findAllByCompany_CompanyNo(companyNo).stream().map(DepartResponseDto::new).collect(Collectors.toList());
+        return ResponseEntity.ok(departments);
     }
 }

@@ -106,6 +106,11 @@ public enum ErrorCode {
     NOT_FOUND_CHATROOM_MEMBER(HttpStatus.NOT_FOUND, "채팅방에 없는 사람입니다."),
     NOT_FOUND_CHAT(HttpStatus.NOT_FOUND, "검색 결과 없습니다."),
 
+    // job_grade
+    NOT_FOUND_JOB_GRADE(HttpStatus.NOT_FOUND, "없는 등급니다."),
+
+    // 부서
+    NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "없는 부서압니다."),
 
 
     // 출퇴근
