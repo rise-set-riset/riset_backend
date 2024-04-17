@@ -1,7 +1,6 @@
 package com.github.riset_backend.login.commute.controller;
 
 
-import com.amazonaws.Response;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.login.commute.dto.*;
 import com.github.riset_backend.login.commute.service.CommuteService;
@@ -66,6 +65,7 @@ public class CommuteController {
         return commuteService.getStatus(customUserDetails);
     }
 
+    @Operation(summary = "출근 일수 조회", description = "1년간의 출근일을 조회하는 API입니다.")
     @GetMapping("/days")
     public ResponseEntity<?> getDays(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commuteService.getDays(customUserDetails);
