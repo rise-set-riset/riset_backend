@@ -175,12 +175,13 @@ public class AuthService {
         return null;
     }
 
-    public ResponseEntity<String> checkId(RequestCheckIdDto requestCheckIdDto) {
+    public boolean checkId(RequestCheckIdDto requestCheckIdDto) {
         if (employeeRepository.existsByEmployeeId(requestCheckIdDto.id())) {
-            throw new BusinessException(ErrorCode.DUPLICATED_LOGIN_ID);
+            return true;
         }
 
-       return ResponseEntity.ok().body("사용할 수 있는 아이디입니다.");
+
+        return false;
     }
 
     public ResponseEntity<?> findId(FindIdRequestDto findIdRequestDto) {
