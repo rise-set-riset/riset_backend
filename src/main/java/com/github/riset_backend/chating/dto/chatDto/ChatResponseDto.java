@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ChatResponseDto {
 
+    private Long chatId;
     private Long chatRoomId;
     private String msg;
     private List<MemberResponseDto> members;
@@ -26,6 +27,7 @@ public class ChatResponseDto {
     private String fileNames;
 
     public ChatResponseDto(Chat chat, List<Employee> members) {
+        this.chatId = chat.getChatId();
         this.chatRoomId = chat.getChatRoom().getChatRoomId();
         this.msg = chat.getMsg();
         this.members = members.stream().map(MemberResponseDto::new).collect(Collectors.toList());

@@ -1,6 +1,8 @@
 package com.github.riset_backend.login.employee.entity;
 
 import com.github.riset_backend.Settlement.entity.Position;
+import com.github.riset_backend.login.employee.dto.EmployeeUpdateDto;
+import com.github.riset_backend.login.employee.dto.ProfileUpdateDto;
 import com.github.riset_backend.manageCompany.dto.Rating;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
@@ -11,6 +13,7 @@ import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "employee")
+@DynamicUpdate
 public class Employee extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +64,7 @@ public class Employee extends BaseEntity {
     private Integer totalAnnualLeave;
 
     @Column(name = "date_of_join")
-    private Date dateOfJoin;
+    private String  dateOfJoin;
 
 
     @Column(name = "employee_position")
@@ -105,5 +109,6 @@ public class Employee extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     Rating rating;
+
 
 }

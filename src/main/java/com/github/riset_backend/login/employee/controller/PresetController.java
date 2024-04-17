@@ -4,6 +4,7 @@ package com.github.riset_backend.login.employee.controller;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.login.employee.dto.PresetDto;
 import com.github.riset_backend.login.employee.dto.ProfileEmployeeDto;
+import com.github.riset_backend.login.employee.dto.ProfileUpdateDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.service.PresetService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,12 @@ public class PresetController {
     public ResponseEntity<List<ProfileEmployeeDto>> getCompanyMembers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<ProfileEmployeeDto> profileEmployeeDtos = presetService.getCompanyMembers(customUserDetails.getEmployee().getCompany().getCompanyNo());
         return ResponseEntity.ok(profileEmployeeDtos);
+    }
+
+    @PatchMapping("/profiles/{employeeNo}")
+    public ResponseEntity<ProfileEmployeeDto> updateEmployeeProfiles (@PathVariable Long employeeNo,
+                                                                      @RequestBody ProfileUpdateDto dto) {
+       ProfileEmployeeDto profile = presetService.updateProfile(employeeNo, dto);
+       return ResponseEntity.ok(profile);
     }
 }
