@@ -44,7 +44,7 @@ public class CompanyController {
 
     @PatchMapping("/update")
     @Operation(summary = "회사의 해당 일정을 수정하는 api 입니다", description = "회사의 해당 일정을 수정하는 api 입니다")
-    public ResponseEntity<CompanyUpdateDateTimeDto> companyScheduleUpdate(@RequestBody CompanyUpdateDateTimeDto request) {
+    public ResponseEntity<CompanyUpdateDateTimeDto> companyScheduleUpdate(@RequestBody CompanyUpdateDateTimeDto request, @AuthenticationPrincipal CustomUserDetails user) {
         companySchedulesService.updateComSchedule(request);
         return ResponseEntity.status(HttpStatus.OK).body(request);
     }

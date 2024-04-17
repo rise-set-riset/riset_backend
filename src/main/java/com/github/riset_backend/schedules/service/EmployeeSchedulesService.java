@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -42,62 +43,107 @@ public class EmployeeSchedulesService {
     private final HolidayRepository holidayRepository;
 
     // 첫 진입 조회
-    public List<EmployeeAll> getAllEmployees(CustomUserDetails user, LocalDate data) {
+    public List<EmployeeAll> getAllEmployees(LocalDate data, CustomUserDetails user) {
+        List<EmployeeAll> result = new ArrayList<>();
+        boolean hasAnySchedule = false;
 
-        //data 에 해당하는 일정, 시간순
-        Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
-        List<EmployeeHalfLeaveResponse> halfLeave = holidayRepository.getHolidayDay(employee.getEmployeeNo(), data);
-        List<EmployeeSchedulesResponse> schedules = scheduleRepository.getScheduleDay(employee.getEmployeeNo(), data);
-        List<EmployeeAnnualLeaveResponse> annualLeave = holidayRepository.getAnnualDay(employee.getEmployeeNo(), data);
+        // 로그인한 사용자 정보 먼저 가져오기
+        Employee loggedInEmployee = employeeRepository.findById(user.getEmployee().getEmployeeNo())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
 
-        //출퇴근 시간 가져오기
-        Commute commute = commuteRepository.findById(employee.getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.SERVER_ERROR));
+        List<EmployeeHalfLeaveResponse> loggedInHalfLeave = holidayRepository.getHolidayDay(loggedInEmployee.getEmployeeNo(), data);
+        List<EmployeeSchedulesResponse> loggedInSchedules = scheduleRepository.getScheduleDay(loggedInEmployee.getEmployeeNo(), data);
+        List<EmployeeAnnualLeaveResponse> loggedInAnnualLeave = holidayRepository.getAnnualDay(loggedInEmployee.getEmployeeNo(), data);
 
-        //출근시간
+        Commute commute = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(loggedInEmployee)
+                .orElseThrow();
+
         String commuteStartTime = formatTime(commute.getCommuteStart());
-        //퇴근시간
         String commuteEndTime = formatTime(commute.getCommuteEnd());
-        //본부, 재택, 외근
         CommutePlace commutePlace = commute.getCommutePlace();
 
+        boolean hasHalfLeave = !loggedInHalfLeave.isEmpty();
+        boolean hasAnnualLeave = !loggedInAnnualLeave.isEmpty();
+        boolean hasSchedules = !loggedInSchedules.isEmpty();
 
-        // EmployeeBooleanResponse 값 초기화
-        boolean hasHalfLeave = (halfLeave != null && !halfLeave.isEmpty());
-        boolean hasAnnualLeave = (annualLeave != null && !annualLeave.isEmpty());
-        boolean hasSchedules = (schedules != null && !schedules.isEmpty());
-
-        // EmployeeBooleanResponse 객체를 생성합니다.
         EmployeeBooleanResponse booleanResponse = new EmployeeBooleanResponse(hasHalfLeave, hasAnnualLeave, hasSchedules);
 
-        EmployeeAll combinedResponse = new EmployeeAll(employee.getEmployeeNo(), employee.getName(),
-                employee.getPosition(),employee.getMyImage().getFilePath(),
-                commuteStartTime, commuteEndTime, commutePlace, booleanResponse, schedules, halfLeave, annualLeave);
+        EmployeeAll loggedInEmployeeAll = new EmployeeAll(loggedInEmployee.getEmployeeNo(), loggedInEmployee.getName(),
+                loggedInEmployee.getPosition(), null, commuteStartTime, commuteEndTime, commutePlace,
+                booleanResponse, loggedInSchedules, loggedInHalfLeave, loggedInAnnualLeave);
 
+        result.add(loggedInEmployeeAll); // 로그인한 사용자 정보 먼저 추가
 
-        return Collections.singletonList(combinedResponse);
+        // 모든 직원 정보 가져오기
+        List<Employee> employees = employeeRepository.findAll();
+
+        for (Employee employee : employees) {
+            if (employee.getEmployeeNo().equals(loggedInEmployee.getEmployeeNo())) {
+                // 로그인한 사용자는 건너뛰기
+                continue;
+            }
+
+            Long employeeId = employee.getEmployeeNo();
+
+            List<EmployeeHalfLeaveResponse> halfLeave = holidayRepository.getHolidayDay(employeeId, data);
+            List<EmployeeSchedulesResponse> schedules = scheduleRepository.getScheduleDay(employeeId, data);
+            List<EmployeeAnnualLeaveResponse> annualLeave = holidayRepository.getAnnualDay(employeeId, data);
+
+            hasHalfLeave = !halfLeave.isEmpty();
+            hasAnnualLeave = !annualLeave.isEmpty();
+            hasSchedules = !schedules.isEmpty();
+
+            EmployeeBooleanResponse booleanResponse2 = new EmployeeBooleanResponse(hasHalfLeave, hasAnnualLeave, hasSchedules);
+
+            EmployeeAll employeeAll = new EmployeeAll(employeeId, employee.getName(), employee.getPosition(), null,
+                    commuteStartTime, commuteEndTime, commutePlace, booleanResponse2, schedules, halfLeave, annualLeave);
+
+            result.add(employeeAll);
+            hasAnySchedule = hasAnySchedule || hasHalfLeave || hasAnnualLeave || hasSchedules;
+        }
+
+        if (!hasAnySchedule) {
+            // 아무도 일정이 없을 경우, 로그인한 사용자의 정보만 반환
+            result.clear();
+            result.add(loggedInEmployeeAll);
+        }
+
+        return result;
     }
 
 
     //직원 일정 추가
-    public EmployeeAddScheduleResponseDTO addEmployee(CustomUserDetails user, EmployeeAddScheduleRequestDTO request) {
-        Schedule schedule = new Schedule();
+    public String addEmployee(CustomUserDetails user, EmployeeAddScheduleRequestDTO request) {
+        try {
+            Schedule schedule = new Schedule();
 
-        Employee employee = employeeRepository.findByEmployeeId(user.getUsername())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE));
+            Employee employee = employeeRepository.findByEmployeeId(user.getUsername())
+                    .orElse(null);
 
-        Company company = companyRepository.findById(employee.getCompany().getCompanyNo())
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
+            if (employee == null) {
+                throw new BusinessException(ErrorCode.NOT_FOUND_MEMBER);
+            }
 
-        schedule.addEmployee(employee, company, request.startTime(), request.endTime(), request.title());
+            Company company = companyRepository.findById(employee.getCompany().getCompanyNo())
+                    .orElse(null);
+            if (company == null) {
+                throw new BusinessException(ErrorCode.NOT_FOUND_MEMBER);
+            }
 
-        scheduleRepository.save(schedule);
-
-        return new EmployeeAddScheduleResponseDTO(
-                schedule.getScheduleNo(),
-                request.startTime(),
-                request.endTime(),
-                request.title());
+            schedule.addEmployee(employee, company, request.startTime(), request.endTime(), request.title());
+            scheduleRepository.save(schedule);
+            // 성공적으로 등록되었음을 반환
+            return schedule.getScheduleNo() +  " 번이 등록되었습니다";
+        } catch (BusinessException e) {
+            // BusinessException은 이미 예외 메시지를 가지고 있으므로, 그대로 반환
+            return e.getMessage() + " 등록 실패하였습니다";
+        } catch (Exception e) {
+            // 예상치 못한 예외가 발생한 경우, 예외를 로깅하고 일반적인 오류 메시지 반환
+            log.error("An unexpected error occurred while adding an employee schedule", e);
+            return "등록에 실패하였습니다. 관리자에게 문의하세요.";
+        }
     }
+
 
     //직원 스케줄 수정
     @Transactional
@@ -120,16 +166,23 @@ public class EmployeeSchedulesService {
     }
 
     // 직원 일정 삭제
+    @Transactional
     public String deleteSchedule(CustomUserDetails user, Long scheduleId) {
+        Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo())
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new BusinessException(ErrorCode.NOT_BUY_ITEM));
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
 
-        if (Objects.equals(employee.getEmployeeNo(), schedule.getEmployee().getEmployeeNo())) {
+        // 해당 Schedule이 현재 로그인한 사용자의 것인지 확인
+        if (schedule.getEmployee().equals(employee)) {
+            // Employee 엔티티에서 Schedule 엔티티 제거
+            employee.getEmployeeScheduleList().remove(schedule);
+            // Schedule 삭제
             scheduleRepository.deleteById(scheduleId);
-            return "삭제 되었습니다";
+            return "삭제 완료. 삭제된 Schedule ID: " + scheduleId;
         } else {
-            throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
+            return "삭제 실패. 해당 Schedule은 현재 로그인한 사용자의 것이 아닙니다.";
         }
     }
 

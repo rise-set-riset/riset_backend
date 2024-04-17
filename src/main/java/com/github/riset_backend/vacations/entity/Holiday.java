@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -57,20 +58,22 @@ public class Holiday {
 
 
     //연차 일 경우
-    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, Status status) {
+    public void addAll(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, Status status, String comment) {
         this.employee = employee;
         this.startDate = startDate;
         this.leaveStatus = leaveStatus;
         this.status = status;
+        this.comment = comment;
     }
 
     // 반차일 경우
-    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, Status status) {
+    public void addHalf(Employee employee, LocalDateTime startDate, LeaveType leaveStatus, LocalDateTime endDate, Status status, String comment) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
         this.leaveStatus = leaveStatus;
         this.status = status;
+        this.comment = comment;
     }
 
     //연차/반차 수정

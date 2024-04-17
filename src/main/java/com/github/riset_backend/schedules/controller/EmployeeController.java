@@ -9,6 +9,7 @@ import com.github.riset_backend.schedules.service.EmployeeSchedulesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +29,15 @@ public class EmployeeController {
     @GetMapping
     @Operation(summary = "첫 진입 조회 api 입니다", description = "첫 진입 조회 api 입니다")
     public ResponseEntity<List<EmployeeAll>> getAllEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("employeeDate") LocalDate data) {
-        return ResponseEntity.ok(employeeSchedulesService.getAllEmployees(user, data));
+        List<EmployeeAll> employeeAll = employeeSchedulesService.getAllEmployees(data, user);
+        return ResponseEntity.status(HttpStatus.OK).body(employeeAll);
     }
 
     @PostMapping("/addEmployees")
     @Operation(summary = "직원 일정 등록하는 api 입니다", description = "직원 일정을 등록할 수 있습니다")
-    public EmployeeAddScheduleResponseDTO addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
-        return employeeSchedulesService.addEmployee(user, request);
+    public ResponseEntity<String> addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
+        String answer = employeeSchedulesService.addEmployee(user, request);
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
     @PatchMapping("/updateSchedule")
