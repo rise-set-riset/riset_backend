@@ -1,11 +1,13 @@
 package com.github.riset_backend.writeBoard.reply.controller;
 
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.writeBoard.reply.dto.ReplyRequestDto;
 import com.github.riset_backend.writeBoard.reply.dto.ReplyResponseDto;
 import com.github.riset_backend.writeBoard.reply.service.ReplyService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,8 +28,8 @@ public class ReplyController {
     @PostMapping("/{boardNo}")
     public ResponseEntity<ReplyResponseDto> createReply (@PathVariable Long boardNo,
                                                          @RequestBody ReplyRequestDto replyRequestDto,
-                                                         HttpServletRequest request) {
-        ReplyResponseDto reply = replyService.createReply(boardNo, replyRequestDto, request);
+                                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        ReplyResponseDto reply = replyService.createReply(boardNo, replyRequestDto, customUserDetails.getEmployee());
         return ResponseEntity.ok(reply);
     }
 

@@ -1,5 +1,6 @@
 package com.github.riset_backend.writeBoard.reply.service;
 
+import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -38,12 +39,9 @@ public class ReplyService {
         return replies.stream().map(ReplyResponseDto::new).toList();
     }
 
-    public ReplyResponseDto createReply(Long boardNo, ReplyRequestDto replyRequestDto, HttpServletRequest request) {
+    public ReplyResponseDto createReply(Long boardNo, ReplyRequestDto replyRequestDto, Employee employee) {
         Board board = boardRepository.findByBoardNo(boardNo).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
-        );
-        Employee employee = employeeRepository.findByEmployeeNo(1L).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
         Reply reply = new Reply(board, employee, replyRequestDto.getContent());
         Reply newReply = replyRepository.save(reply);
