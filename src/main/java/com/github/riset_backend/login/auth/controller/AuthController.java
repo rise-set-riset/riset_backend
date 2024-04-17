@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/checkId")
-    public ResponseEntity<String> checkId(@RequestBody RequestCheckIdDto id) {
+    public boolean checkId(@RequestBody RequestCheckIdDto id) {
         return authService.checkId(id);
     }
 

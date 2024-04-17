@@ -37,6 +37,7 @@ public class OAuth2Attribute {
                                             Map<String, Object> attributes) {
         return OAuth2Attribute.builder()
                 .email((String) attributes.get("email"))
+                .name((String) attributes.get("name"))
                 .provider(provider)
                 .attributes(attributes)
                 .attributeKey(attributeKey)
@@ -53,6 +54,7 @@ public class OAuth2Attribute {
 
         return OAuth2Attribute.builder()
                 .email((String) kakaoAccount.get("email"))
+                .name((String) kakaoAccount.get("profile_nickname"))
                 .provider(provider)
                 .attributes(kakaoAccount)
                 .attributeKey(attributeKey)
@@ -69,6 +71,7 @@ public class OAuth2Attribute {
 
         return OAuth2Attribute.builder()
                 .email((String) response.get("email"))
+                .name((String) response.get("name"))
                 .attributes(response)
                 .provider(provider)
                 .attributeKey(attributeKey)
