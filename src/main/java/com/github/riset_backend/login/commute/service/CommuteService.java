@@ -54,7 +54,7 @@ public class CommuteService {
 
         commuteRepository.save(commute);
 
-        return ResponseEntity.ok().body("출근 시간이 추가되었습니다.");
+        return ResponseEntity.ok().body("half");
     }
 
     public ResponseEntity<?> addCommute(CustomUserDetails customUserDetails, CommuteRequestDto commuteRequestDto) {
@@ -91,49 +91,45 @@ public class CommuteService {
         Employee employee = findById(customUserDetails);
 
         LocalDate localDate = LocalDate.now();
-        OffsetTime offsetTime = OffsetTime.now();
 
         Optional<Commute> comOptional = commuteRepository.findByEmployeeAndCommuteDate(employee, localDate);
 
+        RecordResponseDto recordResponseDto;
         if(comOptional.isPresent()){
-            RecordResponseDto recordResponseDto = RecordResponseDto.builder()
+            recordResponseDto = RecordResponseDto.builder()
                     .commuteDate(comOptional.get().getCommuteDate().toString())
                     .startTime(comOptional.get().getCommuteStart().toString())
+                    .endTime(comOptional.get().getCommuteEnd().toString())
                     .commutePlace(comOptional.get().getCommutePlace().toString())
+                    .color("full")
                     .name(employee.getName())
                     .build();
-            return ResponseEntity.ok().body(recordResponseDto);
         } else {
-            RecordResponseDto recordResponseDto = RecordResponseDto.builder()
+            recordResponseDto = RecordResponseDto.builder()
                     .commuteDate(localDate.toString())
                     .name(employee.getName())
-                    .startTime(offsetTime.format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .startTime("00:00")
+                    .endTime("00:00")
                     .build();
-            return ResponseEntity.ok().body(recordResponseDto);
         }
+        return ResponseEntity.ok().body(recordResponseDto);
     }
 
 
-    public ResponseEntity<List<LocationResponseDto>> getLocation(CustomUserDetails customUserDetails) {
+    public ResponseEntity<LocationResponseDto> getLocation(CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
         Company company = employee.getCompany(); // 유저 객체에 있는 회사 객체 저장
 
-        // 회사 객체로 본사 번호 조회 및 저장 후 반환(리스트)
-        List<Company> childCompanies = companyRepository.findAllByParentCompanyNo(company.getParentCompanyNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_COMPANY));
 
-        List<LocationResponseDto> response = new ArrayList<>();
+        LocationResponseDto locationResponseDto = LocationResponseDto.builder()
+                .companyName(company.getCompanyName())
+                .latitude(company.getLatitude())
+                .longitude(company.getLongitude())
+                .id(company.getCompanyNo())
+                .build();
 
-        for(Company parentCompany: childCompanies){
-            LocationResponseDto locationResponseDto = new LocationResponseDto(
-                    parentCompany.getCompanyNo(),
-                    parentCompany.getCompanyName(),
-                    parentCompany.getLongitude(),
-                    parentCompany.getLatitude());
-            response.add(locationResponseDto);
-        }
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(locationResponseDto);
     }
 
     public ResponseEntity<List<CommuteResponseDto>> getCommuteHistory(CustomUserDetails customUserDetails, int year, int month) {
@@ -191,9 +187,32 @@ public class CommuteService {
         }
     }
 
+    public ResponseEntity<?> getDays(CustomUserDetails customUserDetails) {
+        Employee employee = findById(customUserDetails);
+
+        LocalDate endDate = LocalDate.now();
+
+        LocalDate startDate = endDate.minusYears(1);
+
+
+        List<Commute> commutes = commuteRepository.findByEmployeeAndCommuteDateBetween(employee, startDate, endDate);
+
+        int commuteDays = commutes.size();
+
+        HomeResponseDto homeResponseDto = HomeResponseDto.builder()
+                .commuteDays(commuteDays)
+                .restLeaves(12)
+                .totalLeaves(15)
+                .build();
+
+
+        return ResponseEntity.ok().body(homeResponseDto);
+    }
+
     public Employee findById(CustomUserDetails customUserDetails) {
         return employeeRepository.findById(customUserDetails.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
     }
+
 
 
 }
