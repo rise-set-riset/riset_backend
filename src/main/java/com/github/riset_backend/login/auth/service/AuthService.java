@@ -105,6 +105,12 @@ public class AuthService {
 //            redisTemplate.opsForValue().set(requestLoginDto.id(), accessToken, Duration.ofHours(1L));
             redisTemplate.opsForValue().set("RF: " + requestLoginDto.id(), refreshToken, Duration.ofHours(3L));
 
+            if(employee.getRoles() != null){
+                response.put("isAuth", "true");
+            } else {
+                response.put("isAuth", "false");
+            }
+
             response.put("message", "로그인 되었습니다");
             response.put("token_type", "Bearer");
             response.put("access_token", accessToken);
