@@ -116,11 +116,13 @@ public class CommuteService {
     }
 
 
-    public ResponseEntity<LocationResponseDto> getLocation(CustomUserDetails customUserDetails) {
+    public ResponseEntity<List<LocationResponseDto>> getLocation(CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
         Company company = employee.getCompany(); // 유저 객체에 있는 회사 객체 저장
 
+
+        List<LocationResponseDto> locationResponseDtos = new ArrayList<>();
 
         LocationResponseDto locationResponseDto = LocationResponseDto.builder()
                 .companyName(company.getCompanyName())
@@ -129,7 +131,9 @@ public class CommuteService {
                 .id(company.getCompanyNo())
                 .build();
 
-        return ResponseEntity.ok().body(locationResponseDto);
+        locationResponseDtos.add(locationResponseDto);
+
+        return ResponseEntity.ok().body(locationResponseDtos);
     }
 
     public ResponseEntity<List<CommuteResponseDto>> getCommuteHistory(CustomUserDetails customUserDetails, int year, int month) {
