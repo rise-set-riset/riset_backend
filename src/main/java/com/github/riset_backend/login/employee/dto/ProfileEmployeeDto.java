@@ -35,11 +35,11 @@ public class ProfileEmployeeDto {
         this.employeeNum = employee.getEmployeeNo();
         this.name = employee.getName();
         this.employeeId = employee.getEmployeeId();
-        this.jobGrade = new JobGradeResponseDto(employee.getJobGrade());
+        this.jobGrade = employee.getJobGrade() !=null ? new JobGradeResponseDto(employee.getJobGrade()) : new JobGradeResponseDto();
         this.dateOfJoin = employee.getDateOfJoin();
         this.totalAnnualLeave = employee.getTotalAnnualLeave();
         this.salary = employee.getSalary();
-        this.depart = new DepartResponseDto(employee.getDepartment());
+        this.depart = employee.getDepartment() != null ? new DepartResponseDto(employee.getDepartment()) : new DepartResponseDto();
         this.job = employee.getJob();
         this.position = employee.getPosition();
         this.phone = employee.getTelNumber();

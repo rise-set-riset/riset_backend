@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class PresetService {
         return ResponseEntity.ok().body("설정이 완료되었습니다.");
     }
 
+    @Transactional
     public List<ProfileEmployeeDto> getCompanyMembers(Long companyNo) {
         List<Employee> companyMembers = employeeRepository.findAllByCompany_CompanyNo(companyNo);
         return companyMembers.stream().map(ProfileEmployeeDto::new).collect(Collectors.toList());

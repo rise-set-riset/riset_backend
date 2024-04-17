@@ -72,7 +72,7 @@ public class Employee extends BaseEntity {
     @Column(name = "salary")
     private Integer salary;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "department_no", referencedColumnName = "department_no")
     private Department department;
 
