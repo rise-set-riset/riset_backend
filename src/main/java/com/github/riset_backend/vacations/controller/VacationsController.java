@@ -8,6 +8,8 @@ import com.github.riset_backend.vacations.service.HolidayService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,8 @@ public class VacationsController {
 
     @PostMapping("/addHoliday")
     @Operation(summary = "연차/반차 신청하는 api 입니다", description = "연차/반차 신청할 수 있습니다")
-    public String holiday(@RequestBody HolidayRequest holiday, @AuthenticationPrincipal CustomUserDetails user) {
-        return holidayService.addHoliday(holiday, user).toString();
+    public ResponseEntity<String> holiday(@RequestBody HolidayRequest holiday, @AuthenticationPrincipal CustomUserDetails user) {
+        return ResponseEntity.status(HttpStatus.OK).body(holidayService.addHoliday(holiday, user));
     }
 
     @PatchMapping("/addUpdateEmployee")
@@ -38,9 +40,9 @@ public class VacationsController {
 
     @PatchMapping("/status")
     @Operation(summary = "직원 승인상태 변경하는 api", description = "승인 상태 변경")
-    public String accessEmployee(@AuthenticationPrincipal CustomUserDetails user, @RequestBody StatusUpdateRequestDto request) {
-        employeeLeaveSchedulesService.accessEmployeeHoliday(user, request);
-        return "승인 수정완료";
+    public ResponseEntity<String> accessEmployee(@AuthenticationPrincipal CustomUserDetails user, @RequestBody StatusUpdateRequestDto request) {
+        String answer = employeeLeaveSchedulesService.accessEmployeeHoliday(user, request);
+        return ResponseEntity.status(HttpStatus.OK).body(answer);
     }
 
 

@@ -34,46 +34,44 @@ public class HolidayService {
     private final CommuteRepository commuteRepository;
 
     //연차 반차 등록
+    private LocalDateTime parseStartDateTime(String startTimeString) {
+        LocalDate startDate = LocalDate.parse(startTimeString);
+        return startDate.atStartOfDay();
+    }
+
     @Transactional
-    public HolidayRequest addHoliday(HolidayRequest request, CustomUserDetails user) {
+    public String addHoliday(HolidayRequest request, CustomUserDetails user) {
         Employee employee = employeeRepository.findByEmployeeId(user.getUsername())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
-        Commute commuteEndTime = commuteRepository.findById(employee.getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_COMMUTE));
+        Commute commute = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee).orElseThrow();
 
         boolean isHalfDay = request.isHalfDay();
 
         //true 반차, false 연차
         String type = isHalfDay ? LeaveType.HALF_DAY_LEAVE.name() : LeaveType.ANNUAL_LEAVE.name();
         Holiday holidayEntity;
+
         if (LeaveType.ANNUAL_LEAVE.name().equals(type)) {
             // 연차 처리
-            LocalDate startDate = LocalDate.parse(formatDate(LocalDate.from(request.startTime())));
-            LocalDateTime startTime = startDate.atStartOfDay();
+
             holidayEntity = new Holiday();
-            holidayEntity.addAll(employee, startTime, LeaveType.ANNUAL_LEAVE, Status.PENDING);
-
-
-
+            holidayEntity.addAll(employee, request.startTime(), LeaveType.ANNUAL_LEAVE, Status.PENDING, "연차");
+            holidayRepository.save(holidayEntity);
+            return "연차 등록";
         } else if (LeaveType.HALF_DAY_LEAVE.name().equals(type)) {
             // 반차 처리
             holidayEntity = new Holiday();
-            holidayEntity.addHalf(employee, request.startTime(), LeaveType.HALF_DAY_LEAVE, request.endTime(), Status.PENDING);
+            holidayEntity.addHalf(employee, request.startTime(), LeaveType.HALF_DAY_LEAVE, request.startTime(), Status.PENDING, "반차");
             //반차 시작 시간을 퇴근 시간으로 수정
-
-            commuteEndTime.updateCommuteEnd(LocalTime.from(request.startTime()));
+            commute.updateCommuteEnd(request.startTime().toLocalTime());
+            commuteRepository.save(commute);
+            holidayRepository.save(holidayEntity);
+            return "반차 등록";
         } else {
-            // 예외 처리 또는 기본 동작 설정
-            throw new IllegalArgumentException("Invalid leave type: " + type);
+            return "등록실패";
         }
-
-
-        // 휴가를 데이터베이스에 저장
-        holidayRepository.save(holidayEntity);
-
-
-        // 처리된 휴가에 대한 정보를 담은 객체 반환
-        return request;
     }
+
 
     private String formatDate(LocalDate date) {
         return date.atStartOfDay().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));

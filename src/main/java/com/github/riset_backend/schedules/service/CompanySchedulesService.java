@@ -37,8 +37,10 @@ public class CompanySchedulesService {
 
 
     // 회사정보 조회
-    public List<CompanyScheduleResponseDto> getAllCompanySchedules(String total, CustomUserDetails user) {
 
+
+    // 회사정보 조회
+    public List<CompanyScheduleResponseDto> getAllCompanySchedules(String total, CustomUserDetails user) {
         Company company = companyRepository.findById(user.getEmployee().getCompany().getCompanyNo())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ADMIN, "회사가 없네요"));
 
@@ -46,19 +48,34 @@ public class CompanySchedulesService {
         String currentMonth = total.substring(4, 6).replaceFirst("^0*", "");
 
         return company.getCompanySchedules().stream()
-                .filter(schedule -> String.valueOf(schedule.getStartDate().getYear()).equals(String.valueOf(year)))
-                .filter(schedule -> String.valueOf(schedule.getStartDate().getMonthValue()).equals(currentMonth))
-                .map(schedule -> new CompanyScheduleResponseDto(
-                        schedule.getScheduleNo(),
-                        schedule.getWriter(),
-                        schedule.getTitle(),
-                        schedule.getContent(),
-                        String.valueOf(schedule.getStartDate()),
-                        String.valueOf(schedule.getEndDate()),
-                        schedule.getColor()
-                ))
+                .filter(schedule -> schedule.getStartDate().getYear() == year)
+                .filter(schedule -> schedule.getStartDate().getMonthValue() == Integer.parseInt(currentMonth))
+                .map(schedule -> {
+                    String startTime = formatDateTime(schedule.getStartDate());
+                    String endTime = formatDateTime(schedule.getEndDate());
+                    return new CompanyScheduleResponseDto(
+                            schedule.getScheduleNo(),
+                            schedule.getWriter(),
+                            schedule.getTitle(),
+                            schedule.getContent(),
+                            startTime,
+                            endTime,
+                            schedule.getColor()
+                    );
+                })
                 .collect(Collectors.toList());
     }
+
+    // LocalDateTime을 원하는 형식의 문자열로 변환하는 메서드
+    private String formatDateTime(LocalDateTime dateTime) {
+        String formattedDateTime = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        // 시간 부분이 "00:00" 또는 "23:59"인 경우에만 잘라내기
+        if (formattedDateTime.endsWith("00:00") || formattedDateTime.endsWith("23:59")) {
+            return formattedDateTime.substring(0, 10); // "yyyy-MM-dd" 형식만 반환
+        }
+        return formattedDateTime;
+    }
+
 
     //회사 일정 추가
     @Transactional
@@ -72,23 +89,23 @@ public class CompanySchedulesService {
         if (!request.start().contains("T") && request.end().contains("T")) {
             // 시작일이 없고 종료일에 시간 정보가 포함되어 있으면
             // 시작일에는 T00:00을 붙이고, 종료일의 시간을 23:59로 변경하여 저장
-            schedule.addTime(request.start() + "T00:00", request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee);
+            schedule.addTime(request.start() + "T00:00", request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
         }
         if (request.start().contains("T") && request.end().contains("T")) {
             // 시작일과 종료일이 모두 시간 정보를 포함하고, 일자가 같은 경우
             if (request.start().substring(0, 10).equals(request.end().substring(0, 10))) {
-                schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee);
+                schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
             } else {
                 // 시작일과 종료일이 모두 시간 정보를 포함하지만, 일자가 다른 경우
                 // 종료일의 시간을 23:59로 변경하여 저장
-                schedule.addTime(request.start(), request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee);
+                schedule.addTime(request.start(), request.end().replace("T24:00", "T23:59"), request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
             }
         } else if (!request.start().contains("T") && !request.end().contains("T")) {
-            schedule.addTime(request.start() + "T00:00", request.end() + "T23:59", request.title(), request.writer(), request.content(), request.color(), employee);
+            schedule.addTime(request.start() + "T00:00", request.end() + "T23:59", request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
         } else if (!request.start().contains("T") && !request.end().contains("T") && request.start().equals(request.end())) {
-            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee);
+            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
         } else if (request.start().substring(0, 10).equals(request.end().substring(0, 10)) && request.start().contains("T")) {
-            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(),employee);
+            schedule.addTime(request.start(), request.end(), request.title(), request.writer(), request.content(), request.color(), employee, employee.getCompany());
         }
 
         String startDateString = schedule.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -125,6 +142,7 @@ public class CompanySchedulesService {
         LocalDateTime start = null;
         LocalDateTime end = null;
 
+
         try {
             // startDate가 T를 포함하는지 확인하여 처리합니다.
             if (request.start().contains("T")) {
@@ -159,12 +177,13 @@ public class CompanySchedulesService {
     @Transactional
     public String deleteCompanySchedule(Long scheduleId, CustomUserDetails user) {
         Optional<Schedule> scheduleOptional = schedulesRepository.findById(scheduleId);
+        Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow();
 
-        //유저 확인, 삭제권한이기 때문에 어드민 role 확인 해야함,
-        employeeRepository.findByEmployeeId(user.getUsername()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_USER, "유저가 없습니다."));
+        employeeRepository.findByEmployeeId(user.getEmployee().getEmployeeId()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER, "유저가 없습니다."));
 
-        if (scheduleOptional.isPresent()) {
+        if (Objects.equals(scheduleOptional.get().getEmployee().getEmployeeNo(), user.getEmployee().getEmployeeNo())) {
             Schedule schedule = scheduleOptional.get();
+            employee.getEmployeeScheduleList().remove(schedule);
             schedulesRepository.delete(schedule);
             return "삭제되었습니다"; // 삭제 성공 메시지 반환
         } else {

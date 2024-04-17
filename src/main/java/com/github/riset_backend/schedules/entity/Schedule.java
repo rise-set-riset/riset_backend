@@ -92,7 +92,7 @@ public class Schedule {
     }
 
 
-    public void addTime(String startDate, String endDate, String title, String writer, String content, String color, Employee employee) {
+    public void addTime(String startDate, String endDate, String title, String writer, String content, String color, Employee employee, Company company) {
         DateTimeFormatter formatter;
         if (startDate.contains("T")) {
             // 'T'를 포함하고 있으면 LocalDateTime으로 파싱
@@ -122,6 +122,7 @@ public class Schedule {
         this.content = content;
         this.color = color;
         this.employee = employee;
+        this.company = company;
     }
 
 
