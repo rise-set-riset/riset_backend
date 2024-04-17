@@ -19,7 +19,7 @@ public class MenuController {
     public MenuResponseDTO getMenus() {
 
         // 유저 정보 생성
-        UserDTO user = new UserDTO("유저 이미지 url", "홍길동", "사원");
+        UserDTO user = new UserDTO("", "홍길동", "사원");
 
         // 메뉴 정보 생성
         List<MenuDTO> menus = new ArrayList<>();
@@ -165,6 +165,25 @@ public class MenuController {
                 .title("관리")
                 .icon("setting")
                 .link("/setting")
+                .build();
+
+        MenuDTO inviteMenu = MenuDTO.builder()
+                .id(18L)
+                .title("초대코드")
+                .link("/setting/invite")
+                .build();
+
+
+        MenuDTO pointCompanyMenu = MenuDTO.builder()
+                .id(19L)
+                .title("지점 관리")
+                .link("/setting/branch")
+                .build();
+
+        MenuDTO profileMenu = MenuDTO.builder()
+                .id(20L)
+                .title("프로필 관리")
+                .link("/setting/profile")
                 .build();
 
         // 메뉴들을 리스트에 추가

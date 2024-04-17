@@ -13,7 +13,7 @@ import lombok.Setter;
 public class JobGradeResponseDto {
 
     private Long jobGradeId;
-    private Integer grade;
+    private String grade;
 
     public JobGradeResponseDto(JobGrade jobGrade) {
         this.jobGradeId = jobGrade.getGradeNo();

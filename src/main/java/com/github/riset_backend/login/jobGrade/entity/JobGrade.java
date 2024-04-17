@@ -19,7 +19,7 @@ public class JobGrade extends BaseEntity {
     private Long gradeNo;
 
     @Column(name = "grade")
-    private Integer grade;
+    private String grade;
 
 
 
