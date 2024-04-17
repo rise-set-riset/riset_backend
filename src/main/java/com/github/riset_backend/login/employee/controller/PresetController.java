@@ -30,6 +30,11 @@ public class PresetController {
         return presetService.preset(presetDto, customUserDetails, token);
     }
 
+    @GetMapping()
+    public ResponseEntity<Employee> getEmployee (@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(customUserDetails.getEmployee());
+    }
+
     @GetMapping("/profiles")
     public ResponseEntity<List<ProfileEmployeeDto>> getCompanyMembers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<ProfileEmployeeDto> profileEmployeeDtos = presetService.getCompanyMembers(customUserDetails.getEmployee().getCompany().getCompanyNo());

@@ -2,6 +2,7 @@ package com.github.riset_backend.login.employee.dto;
 
 import com.github.riset_backend.chating.dto.chatDto.DepartResponseDto;
 import com.github.riset_backend.chating.dto.chatDto.JobGradeResponseDto;
+import com.github.riset_backend.chating.dto.chatDto.ProfileImgResponseDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.jobGrade.entity.JobGrade;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,8 @@ public class ProfileEmployeeDto {
     private String position;
     private String phone;
     private String address;
+    private ProfileImgResponseDto profile;
+
 
     public ProfileEmployeeDto(Employee employee) {
         this.employeeNum = employee.getEmployeeNo();
@@ -44,5 +47,6 @@ public class ProfileEmployeeDto {
         this.position = employee.getPosition();
         this.phone = employee.getTelNumber();
         this.address = employee.getAddress();
+        this.profile = employee.getMyImage() != null ? new ProfileImgResponseDto(employee.getMyImage()) : new ProfileImgResponseDto();
     }
 }
