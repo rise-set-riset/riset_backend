@@ -1,5 +1,6 @@
 package com.github.riset_backend.chating.dto.chatDto;
 
+import com.github.riset_backend.login.employee.dto.PositionResponse;
 import com.github.riset_backend.login.employee.entity.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

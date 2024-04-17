@@ -58,7 +58,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
 springdoc:
   default-produces-media-type: application/json;charset=UTF-8

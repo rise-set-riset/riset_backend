@@ -8,6 +8,7 @@ import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.employee.dto.PresetDto;
+import com.github.riset_backend.login.employee.dto.ProfileEmployeeDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
@@ -15,7 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -45,5 +50,11 @@ public class PresetService {
 
 
         return ResponseEntity.ok().body("설정이 완료되었습니다.");
+    }
+
+    @Transactional
+    public List<ProfileEmployeeDto> getCompanyMembers(Long companyNo) {
+        List<Employee> companyMembers = employeeRepository.findAllByCompany_CompanyNo(companyNo);
+        return companyMembers.stream().map(ProfileEmployeeDto::new).collect(Collectors.toList());
     }
 }
