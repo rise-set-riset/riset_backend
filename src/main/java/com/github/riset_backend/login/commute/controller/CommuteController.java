@@ -55,7 +55,7 @@ public class CommuteController {
 
     @Operation(summary = "회사 위치 조회", description = "회사 위치를 조회하는 API입니다.")
     @GetMapping("/company-location")
-    public ResponseEntity<LocationResponseDto> companyLocation(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<List<LocationResponseDto>> companyLocation(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commuteService.getLocation(customUserDetails);
     }
 
