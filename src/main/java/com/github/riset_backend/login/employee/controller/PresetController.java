@@ -7,6 +7,8 @@ import com.github.riset_backend.login.employee.dto.ProfileEmployeeDto;
 import com.github.riset_backend.login.employee.dto.ProfileUpdateDto;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.service.PresetService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +21,13 @@ import java.util.List;
 @RequestMapping("/preset")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "사전 설정 API", description = "관리자 사전 설정")
 public class PresetController {
     private final PresetService presetService;
 
     @PostMapping("/admin")
+    @Operation(summary = "관리자 사전 설정", description = "관리자로 등록하는 API입니다.")
     public ResponseEntity<String> presetRole(@RequestBody PresetDto presetDto, @AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestHeader("Authorization") String token) {
-
-        log.info("token: {}", token);
-        log.info("[POST]: 사전설정 요청");
         return presetService.preset(presetDto, customUserDetails, token);
     }
 
