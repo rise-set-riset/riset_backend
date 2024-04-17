@@ -18,4 +18,7 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
     Optional<Commute> findTopByEmployeeOrderByCommuteDateDesc(Employee emp);
 
     Optional<Commute> findByEmployeeAndCommuteDate(Employee employee, LocalDate today);
+
+    List<Commute> findByEmployeeAndCommuteDateBetween(Employee employee, LocalDate startDate, LocalDate endDate);
+
 }
