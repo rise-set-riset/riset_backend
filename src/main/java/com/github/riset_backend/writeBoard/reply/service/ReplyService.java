@@ -63,8 +63,7 @@ public class ReplyService {
         Reply reply = replyRepository.findByDeletedAndReplyNo(null ,replyNo).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_REPLY)
         );
-        reply.setDeleted("y");
-        replyRepository.save(reply);
+        replyRepository.delete(reply);
         return new ReplyResponseDto(reply);
     }
 

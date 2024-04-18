@@ -176,6 +176,7 @@ public class BoardService {
 
             fileRepository.saveAll(updateFiles);
             boardFileRepository.saveAll(updateBoardFiles);
+            boardRepository.save(board);
 
             board.setBoardFiles(updateBoardFiles);
         }

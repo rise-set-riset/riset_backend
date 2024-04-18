@@ -39,7 +39,7 @@ public class ReplyController {
         return ResponseEntity.ok(reply);
     }
 
-    @PatchMapping("/deleted/{replyNo}")
+    @DeleteMapping ("/deleted/{replyNo}")
     public ResponseEntity<ReplyResponseDto> deletedReply (@PathVariable Long replyNo) {
        ReplyResponseDto reply =  replyService.deletedReply(replyNo);
        return ResponseEntity.ok(reply);
