@@ -178,16 +178,18 @@ public class CommuteService {
         return ResponseEntity.ok().body(commuteResponseDtos);
     }
 
-    public ResponseEntity<StatusResponseDto> getStatus(CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> getStatus(CustomUserDetails customUserDetails) {
         Employee employee = findById(customUserDetails);
 
-        Optional<Commute> comOptional = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee); // 조회문 수정
+        Optional<Commute> comOptional = commuteRepository.findTopByEmployeeOrderByCommuteDateDesc(employee);
 
         if(comOptional.isPresent()){
-            StatusResponseDto dto = new StatusResponseDto(comOptional.get().getCommuteStatus().toString());
-            return ResponseEntity.ok().body(dto);
+            StatusResponseDto statusResponseDto = StatusResponseDto.builder()
+                    .status(comOptional.get().getCommuteStatus().getType())
+                    .build();
+            return ResponseEntity.ok().body(statusResponseDto);
         } else {
-            return null;
+            return ResponseEntity.ok().body("null");
         }
     }
 

@@ -61,7 +61,7 @@ public class CommuteController {
 
     @Operation(summary = "출근 상태 조회", description = "출근 여부를 조회하는 API입니다.")
     @GetMapping("/get-status")
-    public ResponseEntity<StatusResponseDto> getStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> getStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commuteService.getStatus(customUserDetails);
     }
 

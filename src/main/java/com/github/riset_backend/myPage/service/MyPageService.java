@@ -9,8 +9,12 @@ import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import com.github.riset_backend.myPage.dto.MyPageResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +42,16 @@ public class MyPageService {
         );
         return response;
 
+    }
+
+    public ResponseEntity<?> deleteUser(CustomUserDetails customUserDetails) {
+        Optional<Employee> employee = employeeRepository.findByEmployeeNo(customUserDetails.getEmployee().getEmployeeNo());
+
+        if(employee.isPresent()) {
+            employeeRepository.delete(employee.get());
+            return ResponseEntity.ok().body("회원 탈퇴가 완료되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("유효하지 않은 요청입니다.");
+        }
     }
 }
