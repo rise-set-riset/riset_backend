@@ -67,4 +67,9 @@ public class Company extends BaseEntity {
         this.companyName = companyName;
         this.companyAddr = companyAddr;
     }
+
+    // company address Update
+    public void updateAddress(String companyAddr) {
+        this.companyAddr = companyAddr;
+    }
 }

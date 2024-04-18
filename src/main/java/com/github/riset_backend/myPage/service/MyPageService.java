@@ -3,15 +3,18 @@ package com.github.riset_backend.myPage.service;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
+import com.github.riset_backend.login.company.entity.Company;
+import com.github.riset_backend.login.company.repository.CompanyRepository;
 import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.department.repository.DepartmentRepository;
 import com.github.riset_backend.login.employee.entity.Employee;
+import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
 import com.github.riset_backend.myPage.dto.ModifyUserPasswordRequest;
 import com.github.riset_backend.myPage.dto.MyPageInfo;
+import com.github.riset_backend.myPage.dto.UpdateCompanyAddress;
 import com.github.riset_backend.myPage.dto.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class MyPageService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRepository departmentRepository;
+    private final CompanyRepository companyRepository;
 
 
     //첫 진입 조회
@@ -96,14 +100,26 @@ public class MyPageService {
             return e.getMessage() + " 에러";
         }
     }
+
     public ResponseEntity<?> deleteUser(CustomUserDetails customUserDetails) {
         Optional<Employee> employee = employeeRepository.findByEmployeeNo(customUserDetails.getEmployee().getEmployeeNo());
 
-        if(employee.isPresent()) {
+        if (employee.isPresent()) {
             employeeRepository.delete(employee.get());
             return ResponseEntity.ok().body("회원 탈퇴가 완료되었습니다.");
         } else {
             return ResponseEntity.badRequest().body("유효하지 않은 요청입니다.");
         }
+    }
+
+    public String updateCompanyAddress(CustomUserDetails user, UpdateCompanyAddress address) {
+        Employee employee = employeeRepository.findById(user.getEmployee().getEmployeeNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        Company company = companyRepository.findById(employee.getCompany().getCompanyNo()).orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_MEMBER));
+        if (employee.getRoles().equals(Role.ROLE_ADMIN)) {
+            company.updateAddress(address.address());
+            companyRepository.save(company);
+            return "업데이트 완료";
+        }
+        return "업데이트 실패";
     }
 }
