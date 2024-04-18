@@ -100,7 +100,7 @@ public class CommuteService {
                     .commuteDate(comOptional.get().getCommuteDate().toString())
                     .startTime(comOptional.get().getCommuteStart().toString())
                     .endTime(comOptional.get().getCommuteEnd().toString())
-                    .commutePlace(comOptional.get().getCommutePlace().toString())
+                    .way(comOptional.get().getCommutePlace().toString())
                     .color("full")
                     .name(employee.getName())
                     .build();
