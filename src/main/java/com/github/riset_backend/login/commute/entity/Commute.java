@@ -15,6 +15,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Setter
 @ToString
 @Table(name = "commute")
 public class Commute extends BaseEntity {

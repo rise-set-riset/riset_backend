@@ -18,6 +18,7 @@ import com.github.riset_backend.vacations.entity.Holiday;
 import com.github.riset_backend.vacations.repository.HolidayRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -58,18 +59,37 @@ public class CommuteService {
     }
 
     public ResponseEntity<?> addCommute(CustomUserDetails customUserDetails, CommuteRequestDto commuteRequestDto) {
+        LocalDate localDate = LocalDate.now();
+
         Employee employee = findById(customUserDetails);
 
-        Commute commute = Commute.builder()
-                .commuteDate(commuteRequestDto.commuteDate())
-                .employee(employee)
-                .commuteStart(commuteRequestDto.commuteStart())
-                .commuteEnd(commuteRequestDto.commuteEnd())
-                .commutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()))
-                .commuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()))
-                .build();
+        Optional<Commute> comOptional = commuteRepository.findByEmployeeAndCommuteDate(employee, localDate);
 
-        commuteRepository.save(commute);
+        if (comOptional.isPresent()) {
+            Commute com = comOptional.get();
+            comOptional.get().setCommuteDate(commuteRequestDto.commuteDate());
+            comOptional.get().setCommuteStart(commuteRequestDto.commuteStart());
+            comOptional.get().setCommuteEnd(commuteRequestDto.commuteEnd());
+            comOptional.get().setCommutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()));
+            comOptional.get().setCommuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()));
+            commuteRepository.save(com);
+        } else {
+            Commute commute = Commute.builder()
+                    .commuteDate(commuteRequestDto.commuteDate())
+                    .employee(employee)
+                    .commuteStart(commuteRequestDto.commuteStart())
+                    .commuteEnd(commuteRequestDto.commuteEnd())
+                    .commutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()))
+                    .commuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()))
+                    .build();
+
+            commuteRepository.save(commute);
+        }
+
+
+
+
+
 
         return ResponseEntity.ok().body("출퇴근 시간이 추가되었습니다.");
     }
@@ -94,17 +114,20 @@ public class CommuteService {
 
         Optional<Commute> comOptional = commuteRepository.findByEmployeeAndCommuteDate(employee, localDate);
 
-        RecordResponseDto recordResponseDto;
-        if(comOptional.isPresent()){
+
+
+        RecordResponseDto recordResponseDto = null;
+        if (comOptional.isPresent()) {
             recordResponseDto = RecordResponseDto.builder()
-                    .commuteDate(comOptional.get().getCommuteDate().toString())
-                    .startTime(comOptional.get().getCommuteStart().toString())
-                    .endTime(comOptional.get().getCommuteEnd().toString())
-                    .way(comOptional.get().getCommutePlace().toString())
+                    .commuteDate(comOptional.get().getCommuteDate() != null ? comOptional.get().getCommuteDate().toString() : null)
+                    .startTime(comOptional.get().getCommuteStart() != null ? comOptional.get().getCommuteStart().toString() : null)
+                    .endTime(comOptional.get().getCommuteEnd() != null ? comOptional.get().getCommuteEnd().toString() : null)
+                    .way(comOptional.get().getCommutePlace() != null ? comOptional.get().getCommutePlace().toString() : null)
                     .color("full")
                     .name(employee.getName())
                     .build();
-        } else {
+        }
+        else {
             recordResponseDto = RecordResponseDto.builder()
                     .commuteDate(localDate.toString())
                     .name(employee.getName())
