@@ -1,5 +1,6 @@
 package com.github.riset_backend.schedules.controller;
 
+import com.amazonaws.Response;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
 import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleRequestDTO;
@@ -34,10 +35,11 @@ public class EmployeeController {
 
     @PostMapping("/addEmployees")
     @Operation(summary = "직원 일정 등록하는 api 입니다", description = "직원 일정을 등록할 수 있습니다")
-    public EmployeeAddScheduleRequestDTO addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
-
-        return employeeSchedulesService.addEmployee(user, request);
+    public ResponseEntity<EmployeeAddScheduleRequestDTO> addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
+        EmployeeAddScheduleRequestDTO a = employeeSchedulesService.addEmployee(user, request);
+        return ResponseEntity.status(HttpStatus.OK).body(a);
     }
+
 
     @PatchMapping("/updateSchedule")
     @Operation(summary = "직원 일정 수정하는 api 입니다", description = "직원 일정을 수정할 수 있습니다")
