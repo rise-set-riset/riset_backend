@@ -1,8 +1,9 @@
 package com.github.riset_backend.Settlement.dto;
 
+import com.github.riset_backend.manageCompany.dto.Rating;
 
 /**
- * 정산 정보를 담는 DTO 클래스입니다.
+ *
  *
  * @param name                     직원 이름
  * @param Rating                   직책에 따른 급여

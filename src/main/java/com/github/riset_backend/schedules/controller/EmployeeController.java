@@ -3,7 +3,6 @@ package com.github.riset_backend.schedules.controller;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.schedules.dto.company.UpdateComScheduleDto;
 import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleRequestDTO;
-import com.github.riset_backend.schedules.dto.employee.EmployeeAddScheduleResponseDTO;
 import com.github.riset_backend.schedules.dto.employee.schedulesALL.EmployeeAll;
 import com.github.riset_backend.schedules.service.EmployeeSchedulesService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +34,9 @@ public class EmployeeController {
 
     @PostMapping("/addEmployees")
     @Operation(summary = "직원 일정 등록하는 api 입니다", description = "직원 일정을 등록할 수 있습니다")
-    public ResponseEntity<String> addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
-        String answer = employeeSchedulesService.addEmployee(user, request);
-        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    public EmployeeAddScheduleRequestDTO addEmployees(@RequestBody EmployeeAddScheduleRequestDTO request, @AuthenticationPrincipal CustomUserDetails user) {
+
+        return employeeSchedulesService.addEmployee(user, request);
     }
 
     @PatchMapping("/updateSchedule")
@@ -51,6 +50,4 @@ public class EmployeeController {
     public ResponseEntity<String> updateEmployees(@AuthenticationPrincipal CustomUserDetails user, @RequestParam("id") Long id) {
         return ResponseEntity.ok().body(employeeSchedulesService.deleteSchedule(user, id));
     }
-
-
 }
