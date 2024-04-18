@@ -14,12 +14,9 @@ public record EmployeeAddScheduleRequestDTO(
         @Schema(description = "끝나는 날짜", example = "2023-04-01 09:00")
         LocalDateTime endTime,
 
-        @Schema(description = "내용", example = "소중한 프엔, 귀중한 백엔")
-        String content,
 
         @Schema(description = "일정 제목", example = "나는 짱이다")
         String title
 
 ) {
-
 }

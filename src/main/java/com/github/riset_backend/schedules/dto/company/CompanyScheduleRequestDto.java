@@ -19,5 +19,4 @@ public record CompanyScheduleRequestDto(
         @Schema(description = "white, #fffff", example = "색 또는 코드")
         String color
 ) {
-
 }

@@ -113,8 +113,8 @@ public class EmployeeSchedulesService {
 
 
     //직원 일정 추가
-    public String addEmployee(CustomUserDetails user, EmployeeAddScheduleRequestDTO request) {
-        try {
+    public EmployeeAddScheduleRequestDTO addEmployee(CustomUserDetails user, EmployeeAddScheduleRequestDTO request) {
+
             Schedule schedule = new Schedule();
 
             Employee employee = employeeRepository.findByEmployeeId(user.getUsername())
@@ -133,15 +133,8 @@ public class EmployeeSchedulesService {
             schedule.addEmployee(employee, company, request.startTime(), request.endTime(), request.title());
             scheduleRepository.save(schedule);
             // 성공적으로 등록되었음을 반환
-            return schedule.getScheduleNo() +  " 번이 등록되었습니다";
-        } catch (BusinessException e) {
-            // BusinessException은 이미 예외 메시지를 가지고 있으므로, 그대로 반환
-            return e.getMessage() + " 등록 실패하였습니다";
-        } catch (Exception e) {
-            // 예상치 못한 예외가 발생한 경우, 예외를 로깅하고 일반적인 오류 메시지 반환
-            log.error("An unexpected error occurred while adding an employee schedule", e);
-            return "등록에 실패하였습니다. 관리자에게 문의하세요.";
-        }
+            return new EmployeeAddScheduleRequestDTO(schedule.getScheduleNo(), request.startTime(),request.endTime(), request.title());
+
     }
 
 
