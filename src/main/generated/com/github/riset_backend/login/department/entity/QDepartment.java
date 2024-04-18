@@ -60,7 +60,7 @@ public class QDepartment extends EntityPathBase<Department> {
 
     public QDepartment(Class<? extends Department> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.company = inits.isInitialized("company") ? new com.github.riset_backend.login.company.entity.QCompany(forProperty("company")) : null;
+        this.company = inits.isInitialized("company") ? new com.github.riset_backend.login.company.entity.QCompany(forProperty("company"), inits.get("company")) : null;
     }
 
 }

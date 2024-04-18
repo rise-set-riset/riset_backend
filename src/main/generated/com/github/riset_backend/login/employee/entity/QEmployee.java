@@ -33,6 +33,8 @@ public class QEmployee extends EntityPathBase<Employee> {
     //inherited
     public final NumberPath<Long> createdBy = _super.createdBy;
 
+    public final StringPath dateOfJoin = createString("dateOfJoin");
+
     public final com.github.riset_backend.login.department.entity.QDepartment department;
 
     public final StringPath email = createString("email");
@@ -66,7 +68,11 @@ public class QEmployee extends EntityPathBase<Employee> {
 
     public final EnumPath<Role> roles = createEnum("roles", Role.class);
 
+    public final NumberPath<Integer> salary = createNumber("salary", Integer.class);
+
     public final StringPath telNumber = createString("telNumber");
+
+    public final NumberPath<Integer> totalAnnualLeave = createNumber("totalAnnualLeave", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -94,7 +100,7 @@ public class QEmployee extends EntityPathBase<Employee> {
 
     public QEmployee(Class<? extends Employee> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.company = inits.isInitialized("company") ? new com.github.riset_backend.login.company.entity.QCompany(forProperty("company")) : null;
+        this.company = inits.isInitialized("company") ? new com.github.riset_backend.login.company.entity.QCompany(forProperty("company"), inits.get("company")) : null;
         this.department = inits.isInitialized("department") ? new com.github.riset_backend.login.department.entity.QDepartment(forProperty("department"), inits.get("department")) : null;
         this.jobGrade = inits.isInitialized("jobGrade") ? new com.github.riset_backend.login.jobGrade.entity.QJobGrade(forProperty("jobGrade")) : null;
         this.myImage = inits.isInitialized("myImage") ? new com.github.riset_backend.myPage.entity.QMyImage(forProperty("myImage")) : null;

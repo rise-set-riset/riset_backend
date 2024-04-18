@@ -64,7 +64,7 @@ public class Employee extends BaseEntity {
     private Integer totalAnnualLeave;
 
     @Column(name = "date_of_join")
-    private String  dateOfJoin;
+    private String dateOfJoin;
 
 
     @Column(name = "employee_position")
@@ -92,7 +92,7 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role roles;
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> employeeScheduleList;
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
@@ -109,6 +109,16 @@ public class Employee extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     Rating rating;
+
+
+    //myPage update
+    public void userUpdate(String name, String phoneNumber, String address, String dateOfJoin) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.dateOfJoin = dateOfJoin;
+
+    }
 
 
 }

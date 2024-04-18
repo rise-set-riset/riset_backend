@@ -43,9 +43,9 @@ public class DepartMentController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("등록 실패");
         }
-
-
     }
+
+
 
     @GetMapping("")
     public ResponseEntity<List<DepartResponseDto>> getCompanyDepart (@AuthenticationPrincipal CustomUserDetails customUserDetails) {

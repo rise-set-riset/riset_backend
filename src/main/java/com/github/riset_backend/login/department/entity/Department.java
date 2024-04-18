@@ -4,12 +4,12 @@ package com.github.riset_backend.login.department.entity;
 import com.github.riset_backend.global.BaseEntity;
 import com.github.riset_backend.login.company.entity.Company;
 import com.github.riset_backend.login.department.dto.DepartMentRequestDto;
-import com.github.riset_backend.login.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
