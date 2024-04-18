@@ -30,7 +30,7 @@ public class FavoriteResponseDto {
     public FavoriteResponseDto(Favorite favorite) {
         this.id = favorite.getFavoriteId();
         this.indexNumber = favorite.getIndexNumber();
-        this.user = favorite.getEmployee();
+        this.user = favorite.getBoard().getEmployee();
         this.post = new PostResponseDto(favorite.getBoard());
     }
 }

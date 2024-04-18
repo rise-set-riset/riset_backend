@@ -186,6 +186,13 @@ public class MenuController {
                 .link("/setting/profile")
                 .build();
 
+        List<MenuDTO> groupProfileSubMenus = new ArrayList<>();
+        groupProfileSubMenus.add(inviteMenu);
+        groupProfileSubMenus.add(pointCompanyMenu);
+        groupProfileSubMenus.add(profileMenu);
+        settingMenu.setSubMenus(groupProfileSubMenus);
+
+
         // 메뉴들을 리스트에 추가
         menus.add(homeMenu);
         menus.add(commuteMenu);
