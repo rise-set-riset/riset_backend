@@ -23,7 +23,7 @@ public class QPosition extends EntityPathBase<Position> {
 
     public final NumberPath<Long> positionNo = createNumber("positionNo", Long.class);
 
-    public final NumberPath<Double> salary = createNumber("salary", Double.class);
+    public final NumberPath<Integer> salary = createNumber("salary", Integer.class);
 
     public QPosition(String variable) {
         super(Position.class, forVariable(variable));

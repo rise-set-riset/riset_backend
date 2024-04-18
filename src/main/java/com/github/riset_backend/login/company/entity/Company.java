@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.github.riset_backend.global.BaseEntity;
+import com.github.riset_backend.myPage.entity.MyImage;
 import com.github.riset_backend.schedules.entity.Schedule;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,6 +55,11 @@ public class Company extends BaseEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> companySchedules = new ArrayList<>();
 
+    //조직 이미지
+    @Setter
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "my_image_id", referencedColumnName = "image_id") // 외래 키 명시
+    private MyImage myImage;
 
     public Company(Double latitude, Double longitude, String companyName, String companyAddr) {
         this.latitude = latitude;

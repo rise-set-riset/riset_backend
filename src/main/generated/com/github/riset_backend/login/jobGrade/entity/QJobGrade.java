@@ -24,7 +24,7 @@ public class QJobGrade extends EntityPathBase<JobGrade> {
     //inherited
     public final NumberPath<Long> createdBy = _super.createdBy;
 
-    public final NumberPath<Integer> grade = createNumber("grade", Integer.class);
+    public final StringPath grade = createString("grade");
 
     public final NumberPath<Long> gradeNo = createNumber("gradeNo", Long.class);
 
