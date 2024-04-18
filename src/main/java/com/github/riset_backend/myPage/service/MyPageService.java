@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +94,16 @@ public class MyPageService {
             return "수정완료";
         } catch (Exception e) {
             return e.getMessage() + " 에러";
+        }
+    }
+    public ResponseEntity<?> deleteUser(CustomUserDetails customUserDetails) {
+        Optional<Employee> employee = employeeRepository.findByEmployeeNo(customUserDetails.getEmployee().getEmployeeNo());
+
+        if(employee.isPresent()) {
+            employeeRepository.delete(employee.get());
+            return ResponseEntity.ok().body("회원 탈퇴가 완료되었습니다.");
+        } else {
+            return ResponseEntity.badRequest().body("유효하지 않은 요청입니다.");
         }
     }
 }

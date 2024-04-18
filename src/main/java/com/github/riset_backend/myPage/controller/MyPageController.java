@@ -1,6 +1,5 @@
 package com.github.riset_backend.myPage.controller;
 
-
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.myPage.dto.ModifyUserPasswordRequest;
 import com.github.riset_backend.myPage.dto.MyPageInfo;
@@ -65,11 +64,9 @@ public class MyPageController {
         }
     }
 
-    @GetMapping("/oneUser")
-    public ResponseEntity<String> oneUser(@AuthenticationPrincipal CustomUserDetails user) {
-//        String answer = myPageService.oneUser(user);
-
-//        return ResponseEntity.status(HttpStatus.OK).body(answer);
-        return null;
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return myPageService.deleteUser(customUserDetails);
     }
+
 }

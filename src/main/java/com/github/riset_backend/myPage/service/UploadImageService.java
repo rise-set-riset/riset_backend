@@ -132,8 +132,8 @@ public class UploadImageService {
         myPageRepository.deleteById(employee.getMyImage().getMyImageId());
         employee.setMyImage(null);
         employeeRepository.save(employee);
-
-
     }
+
+
 
 }
