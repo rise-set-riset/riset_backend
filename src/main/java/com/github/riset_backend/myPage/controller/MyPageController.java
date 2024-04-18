@@ -1,5 +1,6 @@
 package com.github.riset_backend.myPage.controller;
 
+
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import com.github.riset_backend.myPage.dto.ModifyUserPasswordRequest;
 import com.github.riset_backend.myPage.dto.MyPageInfo;
@@ -26,13 +27,12 @@ public class MyPageController {
     private final MyPageService myPageService;
     private final UploadImageService uploadImageService;
 
-
     @GetMapping("/get")
     @Operation(summary = "내 정보를 가져오는 api", description = "내 정보를 볼 수 있습니다")
-    public ResponseEntity<MyPageInfo> getId(@AuthenticationPrincipal CustomUserDetails user) {
-        MyPageInfo answer = myPageService.MyPageALL(user);
-        return ResponseEntity.status(HttpStatus.OK).body(answer);
+    public MyPageInfo getId(@AuthenticationPrincipal CustomUserDetails user) {
+        return myPageService.MyPageALL(user);
     }
+
 
     //이미지 업로드와 수정
     @PatchMapping("/updateImage")
@@ -64,9 +64,9 @@ public class MyPageController {
         }
     }
 
+
     @DeleteMapping("/deleteUser")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return myPageService.deleteUser(customUserDetails);
     }
-
 }
