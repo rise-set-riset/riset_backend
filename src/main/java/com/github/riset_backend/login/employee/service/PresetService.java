@@ -104,6 +104,8 @@ public class PresetService {
             employee.setTotalAnnualLeave(dto.getTotalHoliday());
         }
 
+        employeeRepository.save(employee);
+
         return new ProfileEmployeeDto(employee);
 
     }
