@@ -67,11 +67,11 @@ public class CommuteService {
 
         if (comOptional.isPresent()) {
             Commute com = comOptional.get();
-            comOptional.get().setCommuteDate(commuteRequestDto.commuteDate());
-            comOptional.get().setCommuteStart(commuteRequestDto.commuteStart());
-            comOptional.get().setCommuteEnd(commuteRequestDto.commuteEnd());
-            comOptional.get().setCommutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()));
-            comOptional.get().setCommuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()));
+            com.setCommuteDate(commuteRequestDto.commuteDate());
+            com.setCommuteStart(commuteRequestDto.commuteStart());
+            com.setCommuteEnd(commuteRequestDto.commuteEnd());
+            com.setCommutePlace(CommutePlace.valueOf(commuteRequestDto.commutePlace()));
+            com.setCommuteStatus(CommuteStatus.valueOf(commuteRequestDto.commuteStatus()));
             commuteRepository.save(com);
         } else {
             Commute commute = Commute.builder()
