@@ -71,12 +71,10 @@ spring:
 springdoc:
   default-produces-media-type: application/json;charset=UTF-8
   default-consumes-media-type: application/json;charset=UTF-8
-  cache:
-    disabled: true
-  packages-to-scan: com.github.riset_backend.web.controller
   api-docs:
     groups:
       enabled: true
+  packages-to-scan: com.github.backend.web.controller
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha
