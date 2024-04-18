@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record RecordResponseDto(
-        String commutePlace,
+        String way,
         String name,
         String commuteDate,
         String startTime,
