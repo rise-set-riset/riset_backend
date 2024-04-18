@@ -36,7 +36,7 @@ public class GroupCompany {
         MyPageImageUploadDto answer = uploadImageService.updateCompanyImage(user, file);
         return ResponseEntity.status(HttpStatus.OK).body(answer).getBody();
     }
-
+    //그룹주소 추가
     @PostMapping("/group/address")
     public ResponseEntity<String> companyAddress(@AuthenticationPrincipal CustomUserDetails user, @RequestBody UpdateCompanyAddress companyAddress) {
         String answer = myPageService.updateCompanyAddress(user, companyAddress);
