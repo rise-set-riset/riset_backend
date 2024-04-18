@@ -65,7 +65,7 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB106Dialect
 
 springdoc:

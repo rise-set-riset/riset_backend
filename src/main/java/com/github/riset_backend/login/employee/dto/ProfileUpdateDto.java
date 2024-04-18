@@ -14,7 +14,7 @@ public class ProfileUpdateDto {
     private Long jobGradeId;
     private String dateOfJoin;
     private Integer totalHoliday;
-    private Integer Salary;
+    private Integer salary;
     private Long departId;
     private String position;
     private String job;
