@@ -61,9 +61,11 @@ public class BoardController {
 
 
     @PatchMapping("/{boardNo}")
-    public ResponseEntity<BoardResponseDto> update(@RequestPart(required = false) BoardRequestDto boardRequestDto,
+    public ResponseEntity<BoardResponseDto> update(@RequestPart(value = "dto",required = false) BoardRequestDto boardRequestDto,
                                                    @RequestPart(value = "file", required = false) List<MultipartFile> multipartFiles,
                                                    @PathVariable Long boardNo) {
+
+
         BoardResponseDto board = boardService.updateBoard(boardRequestDto, multipartFiles, boardNo);
         return ResponseEntity.ok(board);
     }
