@@ -245,7 +245,7 @@ public class AuthService {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
                         .employeeId(employee.getEmployeeNo())
-                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .depart(employee.getDepartment() != null ? employee.getDepartment().getDeptName(): null)
                         .jotTitle(employee.getJob() != null ? employee.getJob(): null)
                         .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
@@ -257,7 +257,7 @@ public class AuthService {
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
-                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .depart(employee.getDepartment() != null ? employee.getDepartment().getDeptName(): null)
                         .jotTitle(employee.getJob() != null ? employee.getJob(): null)
                         .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
@@ -271,7 +271,7 @@ public class AuthService {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
                         .employeeId(employee.getEmployeeNo())
-                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .depart(employee.getDepartment() != null ? employee.getDepartment().getDeptName(): null)
                         .jotTitle(employee.getJob() != null ? employee.getJob(): null)
                         .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
@@ -283,7 +283,7 @@ public class AuthService {
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
-                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .depart(employee.getDepartment() != null ? employee.getDepartment().getDeptName(): null)
                         .jotTitle(employee.getJob() != null ? employee.getJob(): null)
                         .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
