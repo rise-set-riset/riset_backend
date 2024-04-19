@@ -10,6 +10,7 @@ import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 
 import com.github.riset_backend.login.auth.dto.*;
+import com.github.riset_backend.login.department.entity.Department;
 import com.github.riset_backend.login.employee.entity.Employee;
 import com.github.riset_backend.login.employee.entity.Role;
 import com.github.riset_backend.login.employee.repository.EmployeeRepository;
@@ -233,11 +234,20 @@ public class AuthService {
         List<AllUserResponseDto> allUserResponseDtos = new ArrayList<>();
 
 
+
+        /*
+        직급, 직무, 부서
+         */
+
+
         employees.forEach(employee -> {
             if(employee.getMyImage() == null) {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
                         .employeeId(employee.getEmployeeNo())
+                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .jotTitle(employee.getJob() != null ? employee.getJob(): null)
+                        .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
                 allUserResponseDtos.add(dto);
             } else{
@@ -247,6 +257,9 @@ public class AuthService {
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
+                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .jotTitle(employee.getJob() != null ? employee.getJob(): null)
+                        .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
                 allUserResponseDtos.add(dto);
             }
@@ -258,6 +271,9 @@ public class AuthService {
                 AllUserResponseDto dto = AllUserResponseDto.builder()
                         .name(employee.getName())
                         .employeeId(employee.getEmployeeNo())
+                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .jotTitle(employee.getJob() != null ? employee.getJob(): null)
+                        .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
                 allUserResponseDtos.add(dto);
             } else {
@@ -267,6 +283,9 @@ public class AuthService {
                         .profileId(employee.getMyImage().getMyImageId())
                         .profileName(employee.getMyImage().getFileName())
                         .profilePath(employee.getMyImage().getFilePath())
+                        .depart(employee.getDepartment().getDeptName() != null ? employee.getDepartment().getDeptName(): null)
+                        .jotTitle(employee.getJob() != null ? employee.getJob(): null)
+                        .jobGrade(employee.getPosition() != null ? employee.getPosition(): null)
                         .build();
                 allUserResponseDtos.add(dto);
             }
