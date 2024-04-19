@@ -74,44 +74,34 @@ public class MailService {
 
         String jwt = token.substring(7);
 
-        if(!user.getEmployee().getRoles().name().equals(Role.ROLE_ADMIN.name())) {
-            try {
-                // 이메일 리포지토리에서 코드를 사용하여 직원 ID를 가져옴
-                Email emailUser = emailRepository.findByCode(code)
-                        .orElseThrow(() -> new BusinessException(NOT_USER, "이메일이 코드와 연관되어 있지 않습니다."));
 
-                // 코드에서 숫자만 추출하여 회사 ID로 사용
-                Long numbersOnly = Long.valueOf(code.replaceAll("[^0-9]", ""));
+        // 이메일 리포지토리에서 코드를 사용하여 직원 ID를 가져옴
+        Email emailUser = emailRepository.findByCode(code)
+                .orElseThrow(() -> new BusinessException(NOT_USER, "이메일이 코드와 연관되어 있지 않습니다."));
 
-                // 회사를 찾음
-                Company companyNo = companyRepository.findById(numbersOnly)
-                        .orElseThrow(() -> new BusinessException(NOT_USER, "해당 회사를 찾을 수 없습니다."));
+        // 코드에서 숫자만 추출하여 회사 ID로 사용
+        Long numbersOnly = Long.valueOf(code.replaceAll("[^0-9]", ""));
 
-                // 직원을 찾음
-                Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo())
-                        .orElseThrow(() -> new BusinessException(NOT_USER, "해당 직원을 찾을 수 없습니다."));
+        // 회사를 찾음
+        Company companyNo = companyRepository.findById(numbersOnly)
+                .orElseThrow(() -> new BusinessException(NOT_USER, "해당 회사를 찾을 수 없습니다."));
 
-                // 직원의 회사를 업데이트
-                employee.setCompany(companyNo);
-                jwtTokenProvider.setRole(jwt, Role.ROLE_EMPLOYEE.name());
-                employee.setRoles(Role.ROLE_EMPLOYEE);
+        // 직원을 찾음
+        Employee employee = employeeRepository.findByEmployeeNo(user.getEmployee().getEmployeeNo())
+                .orElseThrow(() -> new BusinessException(NOT_USER, "해당 직원을 찾을 수 없습니다."));
+
+        // 직원의 회사를 업데이트
+        employee.setCompany(companyNo);
+        jwtTokenProvider.setRole(jwt, Role.ROLE_EMPLOYEE.name());
+        employee.setRoles(Role.ROLE_EMPLOYEE);
 
 
-                employeeRepository.save(employee);
-                emailRepository.delete(emailUser);
-                return companyNo.getCompanyName() + "회사에 등록되었습니다";
+        employeeRepository.save(employee);
+        emailRepository.delete(emailUser);
+        return companyNo.getCompanyName() + "회사에 등록되었습니다";
 
-            } catch (NumberFormatException e) {
-                // 숫자로 변환할 수 없는 코드일 때 발생하는 예외 처리
-                throw new BusinessException(NOT_USER, "잘못된 코드 형식입니다.");
-            } catch (Exception e) {
-                // 기타 예외 처리
-                throw new BusinessException(NOT_USER, "직원 정보를 저장하는 동안 오류가 발생했습니다.", e);
-            }
-        }
-        //직원 id
 
-        return  "등록 실패";
+
     }
 
 

@@ -132,7 +132,7 @@ public class EmployeeSchedulesService {
 
             schedule.addEmployee(employee, company, request.startTime(), request.endTime(), request.title());
             scheduleRepository.save(schedule);
-            // 성공적으로 등록되었음을 반환
+
             return new EmployeeAddScheduleRequestDTO(schedule.getScheduleNo(), request.startTime(),request.endTime(), request.title());
 
     }
@@ -153,8 +153,6 @@ public class EmployeeSchedulesService {
         } else {
             throw new BusinessException(ErrorCode.NOT_EQUAL_MERCHANT_ID);
         }
-
-
         return request;
     }
 
