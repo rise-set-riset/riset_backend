@@ -164,7 +164,7 @@ public class MenuController {
                 .id(17L)
                 .title("관리")
                 .icon("setting")
-                .link("/setting")
+                .link("/setting/invite")
                 .build();
 
         MenuDTO inviteMenu = MenuDTO.builder()

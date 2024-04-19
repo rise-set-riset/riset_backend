@@ -178,9 +178,7 @@ public class BoardService {
             boardFileRepository.saveAll(updateBoardFiles);
             boardRepository.save(board);
 
-            board.setBoardFiles(updateBoardFiles);
         }
-
 
         return new BoardResponseDto(board);
     }
