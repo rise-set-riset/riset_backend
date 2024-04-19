@@ -151,6 +151,40 @@ public class CommuteService {
 
         locationResponseDtos.add(locationResponseDto);
 
+        LocationResponseDto location1 = LocationResponseDto.builder()
+                .companyName("슈퍼코딩")
+                .latitude(37.599384655)
+                .longitude(127.079544212992)
+                .id(company.getCompanyNo() + 1)
+                .build();
+        locationResponseDtos.add(location1);
+
+        LocationResponseDto location2 = LocationResponseDto.builder()
+                .companyName("리셋")
+                .latitude(37.517331925853)
+                .longitude(127.047377408384)
+                .id(company.getCompanyNo() + 2)
+                .build();
+        locationResponseDtos.add(location2);
+
+        LocationResponseDto location3 = LocationResponseDto.builder()
+                .companyName("네이버")
+                .latitude(37.5267849150832)
+                .longitude(126.930167091136)
+                .id(company.getCompanyNo() + 3)
+                .build();
+        locationResponseDtos.add(location3);
+
+        LocationResponseDto location4 = LocationResponseDto.builder()
+                .companyName("카카오")
+                .latitude(37.4874127684412)
+                .longitude(126.927123713685)
+                .id(company.getCompanyNo() + 4)
+                .build();
+        locationResponseDtos.add(location4);
+
+
+
         return ResponseEntity.ok().body(locationResponseDtos);
     }
 
