@@ -35,7 +35,7 @@ public class CommuteController {
     }
 
     @Operation(summary = "출퇴근 등록", description = "유저가 직접 입력해서 출퇴근 데이터를 받는 API입니다.")
-    @PostMapping("/add-commute")
+    @PatchMapping("/add-commute")
     public ResponseEntity<?> addCommute(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody CommuteRequestDto commuteResponseDto) {
         return commuteService.addCommute(customUserDetails, commuteResponseDto);
     }

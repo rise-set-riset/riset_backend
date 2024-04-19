@@ -65,18 +65,16 @@ spring:
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database-platform: org.hibernate.dialect.MariaDB106Dialect
 
 springdoc:
   default-produces-media-type: application/json;charset=UTF-8
   default-consumes-media-type: application/json;charset=UTF-8
-  cache:
-    disabled: true
-  packages-to-scan: com.github.riset_backend.web.controller
   api-docs:
     groups:
       enabled: true
+  packages-to-scan: com.github.backend.web.controller
   swagger-ui:
     operations-sorter: alpha
     tags-sorter: alpha

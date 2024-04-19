@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,11 +66,14 @@ public class ChatRoomService {
             employees.add(employee);
         });
 
-        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime now = LocalDateTime.now();
+//        ZoneId koreaZoneId = ZoneId.of("Asia/Seoul");
+//        ZonedDateTime nowInKorea = now.atZone(koreaZoneId);
+
         List<String> strings = employees.stream().map(Employee::getName).toList();
         String chatRoomName = strings.stream().collect(Collectors.joining(" "));
 
-        ChatRoom chatRoom = new ChatRoom(now, chatRoomName);
+        ChatRoom chatRoom = new ChatRoom(chatRoomName);
         ChatRoom newChatRoom = chatRoomRepository.save(chatRoom);
 
         List<Employee> employeeList = new ArrayList<>();

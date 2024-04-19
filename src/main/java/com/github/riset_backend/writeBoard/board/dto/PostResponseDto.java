@@ -52,5 +52,7 @@ public class PostResponseDto {
         this.date = board.getCreateAt();
         this.files = files.stream().map(FileResponseDto::new).toList();
         this.comment = board.getReplies() != null ? board.getReplies().stream().map(ReplyResponseDto::new).toList() : new ArrayList<>();
+//        this.comment = board.getReplies().stream().map(ReplyResponseDto::new).toList();
+
     }
 }

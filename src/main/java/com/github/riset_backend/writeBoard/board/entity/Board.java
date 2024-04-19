@@ -53,6 +53,10 @@ public class Board  {
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<Reply> replies;
 
+    public Board(Long boardNo) {
+        this.boardNo = boardNo;
+    }
+
     public static Board boardRequestToBoard (BoardRequestDto boardRequestDto, Employee employee) {
         return Board.builder()
                 .employee(employee)

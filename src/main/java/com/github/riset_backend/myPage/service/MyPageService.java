@@ -43,13 +43,19 @@ public class MyPageService {
             filePath = employee.getMyImage().getFilePath();
         }
 
+        String departName = null;
+
+        if(employee.getDepartment() != null) {
+            departName = employee.getDepartment().getDeptName();
+        }
+
         MyPageInfo response = new MyPageInfo(
                 filePath,
                 employee.getName(),
                 employee.getJobGrade(),
                 employee.getJob(),
                 employee.getDateOfJoin(),
-                employee.getDepartment().getDeptName(),
+                departName,
                 employee.getPosition(),
                 employee.getTelNumber(),
                 employee.getAddress(),

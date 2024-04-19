@@ -142,15 +142,12 @@ public class BoardService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
         );
 
-        if(boardRequestDto != null) {
-//            if(boardRequestDto.getTitle() != null) {
-//                board.setTitle(boardRequestDto.getTitle());
-//            }
-//
-//            if(boardRequestDto.getContent() != null) {
-//                board.setContent(boardRequestDto.getContent());
-//            }
-            board.updateBoard(boardRequestDto);
+        if(boardRequestDto.getContent() != null) {
+            board.setContent(boardRequestDto.getContent());
+        }
+
+        if(boardRequestDto.getTitle() != null) {
+            board.setTitle(boardRequestDto.getTitle());
         }
 
         if(multipartFiles != null) {
@@ -179,10 +176,9 @@ public class BoardService {
 
             fileRepository.saveAll(updateFiles);
             boardFileRepository.saveAll(updateBoardFiles);
+            boardRepository.save(board);
 
-            board.setBoardFiles(updateBoardFiles);
         }
-
 
         return new BoardResponseDto(board);
     }
