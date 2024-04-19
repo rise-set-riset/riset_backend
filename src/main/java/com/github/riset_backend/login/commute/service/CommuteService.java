@@ -86,11 +86,6 @@ public class CommuteService {
             commuteRepository.save(commute);
         }
 
-
-
-
-
-
         return ResponseEntity.ok().body("출퇴근 시간이 추가되었습니다.");
     }
 
@@ -230,7 +225,7 @@ public class CommuteService {
 
         HomeResponseDto homeResponseDto = HomeResponseDto.builder()
                 .commuteDays(commuteDays)
-                .restLeaves(12)
+                .restLeaves(15)
                 .totalLeaves(15)
                 .build();
 
