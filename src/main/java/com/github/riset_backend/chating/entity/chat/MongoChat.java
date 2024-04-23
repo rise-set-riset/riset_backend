@@ -30,7 +30,7 @@ public class MongoChat {
     public MongoChat(MongoMessageSendDto mongoMessageSendDto, LocalDateTime date, Employee sender) {
         this.roomId = mongoMessageSendDto.getRoomId();
         this.msg = mongoMessageSendDto.getMsg();
-        this.employees = mongoMessageSendDto.getEmployeesNo();
+        this.employees = mongoMessageSendDto.getMembers();
         this.sender = sender;
         this.date = date;
         this.filesName = mongoMessageSendDto.getBase64File();

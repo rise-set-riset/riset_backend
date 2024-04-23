@@ -1,8 +1,7 @@
-package com.github.riset_backend.chating.controller;
+package com.github.riset_backend.chating.controller.chat;
 
 import com.github.riset_backend.chating.dto.MessageSendDto;
-import com.github.riset_backend.chating.dto.MongoMessageSendDto;
-import com.github.riset_backend.chating.service.ChatService;
+import com.github.riset_backend.chating.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

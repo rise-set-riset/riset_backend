@@ -1,4 +1,4 @@
-package com.github.riset_backend.chating.service;
+package com.github.riset_backend.chating.service.chat;
 
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
