@@ -66,8 +66,14 @@ public class Board  {
     }
 
     public Board updateBoard(BoardRequestDto boardRequestDto) {
-        this.title = boardRequestDto.getTitle();
-        this.content = boardRequestDto.getContent();
+        if(boardRequestDto.getTitle() != null) {
+            this.title = boardRequestDto.getTitle();
+
+        }
+        if(boardRequestDto.getContent() != null) {
+            this.content = boardRequestDto.getContent();
+
+        }
         return this;
     }
 }
