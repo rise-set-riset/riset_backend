@@ -54,8 +54,6 @@ public class BoardController {
                                                         @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         BoardResponseDto board = boardService.createBoard(boardRequestDto, customUserDetails.getEmployee(), multipartFiles);
-//        BoardResponseDto board = boardService.createBoard(boardRequestDto,1L, multipartFiles);
-
         return ResponseEntity.ok(board);
     }
 

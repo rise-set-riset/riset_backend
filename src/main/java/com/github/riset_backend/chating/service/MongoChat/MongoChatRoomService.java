@@ -65,7 +65,7 @@ public class MongoChatRoomService {
          return mongoChatRooms.stream().map(MongoChatRoomResponseDto::new).collect(Collectors.toList());
     }
 
-    public boolean leaveChatRoom(Employee employee, Long roomId) {
+    public boolean leaveChatRoom(Employee employee, String roomId) {
         MongoChatRoom mongoChatRoom = mongoChatRoomRepository.findById(roomId).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
         );
