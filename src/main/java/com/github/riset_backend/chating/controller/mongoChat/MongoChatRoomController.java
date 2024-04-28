@@ -1,12 +1,11 @@
-package com.github.riset_backend.chating.controller;
+package com.github.riset_backend.chating.controller.mongoChat;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.MongoCreateChatRoomRequestDto;
 import com.github.riset_backend.chating.dto.chatRoomDto.UpdateChatRoomDto;
-import com.github.riset_backend.chating.service.ChatRoomService;
-import com.github.riset_backend.chating.service.ChatService;
+import com.github.riset_backend.chating.service.chat.ChatRoomService;
 import com.github.riset_backend.global.config.auth.custom.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/chatRoom")
 @Slf4j
-public class ChatRoomController {
+public class MongoChatRoomController {
 
     private final ChatRoomService chatRoomService;
 

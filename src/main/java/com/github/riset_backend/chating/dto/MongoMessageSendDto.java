@@ -14,7 +14,7 @@ import java.util.List;
 public class MongoMessageSendDto {
     private String roomId;
     private String msg;
-    private List<Long> employeesNo;
+    private List<Long> Members;
     private Long sender;
     private List<String> base64File;
 }

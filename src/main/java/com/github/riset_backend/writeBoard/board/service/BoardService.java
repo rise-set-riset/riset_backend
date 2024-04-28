@@ -142,13 +142,7 @@ public class BoardService {
                 () -> new BusinessException(ErrorCode.NOT_FOUND_BOARD)
         );
 
-        if(boardRequestDto.getContent() != null) {
-            board.setContent(boardRequestDto.getContent());
-        }
-
-        if(boardRequestDto.getTitle() != null) {
-            board.setTitle(boardRequestDto.getTitle());
-        }
+        board.updateBoard(boardRequestDto);
 
         if(multipartFiles != null) {
             List<File> notDeleteFile = new ArrayList<>();

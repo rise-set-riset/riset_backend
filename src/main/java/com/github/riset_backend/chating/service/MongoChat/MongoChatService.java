@@ -1,16 +1,20 @@
-package com.github.riset_backend.chating.service;
+package com.github.riset_backend.chating.service.MongoChat;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.github.riset_backend.chating.dto.MessageSendDto;
+import com.github.riset_backend.chating.dto.MongoMessageSendDto;
 import com.github.riset_backend.chating.dto.chatDto.ChatResponseDto;
 import com.github.riset_backend.chating.dto.chatDto.MongoChatResponseDto;
-import com.github.riset_backend.chating.dto.chatRoomDto.ChatRoomResponseDto;
 import com.github.riset_backend.chating.entity.chat.Chat;
+import com.github.riset_backend.chating.entity.chat.MongoChat;
 import com.github.riset_backend.chating.entity.chatRoom.ChatRoom;
+import com.github.riset_backend.chating.entity.chatRoom.MongoChatRoom;
 import com.github.riset_backend.chating.repository.chat.ChatRepository;
+import com.github.riset_backend.chating.repository.chat.MongoChatRepository;
 import com.github.riset_backend.chating.repository.chatRoom.ChatRoomRepository;
+import com.github.riset_backend.chating.repository.chatRoom.MongoChatRoomRepository;
 import com.github.riset_backend.global.config.exception.BusinessException;
 import com.github.riset_backend.global.config.exception.ErrorCode;
 import com.github.riset_backend.login.employee.entity.Employee;
@@ -21,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,12 +37,10 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ChatService {
+public class MongoChatService {
 
-//    private final MongoChatRepository mongoChatRepository;
-//    private final MongoChatRoomRepository mongoChatRoomRepository;
-    private final ChatRepository chatRepository;
-    private final ChatRoomRepository chatRoomRepository;
+    private final MongoChatRepository mongoChatRepository;
+    private final MongoChatRoomRepository mongoChatRoomRepository;
     private final EmployeeRepository employeeRepository;
     private final SimpMessageSendingOperations messagingTemplate;
 
@@ -47,7 +48,7 @@ public class ChatService {
     private String bucket;
     private final AmazonS3 amazonS3;
 
-    public void sendMessage(MessageSendDto messageSendDto, Long roomId) throws IOException {
+    public void sendMessage(MongoMessageSendDto messageSendDto, String roomId) throws IOException {
 
         List<String> fileNames = new ArrayList<>();
 
@@ -63,46 +64,26 @@ public class ChatService {
             );
         }
 
-        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElseThrow(
-                () -> new BusinessException(ErrorCode.DIFFERENT_CHATROOM)
-        );
-
         Employee sender = employeeRepository.findByEmployeeNo(messageSendDto.getSender()).orElseThrow(
                 () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
         );
 
-        List<Employee> members = new ArrayList<>();
-
-        messageSendDto.getMembers().forEach(employeeNo -> {
-            Employee member = employeeRepository.findByEmployeeNo(messageSendDto.getSender()).orElseThrow(
-                    () -> new BusinessException(ErrorCode.NOT_FOUND_EMPLOYEE)
-            );
-
-            members.add(member);
-        });
-
-
         LocalDateTime now =  new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        String fileName = fileNames.isEmpty() ? "null" : fileNames.get(0);
 
 
-        Chat chat = new Chat(chatRoom, messageSendDto, now, sender, fileName);
-        Chat newChat = chatRepository.save(chat);
+        mongoChatRoomRepository.findById(messageSendDto.getRoomId()).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
+        );
 
-        messagingTemplate.convertAndSend("/sub/chat/message/" + roomId, new ChatResponseDto(newChat, members));
-
-
-        //        mongoChatRoomRepository.findById(mongoMessageSendDto.getRoomId()).orElseThrow(
-//                () -> new BusinessException(ErrorCode.NOT_FOUND_CHATROOM)
-//        );
-//
-//        if(!Objects.equals(messageSendDto.getRoomId(), roomId)) {
-//            throw  new BusinessException(ErrorCode.DIFFERENT_CHATROOM);
-//        }
+        if(!Objects.equals(messageSendDto.getRoomId(), roomId)) {
+            throw  new BusinessException(ErrorCode.DIFFERENT_CHATROOM);
+        }
 
 
-//        MongoChat mongoChat = new MongoChat(mongoMessageSendDto, now, sender);
-//        mongoChatRepository.save(mongoChat);
+        MongoChat mongoChat = new MongoChat(messageSendDto, now, sender);
+        MongoChat newChat = mongoChatRepository.save(mongoChat);
+
+        messagingTemplate.convertAndSend("/sub/chat/message/" + roomId, new MongoChatResponseDto(newChat));
     }
 
     private void chatFileUpload(String base64, List<String> fileNames) throws IOException {
