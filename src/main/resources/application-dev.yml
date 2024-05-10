@@ -1,0 +1,88 @@
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - application-aws.yaml
+      - application-oauth.yml
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+
+
+  jwt:
+    secret: ${JWT_SECRET}
+    token:
+      access-expiration-time: 43200000    # 12시간
+      refresh-expiration-time: 604800000
+
+  datasource:
+    url: jdbc:mariadb://database-5.cxkkamogkg22.ap-northeast-2.rds.amazonaws.com:3306/riset?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${USERNAME}
+    password: ${PASSWORD_DEV}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  data:
+    redis:
+      host: riset-redis-ro.l4h4dd.ng.0001.apn2.cache.amazonaws.com # 로컬에서 테스트 할 때는 localhost로 사용
+      port: 6379
+
+    mongodb:
+      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+
+#    mongodb:
+#      host: 3.39.211.52
+#      username: riset
+#      password: riset1234
+#      database: chat_db
+#      port: 27017
+  #    mongodb:
+#      uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@cluster0.gxcuioi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+
+
+
+  #    mongodb:
+#      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+#
+#  mongodb:
+#    uri: mongodb+srv://saing0813:tpmk7jajKhuayfb5@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
+  api-docs:
+    groups:
+      enabled: true
+  packages-to-scan: com.github.backend.web.controller
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /**
+
+logging:
+  config: classpath:logback-spring-prod.xml

@@ -1,0 +1,17 @@
+cloud:
+  aws:
+    s3:
+      bucket: riset-bucket
+    stack:
+      auto: false
+    credentials:
+      access-key: ${IAM_ACCESS_KEY}
+      secret-key: ${IAM_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB

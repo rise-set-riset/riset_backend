@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+db.trace.db
+db.mv.db
+application-test2.yml
+application-test3.yml
+application-test.properties
+

@@ -1,0 +1,85 @@
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - application-aws.yaml
+      - application-oauth.yml
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+  jwt:
+    secret: ${JWT_SECRET}
+    token:
+      access-expiration-time: 43200000    # 12시간
+      refresh-expiration-time: 604800000
+
+  datasource:
+    url: jdbc:mysql://localhost:${PORT}/${DB_NAME}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${USERNAME}
+    password: ${PASSWORD} # 로컬 mysql 비밀번호
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#    datasource:
+#      url: jdbc:h2:mem:riset
+#      username: sa
+#      password:
+#      driver-class-name: org.h2.Driver
+
+
+  data:
+    redis:
+      host: localhost # 로컬에서 테스트 할 때는 localhost로 사용
+      port: 6379
+
+    mongodb:
+      uri: mongodb+srv://saing0813:a55nfrbpEd1OXa9B@chat.mnkeugs.mongodb.net/chat_db?retryWrites=true&w=majority&appName=chat
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+springdoc:
+  default-produces-media-type: application/json;charset=UTF-8
+  default-consumes-media-type: application/json;charset=UTF-8
+  api-docs:
+    groups:
+      enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /**
+
+
+
+logging:
+  config: classpath:logback-spring-local.xml
+
+
+
+  # mail
